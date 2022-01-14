@@ -1,6 +1,7 @@
-# GatorLive-backend
-For course CEN5035, our group are building a AmazonLive Clone This is the backend application for the project.
-We are using Golang for programming.
+# GatorLive
+For course CEN5035, our group are building a AmazonLive Clone.
+We are using Golang in backend programming and ReactJS in frontend programming.
+
 Down below are few reference to learn Golang in the first step.
 
 https://go.dev/tour/
