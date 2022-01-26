@@ -1,3 +1,7 @@
+# Golang Version 
+---
+**go1.17.6**
+
 # Setting Environment
 ---
 First GOPATH will be seen as a library location for “go get”  
@@ -24,3 +28,32 @@ Binary package be linked is in the path below:
 ```
 ~/Documents/go/GatorStore/backend/pkg
 ```
+
+# Run Go program
+- Run directly
+  ```
+    go run /GatorStore/backend/src/github.com/UF-CEN5035-2022SpringProject/GatorStore/main.go
+  ```
+
+- Build into binary file
+  ```
+    go build github.com/UF-CEN5035-2022SpringProject/GatorStore
+  ```
+  
+  if we face error such as
+  ```
+    go.mod file not found in current directory or any parent directory; see 'go help modules'
+  ```
+
+  try to fix with
+  ```
+    go env -w GO111MODULE=auto
+  ```
+
+- Build module into binary file in bin/
+  ```
+    go install github.com/UF-CEN5035-2022SpringProject/GatorStore
+  ```
+
+Differences between this three cmd:
+[go run vs go build vs go install] (https://levelup.gitconnected.com/go-run-vs-go-build-vs-go-install-c7c0fd135cf9)
