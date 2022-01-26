@@ -30,6 +30,9 @@ Binary package be linked is in the path below:
 ```
 
 # Run Go program
+Differences between the three cmd below:
+[go run vs go build vs go install](https://levelup.gitconnected.com/go-run-vs-go-build-vs-go-install-c7c0fd135cf9)
+
 - Run directly
   ```
     go run /GatorStore/backend/src/github.com/UF-CEN5035-2022SpringProject/GatorStore/main.go
@@ -54,6 +57,3 @@ Binary package be linked is in the path below:
   ```
     go install github.com/UF-CEN5035-2022SpringProject/GatorStore
   ```
-
-Differences between this three cmd:
-[go run vs go build vs go install] (https://levelup.gitconnected.com/go-run-vs-go-build-vs-go-install-c7c0fd135cf9)
