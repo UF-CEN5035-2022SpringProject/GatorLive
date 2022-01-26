@@ -71,4 +71,5 @@ Variables have been ask to be nice and clean, we are able to add shadow variable
   ```
   i := 2
   ```
-- Variables in **lower case** will be expose out side outside of the package.
+- First letter **lower case** will package scope, first letter with upper case to export.
+- No private scope.
