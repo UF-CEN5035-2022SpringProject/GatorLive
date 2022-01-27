@@ -1,4 +1,4 @@
-# GatorLive
+# GatorLive Project Introductions and Rules
 ---
 ## Project Members
 Canvas Group Link - https://ufl.instructure.com/groups/419331/users   
@@ -54,5 +54,16 @@ spr1-backend-feature/routing
 
 ## Testing Proccess
 1. Self Testing
-2. PR into test branch
-3. PR into main branch
+2. PR into test branch (according to feature into backend-test, seller-frontend-test, buyer-frontend-test)
+3. PR into main branch 
+
+
+---
+
+# Backend
+Golang and backend set up please check [backendend-readme.md](https://github.com/UF-CEN5035-2022SpringProject/GatorStore/blob/main/backend/backend-readme.md)
+
+## API
+- User
+- Store
+- Product
