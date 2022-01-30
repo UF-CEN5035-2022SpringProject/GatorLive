@@ -65,7 +65,43 @@ Golang and backend set up please check [backendend-readme.md](https://github.com
 
 ## API Document 
 **BACKEND API:** 
-```http://localhost:8080/{actionPath}```
+ ```http://localhost:8080/{actionPath}```
+
+**Header**  
+  | Name | Type | Description |
+  | --- | --- | --- |
+  | authorization | string | server JWT token, only |
+  | time | datetime | string |
+
+**Return Body**
+  | Name | Type | Description |
+  | --- | --- | --- |
+  | status | int | use for passing error code (0 = success, other = error code) |
+  | result | json | return object |
+
+- Examples
+
+  Success 
+  ```
+  {
+      "status": 0,
+      "result": {
+          ...
+      }
+  }
+  ```
+  
+  Error
+  ```
+  {
+      "status": 3105, // not 0
+      "result": {
+          "message": "no store found for user {userId}",
+          "type": "",
+          "data": null
+      }
+  }
+  ```
 
 ### User
 
@@ -79,7 +115,7 @@ Object Table Columns
 | Name | Description |
 | ---  | --- | 
 | Var/Method | Showing this attibute is a variable or method |
-| Key | If it is 'V' than it's a primary key, if with R means it's related with others to combine into primary key |
+| Key/Optional | - 'K' represents primary key.<br /> - 'RK means it's related with others to combine into primary key.<br /> - 'O' means optional |
 | Type | variable type or method return type |
 | Description | descibe the attribute purpose |
 
@@ -88,13 +124,13 @@ Object Table Columns
 If user has already register, an **uniqueId** will be assigned to user.  
 Or else we'll use **email** as a identifier.
 
-
-| Var/Method | Key | Type | Description |
+| Var/Method | Key/Optional | Type | Description |
 | ---  | --- | --- | --- |
-| `id` | V | string | unique identifier |
+| `id` | K | string | userId - unique identifier |
 | name |   | string | Receive by google api |
-| `email` | V | string | unique identifier |
-| token | | string | google accesstoken, use for api calling |
+| `email` | K | string | unique identifier |
+| jwtToken | O | string | unique jwt authorization key in GatorStore |
+| accessToken | O | string | google accesstoken, use for api calling |
 
 JSON Example:
 ```
