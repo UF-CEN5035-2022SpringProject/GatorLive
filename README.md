@@ -138,7 +138,8 @@ JSON Example:
   'id': "113024",
   'name': "YiMing Chang",
   'email': "yimingchang@ufl.edu",
-  'token': "abcdtest12345"
+  'jwtToken': "abcdtest12345",
+  'accessToken': "xjjkoipoqwe1445"
 }
 ```
 
