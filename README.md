@@ -63,7 +63,47 @@ spr1-backend-feature/routing
 # Backend
 Golang and backend set up please check [backendend-readme.md](https://github.com/UF-CEN5035-2022SpringProject/GatorStore/blob/main/backend/backend-readme.md)
 
-## API
-- User
+## API Document 
+**BACKEND API:** 
+```http://localhost:8080/{actionPath}```
+
+### User
+
 - Store
 - Product
+
+
+## Ojbect Document
+Object Table Columns 
+
+| Name | Description |
+| ---  | --- | 
+| Var/Method | Showing this attibute is a variable or method |
+| Key | If it is 'V' than it's a primary key, if with R means it's related with others to combine into primary key |
+| Type | variable type or method return type |
+| Description | descibe the attribute purpose |
+
+
+### User 
+If user has already register, an **uniqueId** will be assigned to user.  
+Or else we'll use **email** as a identifier.
+
+
+| Var/Method | Key | Type | Description |
+| ---  | --- | --- | --- |
+| `id` | V | string | unique identifier |
+| name |   | string | Receive by google api |
+| `email` | V | string | unique identifier |
+| token | | string | google accesstoken, use for api calling |
+
+JSON Example:
+```
+{
+  'id': "113024",
+  'name': "YiMing Chang",
+  'email': "yimingchang@ufl.edu",
+  'token': "abcdtest12345"
+}
+```
+
+###
