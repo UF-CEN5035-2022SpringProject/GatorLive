@@ -131,7 +131,14 @@ Golang and backend set up please check [backendend-readme.md](https://github.com
      }
      ```
      
-  - Error Code for error situation
+  - Error Code Table for error situation
+    | ErrorName | ErrorCode | HttpStatus | Description |
+    | ---  | --- | --- | --- |
+    | MISS_PARAMS | 800 | 400 | |
+    | INVALID_PARAMS | 801 | 400 | |
+    | NO_JWTTOKEN | 1000 | 400 | |
+    | INVALID_JWTTOKEN | 1001 | 401 | Expire or invalid jwtToken |
+    | INVALID_ACCESSTOKEN | 9000 | 403 | Expire Google Access Token |
   
 #### UA2. User Info Update
 #### UA3. User Store List
@@ -176,4 +183,17 @@ JSON Example:
 }
 ```
 
-###
+### Global ErrorCode  
+- General Errors such as missing params or invalid params will be under 1000
+- Google Errors error code will be starting with 9xxx
+- GatorStore Errors will be in range 1000 ~ 8xxx
+
+- Table
+   | ErrorName | ErrorCode | HttpStatus | Description |
+   | ---  | --- | --- | --- |
+   | MISS_PARAMS | 800 | 400 | |
+   | INVALID_PARAMS | 801 | 400 | |
+   | NO_JWTTOKEN | 1000 | 400 | |
+   | INVALID_JWTTOKEN | 1001 | 401 | Expire or invalid jwtToken |
+   | INVALID_ACCESSTOKEN | 9000 | 403 | Expire Google Access Token |
+ 
