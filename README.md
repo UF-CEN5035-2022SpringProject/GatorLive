@@ -114,8 +114,8 @@ Golang and backend set up please check [backendend-readme.md](https://github.com
    | code | string | Oauth2 code for requesting Google API |
    | jwtToken | string | Use for GatorStore Login |
 
-   Example:
-    1. Without User jwtToken in web page session
+    Example:
+    1. Without user jwtToken in web page session, login by Oauth2
      ```
      {
          'code': 'qejklsadiup1io135',
@@ -123,7 +123,7 @@ Golang and backend set up please check [backendend-readme.md](https://github.com
      }
      ```
 
-    2. Using User jwtToken Login
+    2. Using user jwtToken login directly
      ```
      {
          'code': '',
