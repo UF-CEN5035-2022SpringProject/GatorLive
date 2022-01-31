@@ -104,11 +104,12 @@ Golang and backend set up please check [backendend-readme.md](https://github.com
   ```
 
 ### User API URLs
+---
 
 #### UA1. User Login API
  - Method: POST
  - {routePath}: /user/login/
- - Request Body Table
+ - **Request Body Table**
    | Name | Type | Description |
    | ---  | --- | --- |
    | code | string | Oauth2 code for requesting Google API |
@@ -131,18 +132,46 @@ Golang and backend set up please check [backendend-readme.md](https://github.com
      }
      ```
      
-  - Error Code Table for error situation
-    | ErrorName | ErrorCode | HttpStatus | Description |
-    | ---  | --- | --- | --- |
-    | MISS_PARAMS | 800 | 400 | |
-    | INVALID_PARAMS | 801 | 400 | |
-    | NO_JWTTOKEN | 1000 | 400 | |
-    | INVALID_JWTTOKEN | 1001 | 401 | Expire or invalid jwtToken |
-    | INVALID_ACCESSTOKEN | 9000 | 403 | Expire Google Access Token |
-  
-#### UA2. User Info Update
-#### UA3. User Store List
+ - **Response**  
+    Success: 
+    ```
+    {
+        "status": 0,
+        "result": {
+              'id': "113024",
+              'name': "YiMing Chang",
+              'email': "yimingchang@ufl.edu",
+              'jwtToken': "gatorStore_qeqweiop122133",
+              'accessToken': "xjjkoipoqwe1445"
+        }
+    }
+    ```
 
+    Error:
+     ```
+     {
+         "status": 800,
+         "result": {
+            "errorName": "MISS_PARAMS"
+         }
+     }
+     ```
+   
+     Error Code Table for error situation:
+
+      | ErrorName | ErrorCode | HttpStatus | Description |
+      | ---  | --- | --- | --- |
+      | MISS_PARAMS | 800 | 400 | |
+      | INVALID_PARAMS | 801 | 400 | |
+      | NO_JWTTOKEN | 1000 | 400 | |
+      | INVALID_JWTTOKEN | 1001 | 401 | Expire or invalid jwtToken |
+      | INVALID_ACCESSTOKEN | 9000 | 403 | Expire Google Access Token |
+  
+---
+#### UA2. User Info Update
+---
+#### UA3. User Store List
+---
 
 
 ### Store API URLs
