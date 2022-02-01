@@ -26,7 +26,7 @@ https://www.youtube.com/watch?v=YS4e4q9oBaU
  
 ---
 
-## Github Rules
+## Github Branching Rules
 actions:
 - feature
 - test
@@ -65,7 +65,7 @@ Golang and backend set up please check [backendend-readme.md](https://github.com
 
 ## API Document 
 **BACKEND API:** 
- ```http://localhost:8080/{actionPath}```
+ ```http://localhost:8080/{routePath}```
 
 **Header**  
   | Name | Type | Description |
@@ -79,7 +79,7 @@ Golang and backend set up please check [backendend-readme.md](https://github.com
   | status | int | use for passing error code (0 = success, other = error code) |
   | result | json | return object |
 
-- Examples
+- Examples:
 
   Success 
   ```
@@ -103,10 +103,79 @@ Golang and backend set up please check [backendend-readme.md](https://github.com
   }
   ```
 
-### User
+### User API URLs
+---
 
-- Store
-- Product
+#### UA1. User Login API
+ - Method: POST
+ - {routePath}: /user/login/
+ - **Request Body Table**
+   | Name | Type | Description |
+   | ---  | --- | --- |
+   | code | string | Oauth2 code for requesting Google API |
+   | jwtToken | string | Use for GatorStore Login |
+
+    Example:
+    1. Without user jwtToken in web page session, login by Oauth2
+     ```
+     {
+         'code': 'qejklsadiup1io135',
+         'jwtToken': ''
+     }
+     ```
+
+    2. Using user jwtToken login directly
+     ```
+     {
+         'code': '',
+         'jwtToken': 'gatorStore_qeqweiop122133'
+     }
+     ```
+     
+ - **Response**  
+    Success: 
+    ```
+    {
+        "status": 0,
+        "result": {
+              'id': "113024",
+              'name': "YiMing Chang",
+              'email': "yimingchang@ufl.edu",
+              'jwtToken': "gatorStore_qeqweiop122133",
+              'accessToken': "xjjkoipoqwe1445"
+        }
+    }
+    ```
+
+    Error:
+     ```
+     {
+         "status": 800,
+         "result": {
+            "errorName": "MISS_PARAMS"
+         }
+     }
+     ```
+   
+     Error Code Table for error situation:
+
+      | ErrorName | ErrorCode | HttpStatus | Description |
+      | ---  | --- | --- | --- |
+      | MISS_PARAMS | 800 | 400 | |
+      | INVALID_PARAMS | 801 | 400 | |
+      | NO_JWTTOKEN | 1000 | 400 | |
+      | INVALID_JWTTOKEN | 1001 | 401 | Expire or invalid jwtToken |
+      | INVALID_ACCESSTOKEN | 9000 | 403 | Expire Google Access Token |
+  
+---
+#### UA2. User Info Update
+---
+#### UA3. User Store List
+---
+
+
+### Store API URLs
+### Product API URLs
 
 
 ## Ojbect Document
@@ -120,7 +189,7 @@ Object Table Columns
 | Description | descibe the attribute purpose |
 
 
-### User 
+#### User Object
 If user has already register, an **uniqueId** will be assigned to user.  
 Or else we'll use **email** as a identifier.
 
@@ -138,8 +207,22 @@ JSON Example:
   'id': "113024",
   'name': "YiMing Chang",
   'email': "yimingchang@ufl.edu",
-  'token': "abcdtest12345"
+  'jwtToken': "gatorStore_qeqweiop122133",
+  'accessToken': "xjjkoipoqwe1445"
 }
 ```
 
-###
+### Global ErrorCode  
+- General Errors such as missing params or invalid params will be under 1000
+- Google Errors error code will be starting with 9xxx
+- GatorStore Errors will be in range 1000 ~ 8xxx
+
+- Table
+   | ErrorName | ErrorCode | HttpStatus | Description |
+   | ---  | --- | --- | --- |
+   | MISS_PARAMS | 800 | 400 | |
+   | INVALID_PARAMS | 801 | 400 | |
+   | NO_JWTTOKEN | 1000 | 400 | |
+   | INVALID_JWTTOKEN | 1001 | 401 | Expire or invalid jwtToken |
+   | INVALID_ACCESSTOKEN | 9000 | 403 | Expire Google Access Token |
+ 
