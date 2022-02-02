@@ -1,0 +1,58 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial;
+}
+
+/* To stick footer always to bottom, wrap all elements with: */
+.RootFlexContainer {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    justify-content: space-between;
+}
+
+/* To align items within vertically and horizontally */
+.flexCenter { /* default flex and align content in its center */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.colFlex { /* make that flex's content columns */ 
+    flex-direction: column;
+}
+.rowFlex { /* make that flex's content rows */ 
+    flex-direction: row;
+}
+
+
+/* Header Classes: */
+.header {
+    background-color: rgb(226, 197, 164);
+    height: 10vh;
+    display: flex;
+}
+.headerLogo {
+    flex: 1;
+    font-weight: bold;
+    font-size: 30px;
+    background-color: inherit;
+}
+.searchBarContainer {
+    flex: 4;
+    background-color: inherit;
+}
+.accountButton {
+    flex: 1;
+    background-color: inherit;
+}
+
+
+/* Footer Classes: */
+.footer {
+    background-color: rgb(226, 197, 164);
+    color: rgb(58, 58, 58);
+    padding: 15px 5px 15px;
+    margin-top: auto;
+}
