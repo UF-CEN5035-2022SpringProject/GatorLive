@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 import logo from './logo.svg';
 import './App.css';
 
@@ -19,6 +20,15 @@ function App() {
         </a>
       </header>
     </div>
+=======
+import './styles/app.css';
+
+function App() {
+  return (
+    <>
+      This is App.js
+    </>
+>>>>>>> Stashed changes
   );
 }
 
