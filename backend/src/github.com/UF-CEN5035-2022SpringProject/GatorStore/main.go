@@ -5,8 +5,10 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/UF-CEN5035-2022SpringProject/GatorStore/api"
 	"github.com/UF-CEN5035-2022SpringProject/GatorStore/logger"
 	"github.com/UF-CEN5035-2022SpringProject/GatorStore/test"
+	"github.com/gorilla/mux"
 )
 
 var (
@@ -17,16 +19,29 @@ var (
 func main() {
 	logger.InitLogger()
 
-	s := &http.Server{
-		Addr:           ":" + port,
-		ReadTimeout:    10 * time.Second,
-		WriteTimeout:   10 * time.Second,
-		MaxHeaderBytes: 1 << 20,
+	r := mux.NewRouter()
+	// set up routing path
+	prodRoutePrefix := "/api"
+	testRoutePrefix := "/test/api"
+	r.HandleFunc(testRoutePrefix+"/test", test.EchoString)
+
+	// USER path
+	r.HandleFunc(prodRoutePrefix+"/user/login", api.Login)
+	r.HandleFunc(prodRoutePrefix+"/user/{userId}/info", api.UserInfo).Methods("GET", "PUT") // TODO missing authentication middleware
+	r.HandleFunc(prodRoutePrefix+"/user/{userId}/store-list", test.EchoString)
+
+	// Store
+	r.HandleFunc(prodRoutePrefix+"/store/{storeId}/product-list", test.EchoString)
+
+	//
+	logger.InfoLogger.Println(appName + " server is start at port: " + port)
+	srv := &http.Server{
+		Handler: r,
+		Addr:    "127.0.0.1:8080",
+		// Good practice: enforce timeouts for servers you create!
+		WriteTimeout: 15 * time.Second,
+		ReadTimeout:  15 * time.Second,
 	}
 
-	// set up routing path
-	http.HandleFunc("/test", test.EchoString)
-
-	logger.InfoLogger.Println(appName + " server is start at port: " + port)
-	log.Fatal(s.ListenAndServe())
+	log.Fatal(srv.ListenAndServe())
 }

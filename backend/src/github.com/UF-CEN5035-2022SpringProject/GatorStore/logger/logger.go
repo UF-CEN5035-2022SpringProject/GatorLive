@@ -10,6 +10,7 @@ import (
 
 // Other package can export these logger
 var (
+	DebugLogger   *log.Logger
 	WarningLogger *log.Logger
 	InfoLogger    *log.Logger
 	ErrorLogger   *log.Logger
@@ -24,6 +25,7 @@ func InitLogger() {
 		file, _ = utils.CreateFile(dirPath, fileName)
 	}
 
+	DebugLogger = log.New(file, "DEBUG: ", log.Ldate|log.Ltime|log.Lshortfile)
 	InfoLogger = log.New(file, "INFO: ", log.Ldate|log.Ltime|log.Lshortfile)
 	WarningLogger = log.New(file, "WARNING: ", log.Ldate|log.Ltime|log.Lshortfile)
 	ErrorLogger = log.New(file, "ERROR: ", log.Ldate|log.Ltime|log.Lshortfile)
