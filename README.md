@@ -65,7 +65,15 @@ Golang and backend set up please check [backendend-readme.md](https://github.com
 
 ## API Document 
 **BACKEND API:** 
- ```http://localhost:8080/{routePath}```
+ ```http://localhost:8080/{env}/{routePath}```
+ - Production {env} = api
+   ```
+   http://localhost:8080/api/user/login
+   ```
+ - Test {env} = test/api
+   ```
+   http://localhost:8080/test/api/user/login
+   ```
 
 **Header**  
   | Name | Type | Description |
