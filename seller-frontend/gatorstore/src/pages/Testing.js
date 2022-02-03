@@ -7,8 +7,20 @@ import GoogleLogin from 'react-google-login';
 document.addEventListener("DOMContentLoaded", function(){
     const loginCode = GetUserCode('code');
     
+    var backendResult;
+    
     // "Frontend will call a backend API to pass the code ":.
-    //API call with this loginCode here 
+    // API call with this loginCode here 
+    useEffect(() => {
+        const requestOptions = {
+            method: 'POST',
+            headers: {},
+            body: JSON.stringify({ code: loginCode })
+        };
+        fetch('http://10.136.88.90:8080/test/api/test', requestOptions)
+            .then(response => response.json())
+            .then(data => {backendResult = data.result});
+    }, []);
 });
 
 function GetUserCode(parameterName) { // get whatever is after '?' on the URL
