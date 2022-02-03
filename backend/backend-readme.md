@@ -28,11 +28,14 @@ Binary package be linked is in the path below:
 ```
 ~/Documents/go/GatorStore/backend/pkg
 ```
-# Download Dependencies
+# Dependencies
 ---
+We have create a go.mod in the path below.
 ```
-go get -u -v -f all
+backend\src\github.com\UF-CEN5035-2022SpringProject\GatorStore
 ```
+
+Please enter the path and enter ```go get``` to download every dependencies.
 
 # Run Go program
 ---
