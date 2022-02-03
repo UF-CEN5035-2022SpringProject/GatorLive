@@ -28,8 +28,14 @@ Binary package be linked is in the path below:
 ```
 ~/Documents/go/GatorStore/backend/pkg
 ```
+# Download Dependencies
+---
+```
+go get -u -v -f all
+```
 
 # Run Go program
+---
 Differences between the three cmd below:
 [go run vs go build vs go install](https://levelup.gitconnected.com/go-run-vs-go-build-vs-go-install-c7c0fd135cf9)
 
