@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/UF-CEN5035-2022SpringProject/GatorStore/api"
+	"github.com/UF-CEN5035-2022SpringProject/GatorStore/db"
 	"github.com/UF-CEN5035-2022SpringProject/GatorStore/logger"
 	"github.com/UF-CEN5035-2022SpringProject/GatorStore/test"
 	"github.com/gorilla/mux"
@@ -22,8 +23,11 @@ func main() {
 	r := mux.NewRouter()
 	// set up routing path
 	prodRoutePrefix := "/api"
+
+	// TEST API path
 	testRoutePrefix := "/test/api"
 	r.HandleFunc(testRoutePrefix+"/test", test.EchoString)
+	r.HandleFunc(testRoutePrefix+"/test/searchUser", test.TestDBGetUserObj)
 
 	// USER path
 	r.HandleFunc(prodRoutePrefix+"/user/login", api.Login)
@@ -33,6 +37,8 @@ func main() {
 	// Store
 	r.HandleFunc(prodRoutePrefix+"/store/{storeId}/product-list", test.EchoString)
 
+	// create DB connection
+	db.ConnectionSetUp()
 	//
 	logger.InfoLogger.Println(appName + " server is start at port: " + port)
 	srv := &http.Server{

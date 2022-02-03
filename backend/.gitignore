@@ -23,3 +23,9 @@ go.work
 # Log
 log
 log/*
+
+# Credentials
+*.json
+
+# 
+pkg/
