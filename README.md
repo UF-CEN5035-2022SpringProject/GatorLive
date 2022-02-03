@@ -117,6 +117,11 @@ Golang and backend set up please check [backendend-readme.md](https://github.com
 #### UA1. User Login API
  - Method: POST
  - {routePath}: /user/login/
+ - **Header**
+   | Name | Type | Description |
+   | --- | --- | --- |
+   | time | datetime | string |
+   
  - **Request Body Table**
    | Name | Type | Description |
    | ---  | --- | --- |
