@@ -1,58 +1,99 @@
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: Arial;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial;
 }
 
 /* To stick footer always to bottom, wrap all elements with: */
 .RootFlexContainer {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    justify-content: space-between;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  justify-content: space-between;
 }
 
 /* To align items within vertically and horizontally */
-.flexCenter { /* default flex and align content in its center */
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.flexCenter {
+  /* default flex and align content in its center */
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
-.colFlex { /* make that flex's content columns */ 
-    flex-direction: column;
+.colFlex {
+  /* make that flex's content columns */
+  flex-direction: column;
 }
-.rowFlex { /* make that flex's content rows */ 
-    flex-direction: row;
+.rowFlex {
+  /* make that flex's content rows */
+  flex-direction: row;
 }
-
 
 /* Header Classes: */
 .header {
-    background-color: rgb(226, 197, 164);
-    height: 10vh;
-    display: flex;
+  background-color: rgb(226, 197, 164);
+  height: 10vh;
+  display: flex;
+  margin-bottom: 20px;
 }
 .headerLogo {
-    flex: 1;
-    font-weight: bold;
-    font-size: 30px;
-    background-color: inherit;
+  flex: 1;
+  font-weight: bold;
+  font-size: 30px;
+  background-color: inherit;
 }
 .searchBarContainer {
-    flex: 4;
-    background-color: inherit;
+  flex: 4;
+  background-color: inherit;
 }
 .accountButton {
-    flex: 1;
-    background-color: inherit;
+  flex: 1;
+  background-color: inherit;
 }
-
 
 /* Footer Classes: */
 .footer {
-    background-color: rgb(226, 197, 164);
-    color: rgb(58, 58, 58);
-    padding: 15px 5px 15px;
-    margin-top: auto;
+  background-color: rgb(226, 197, 164);
+  color: rgb(58, 58, 58);
+  padding: 15px 5px 15px;
+  margin-top: auto;
+}
+/* Image Slider: */
+.slider {
+  margin-top: auto;
+  position: relative;
+  height: 50vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.image {
+  width: 600px;
+  height: 300px;
+  border-radius: 5px;
+}
+.right-arrow {
+  position: absolute;
+  top: 50%;
+  right: 32px;
+  font-size: 3rem;
+  color: #000;
+  z-index: 10;
+  cursor: pointer;
+  user-select: none;
+}
+.left-arrow {
+  position: absolute;
+  top: 50%;
+  left: 32px;
+  font-size: 3rem;
+  color: #000;
+  z-index: 10;
+  cursor: pointer;
+  user-select: none;
+}
+.slide.active {
+  opacity: 1;
+  transition-duration: 1s;
+  transform: scale(1.08);
 }
