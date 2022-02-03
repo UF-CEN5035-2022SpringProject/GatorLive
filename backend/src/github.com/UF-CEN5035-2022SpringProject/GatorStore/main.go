@@ -23,8 +23,11 @@ func main() {
 	r := mux.NewRouter()
 	// set up routing path
 	prodRoutePrefix := "/api"
+
+	// TEST API path
 	testRoutePrefix := "/test/api"
 	r.HandleFunc(testRoutePrefix+"/test", test.EchoString)
+	r.HandleFunc(testRoutePrefix+"/test/searchUser", test.TestDBGetUserObj)
 
 	// USER path
 	r.HandleFunc(prodRoutePrefix+"/user/login", api.Login)
