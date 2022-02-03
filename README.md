@@ -154,8 +154,7 @@ Golang and backend set up please check [backendend-readme.md](https://github.com
               'id': "113024",
               'name': "YiMing Chang",
               'email': "yimingchang@ufl.edu",
-              'jwtToken': "gatorStore_qeqweiop122133",
-              'accessToken': "xjjkoipoqwe1445"
+              'jwtToken': "gatorStore_qeqweiop122133"
         }
     }
     ```
@@ -212,7 +211,6 @@ Or else we'll use **email** as a identifier.
 | name |   | string | Receive by google api |
 | `email` | K | string | unique identifier |
 | jwtToken | O | string | unique jwt authorization key in GatorStore |
-| accessToken | O | string | google accesstoken, use for api calling |
 
 JSON Example:
 ```
@@ -221,7 +219,6 @@ JSON Example:
   'name': "YiMing Chang",
   'email': "yimingchang@ufl.edu",
   'jwtToken': "gatorStore_qeqweiop122133",
-  'accessToken': "xjjkoipoqwe1445"
 }
 ```
 
