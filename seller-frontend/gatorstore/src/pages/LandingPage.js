@@ -1,5 +1,5 @@
 import React from 'react';
-import Header from '../components/Header';
+import Landingheader from '../components/Landingheader';
 import Footer from '../components/Footer';
 import ActionAreaCard from'../components/aboutcard';
 import {Grid} from "@material-ui/core";
@@ -14,7 +14,7 @@ function landingpage() {
   return( 
   <div>
       <div >
-          <Header/>
+          <Landingheader/>
       </div>
       <div>
           <ImageSlider slides={SliderData} />
