@@ -26,6 +26,9 @@ var (
 	RedirectURL  []string
 )
 
+type Code struct {
+	Code string `json:"code"`
+}
 type WebStruct struct {
 	Client_id     string
 	Redirect_uris []string
@@ -36,14 +39,14 @@ type credential struct {
 }
 
 type Response struct {
-	Status int
-	Result interface{}
+	Status int         `json:"status"`
+	Result interface{} `json:"result"`
 }
 type ResultSuccess struct {
-	Id       string
-	Name     string
-	Email    string
-	JwtToken string
+	Id       string `json:"id"`
+	Name     string `json:"name"`
+	Email    string `json:"email"`
+	JwtToken string `json:"jwtToken"`
 }
 type ResultError struct {
 	ErrorName string
@@ -68,7 +71,7 @@ func GetUserProfile(accesstoken string) Profile {
 		logger.DebugLogger.Fatalf("Unable to get Google profile: %v", err)
 		// log.Fatalf("Unable to create YouTube service: %v", e)
 	}
-	fmt.Println("profile:" + string(b))
+	// fmt.Println("profile:" + string(b))
 	var profile Profile
 	err = json.Unmarshal(b, &profile)
 	if err != nil {
@@ -109,22 +112,26 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		// 	TokenURL: "https://provider.com/o/oauth2/token",
 		// },
 	}
-	// get code or assesstoken from http.request
-	keys, ok := r.URL.Query()["code"]
 
-	if !ok || len(keys[0]) < 1 {
-		logger.ErrorLogger.Panic("Url Param 'code' is missing")
-		return
+	// get code or assesstoken from http.request
+	b, err := io.ReadAll(r.Body)
+	if err != nil {
+		logger.DebugLogger.Fatalf("Unable to read login req: %v", err)
+		// log.Fatalf("Unable to create YouTube service: %v", e)
 	}
-	code := keys[0]
-	tok, err := conf.Exchange(ctx, code)
+	var code Code
+	err = json.Unmarshal(b, &code)
+	if err != nil {
+		logger.DebugLogger.Fatalf("Unable to decode login req: %v", err)
+		// log.Fatalf("Unable to create YouTube service: %v", e)
+	}
+	tok, err := conf.Exchange(ctx, code.Code)
 
 	if err != nil {
-		logger.DebugLogger.Fatal(err)
+		logger.DebugLogger.Panic(err)
 		// log.Fatal(err)
 	}
-	fmt.Println("TOKEN: " + tok.AccessToken + " " + tok.TokenType)
-	// https://youtube.googleapis.com/youtube/v3/liveBroadcasts?part=snippet%2CcontentDetails%2Cstatus&key=AIzaSyA9rodcA1a-K6QNBMWgBXmNw2zkUsP7WNg
+
 	client := conf.Client(ctx, tok)
 	// service, e := youtube.New(client)
 	_, err = youtube.New(client)
@@ -144,7 +151,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		"gatorStore_qeqweiop122133",
 	}
 	response.Result = result
-	b, err := json.Marshal(response)
+	b, err = json.Marshal(response)
 	if err != nil {
 		logger.DebugLogger.Fatal(err)
 		// log.Fatal(err)
