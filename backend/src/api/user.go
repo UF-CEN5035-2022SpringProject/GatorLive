@@ -16,6 +16,7 @@ import (
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 
+	g "google.golang.org/api/oauth2/v2"
 	youtube "google.golang.org/api/youtube/v3"
 )
 
@@ -52,6 +53,30 @@ type Profile struct {
 	Email string
 }
 
+func GetUserProfile(accesstoken string) Profile {
+	client := &http.Client{}
+	req, _ := http.NewRequest("GET", "https://www.googleapis.com/oauth2/v2/userinfo", nil)
+	req.Header.Set("Authorization", "Bearer "+accesstoken)
+	res, err := client.Do(req)
+
+	if err != nil {
+		logger.DebugLogger.Fatal(err)
+		// log.Fatal(err)
+	}
+	b, err := io.ReadAll(res.Body)
+	if err != nil {
+		logger.DebugLogger.Fatalf("Unable to get Google profile: %v", err)
+		// log.Fatalf("Unable to create YouTube service: %v", e)
+	}
+	fmt.Println("profile:" + string(b))
+	var profile Profile
+	err = json.Unmarshal(b, &profile)
+	if err != nil {
+		logger.DebugLogger.Fatalf("Unable to decode Google profile: %v", err)
+		// log.Fatalf("Unable to create YouTube service: %v", e)
+	}
+	return profile
+}
 func ReadCredential() {
 	content, err := ioutil.ReadFile("./client_secret.json")
 	if err != nil {
@@ -75,7 +100,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	conf := &oauth2.Config{
 		ClientID:     ClientID,
 		ClientSecret: ClientSecret,
-		Scopes:       []string{youtube.YoutubeScope},
+		Scopes:       []string{youtube.YoutubeScope, g.UserinfoEmailScope, g.UserinfoProfileScope},
 
 		Endpoint:    google.Endpoint,
 		RedirectURL: RedirectURL[0],
@@ -102,28 +127,14 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	// https://youtube.googleapis.com/youtube/v3/liveBroadcasts?part=snippet%2CcontentDetails%2Cstatus&key=AIzaSyA9rodcA1a-K6QNBMWgBXmNw2zkUsP7WNg
 	client := conf.Client(ctx, tok)
 	// service, e := youtube.New(client)
-	// _, err = youtube.New(client)
-	// if err != nil {
-	// 	logger.DebugLogger.Fatalf("Unable to create YouTube service: %v", err)
-	// 	// log.Fatalf("Unable to create YouTube service: %v", e)
-	// }
-	resp, err := client.Get("https://www.googleapis.com/oauth2/v2/userinfo")
+	_, err = youtube.New(client)
 	if err != nil {
-		logger.DebugLogger.Fatal(err)
-		// log.Fatal(err)
-	}
-	b, err := io.ReadAll(resp.Body)
-	if err != nil {
-		logger.DebugLogger.Fatalf("Unable to get Google profile: %v", err)
+		logger.DebugLogger.Fatalf("Unable to create YouTube service: %v", err)
 		// log.Fatalf("Unable to create YouTube service: %v", e)
 	}
-	fmt.Println("profile:" + string(b))
-	var profile Profile
-	err = json.Unmarshal(b, &profile)
-	if err != nil {
-		logger.DebugLogger.Fatalf("Unable to decode Google profile: %v", err)
-		// log.Fatalf("Unable to create YouTube service: %v", e)
-	}
+	profile := GetUserProfile(tok.AccessToken)
+
+	// send response to frontend
 	var response Response
 	response.Status = 0
 	result := ResultSuccess{
@@ -133,7 +144,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		"gatorStore_qeqweiop122133",
 	}
 	response.Result = result
-	b, err = json.Marshal(response)
+	b, err := json.Marshal(response)
 	if err != nil {
 		logger.DebugLogger.Fatal(err)
 		// log.Fatal(err)
