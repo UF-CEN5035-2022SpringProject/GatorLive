@@ -13,12 +13,14 @@ import (
 )
 
 var (
-	port    string = "8080"
+	port    string = "8000"
 	appName string = "GatorStore"
 )
 
 func main() {
 	logger.InitLogger()
+	// create DB connection
+	db.ConnectionCreate()
 
 	r := mux.NewRouter()
 	// set up routing path
@@ -27,7 +29,7 @@ func main() {
 	// TEST API path
 	testRoutePrefix := "/test/api"
 	r.HandleFunc(testRoutePrefix+"/test", test.EchoString)
-	r.HandleFunc(testRoutePrefix+"/test/searchUser", test.TestDBGetUserObj)
+	r.HandleFunc(testRoutePrefix+"/user/login", test.TestDBGetUserObj)
 
 	// USER path
 	r.HandleFunc(prodRoutePrefix+"/user/login", api.Login)
@@ -37,13 +39,11 @@ func main() {
 	// Store
 	r.HandleFunc(prodRoutePrefix+"/store/{storeId}/product-list", test.EchoString)
 
-	// create DB connection
-	db.ConnectionSetUp()
 	//
 	logger.InfoLogger.Println(appName + " server is start at port: " + port)
 	srv := &http.Server{
 		Handler: r,
-		Addr:    "127.0.0.1:8080",
+		Addr:    "0.0.0.0:" + port,
 		// Good practice: enforce timeouts for servers you create!
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,

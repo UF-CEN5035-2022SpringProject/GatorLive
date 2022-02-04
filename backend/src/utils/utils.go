@@ -2,6 +2,7 @@ package utils
 
 import (
 	"log"
+	"net/http"
 	"os"
 )
 
@@ -21,4 +22,21 @@ func CreateFile(dirPath string, fileName string) (*os.File, error) {
 	}
 
 	return file, nil
+}
+
+type returnObj struct {
+	status int    `json:"status"`
+	result []byte `json:"result"`
+}
+
+func ReturnWrapper(response http.ResponseWriter, resultBody []byte, errorCode int) {
+	// Return json object
+	// jsonObj := returnObj{
+	// 	status: errorCode,
+	// 	result: resultBody,
+	// }
+
+	// response.Header().Set("Content-Type", "application/json")
+	// response.WriteHeader(http.StatusOK)
+	// response.Write(jsonString)
 }
