@@ -1,5 +1,6 @@
 import React from 'react';
-import Header from '../components/Header';
+import Header from '../components/Header.js';
+import Landingheader from '../components/Landingheader';
 import Footer from '../components/Footer';
 import ActionAreaCard from'../components/aboutcard';
 import {Grid} from "@material-ui/core";

@@ -10,7 +10,7 @@ import SellerStoreList from './pages/SellerStoreList'
 import ProductPage from './pages/ProductPage'
 import LandingPage from './pages/LandingPage'
 import ProductList from './pages/ProductList';
-import Testing from './pages/Testing'
+import LoginRedirect from './pages/LoginRedirect'
 
 ReactDOM.render(
   <BrowserRouter basename="/">
@@ -19,7 +19,7 @@ ReactDOM.render(
       <Route path="/product-page" element={<ProductPage/>} />
       <Route path="/landingpage" element={<LandingPage/>} />
       <Route path="/productlist" element={<ProductList/>} />
-      <Route path="/testing" element={<Testing/>} />
+      <Route path="/login" element={<LoginRedirect/>} />
     </Routes>
   </BrowserRouter>,
   document.getElementById('root')

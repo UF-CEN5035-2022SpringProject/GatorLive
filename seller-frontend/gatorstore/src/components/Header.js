@@ -5,6 +5,7 @@ import '../styles/app.css';
 import TextField from "@mui/material/TextField";
 import Button from '@mui/material/Button';
 import HomeIcon from '@mui/icons-material/Home';
+import GoogleIcon from '@mui/icons-material/Google';
 import StorefrontIcon from '@mui/icons-material/Storefront';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import SearchIcon from '@mui/icons-material/Search';
@@ -76,7 +77,13 @@ function SignedInDropdown(userData) {
 }
 
 function GoogleButton() { // for when user is NOT signed in
-  return (<div>- Put Google Button Here -</div>);
+  return (<div className="g-signin">
+    <a style={{textDecoration: 'none'}} href='https://accounts.google.com/o/oauth2/auth?access_type=offline&client_id=138444517704-gg6649ok973letdlh55bpte8bna7721o.apps.googleusercontent.com&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Flogin&response_type=code&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fyoutube+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile&state=state' >
+      <button className='login'>
+        <GoogleIcon style={{verticalAlign: 'middle', marginRight: 10}}/> Sign-In 
+      </button>
+    </a>
+  </div>);
 }
 
 function LoadSessionActions() {

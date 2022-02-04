@@ -1,22 +1,22 @@
 export const SliderData = [
     {
       image:
-        'https://images.unsplash.com/photo-1546768292-fb12f6c92568?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80'
+        'https://i.gadgets360cdn.com/large/amazon_great_republic_day_sale_image_1641979906021.jpg?downsize=950:*'
     },
     {
       image:
-        'https://images.unsplash.com/photo-1501446529957-6226bd447c46?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=1489&q=80'
+        'https://images.hindustantimes.com/tech/img/2021/10/02/960x540/Amazon_India_event_1633152363633_1633152377540.png'
     },
     {
       image:
-        'https://images.unsplash.com/photo-1483729558449-99ef09a8c325?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=1350&q=80'
+        'https://images.indianexpress.com/2020/10/Untitled-design-2020-10-15T171350.830.jpg'
     },
     {
       image:
-        'https://images.unsplash.com/photo-1475189778702-5ec9941484ae?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=1351&q=80'
+        'https://hotdealszone.com/wp-content/uploads/2021/05/Flipkart-Offers-coupons--768x432.jpg'
     },
     {
       image:
-        'https://images.unsplash.com/photo-1503177119275-0aa32b3a9368?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=1350&q=80'
+        'https://resize.indiatvnews.com/en/resize/newbucket/715_-/2020/03/flipkart-sale-1584445947.jpg'
     }
   ];
