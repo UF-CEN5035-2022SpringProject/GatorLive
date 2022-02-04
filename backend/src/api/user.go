@@ -25,6 +25,9 @@ var (
 	RedirectURL  []string
 )
 
+type Code struct {
+	Code string `json:"code"`
+}
 type WebStruct struct {
 	Client_id     string
 	Redirect_uris []string
@@ -35,14 +38,14 @@ type credential struct {
 }
 
 type Response struct {
-	Status int
-	Result interface{}
+	Status int         `json:"status"`
+	Result interface{} `json:"result"`
 }
 type ResultSuccess struct {
-	Id       string
-	Name     string
-	Email    string
-	JwtToken string
+	Id       string `json:"id"`
+	Name     string `json:"name"`
+	Email    string `json:"email"`
+	JwtToken string `json:"jwtToken"`
 }
 type ResultError struct {
 	ErrorName string
@@ -67,7 +70,7 @@ func GetUserProfile(accesstoken string) Profile {
 		logger.DebugLogger.Fatalf("Unable to get Google profile: %v", err)
 		// log.Fatalf("Unable to create YouTube service: %v", e)
 	}
-	fmt.Println("profile:" + string(b))
+	// fmt.Println("profile:" + string(b))
 	var profile Profile
 	err = json.Unmarshal(b, &profile)
 	if err != nil {
@@ -108,52 +111,58 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		// 	TokenURL: "https://provider.com/o/oauth2/token",
 		// },
 	}
-	// get code or assesstoken from http.request
-	keys, ok := r.URL.Query()["code"]
 
-	if !ok || len(keys[0]) < 1 {
-		logger.ErrorLogger.Panic("Url Param 'code' is missing")
-		return
+	// get code or assesstoken from http.request
+	b, err := io.ReadAll(r.Body)
+	if err != nil {
+		logger.DebugLogger.Fatalf("Unable to read login req: %v", err)
+		// log.Fatalf("Unable to create YouTube service: %v", e)
 	}
-	code := keys[0]
-	tok, err := conf.Exchange(ctx, code)
+	var code Code
+	err = json.Unmarshal(b, &code)
+	if err != nil {
+		logger.DebugLogger.Fatalf("Unable to decode login req: %v", err)
+		// log.Fatalf("Unable to create YouTube service: %v", e)
+	}
+	tok, err := conf.Exchange(ctx, code.Code)
 
 	if err != nil {
-		logger.DebugLogger.Fatal(err)
+		logger.DebugLogger.Panic(err)
 		// log.Fatal(err)
 	}
-	fmt.Println("TOKEN: " + tok.AccessToken + " " + tok.TokenType)
-	// https://youtube.googleapis.com/youtube/v3/liveBroadcasts?part=snippet%2CcontentDetails%2Cstatus&key=AIzaSyA9rodcA1a-K6QNBMWgBXmNw2zkUsP7WNg
+
 	client := conf.Client(ctx, tok)
 	// service, e := youtube.New(client)
 	_, err = youtube.New(client)
 	if err != nil {
 		logger.DebugLogger.Fatalf("Unable to create YouTube service: %v", err)
-		// log.Fatalf("Unable to create YouTube service: %v", e)
 	}
 	profile := GetUserProfile(tok.AccessToken)
 
-	// send response to frontend
-	var response Response
-	response.Status = 0
-	result := ResultSuccess{
-		"113024",
-		profile.Name,
-		profile.Email,
-		"gatorStore_qeqweiop122133",
+	// Flow: Check the user email
+	//    - No email -> store and return the obj
+	//    - Email -> update the token and return the obj
+	userData := db.GetUserObj(profile.Email)
+	if userData == nil {
+		// Add user Data
+		userData = make(map[string]interface{})
+		userData["id"] = "113024"
+		userData["name"] = profile.Name
+		userData["email"] = profile.Email
+		userData["jwtToken"] = "gatorStore_qeqweiop122133"
+		userData["accessToken"] = tok.AccessToken
+		db.AddUserObj(profile.Email, userData)
+	} else {
+		db.UpdateUserObj(profile.Email, "accessToken", tok.AccessToken)
+		userData = db.GetUserObj(profile.Email)
 	}
-	response.Result = result
-	b, err := json.Marshal(response)
+
+	resp, err := JsonResponse(userData, 0)
 	if err != nil {
-		logger.DebugLogger.Fatal(err)
-		// log.Fatal(err)
+		logger.ErrorLogger.Fatalf("Error on wrapping JSON resp %s", err)
 	}
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	_, err = w.Write(b)
-	if err != nil {
-		logger.DebugLogger.Fatal(err)
-		// log.Fatal(err)
-	}
+	w.WriteHeader(http.StatusOK)
+	w.Write(resp)
 }
 
 func UserInfo(w http.ResponseWriter, r *http.Request) {

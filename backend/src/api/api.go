@@ -4,8 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-
-	"github.com/UF-CEN5035-2022SpringProject/GatorStore/logger"
 )
 
 func HeaderMiddleware(next http.Handler) http.Handler {
@@ -48,11 +46,9 @@ func JsonResponse(result map[string]interface{}, errorCode int) ([]byte, error) 
 		Result: result,
 	}
 
-	logger.DebugLogger.Printf("Json responseObj: %#v\n", respObj)
 	jsonResponse, err := json.Marshal(respObj)
 	if err != nil {
 		fmt.Println("Unable to encode JSON")
 	}
-	logger.DebugLogger.Printf("Json Resp: %#v\n", jsonResponse)
 	return jsonResponse, err
 }

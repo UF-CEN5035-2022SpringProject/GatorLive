@@ -22,7 +22,6 @@ func TestDBGetUserObj(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		logger.ErrorLogger.Fatalf("Error on wrapping JSON resp %s", err)
 	}
-	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	w.Write(resp)
 }
