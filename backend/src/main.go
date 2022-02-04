@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/UF-CEN5035-2022SpringProject/GatorStore/api"
@@ -37,6 +38,12 @@ func main() {
 	// Store
 	r.HandleFunc(prodRoutePrefix+"/store/{storeId}/product-list", test.EchoString)
 
+	// read google oauth2 credentials
+	api.ReadCredential()
+	logger.InfoLogger.Println("client id: " + api.ClientID)
+	logger.InfoLogger.Println("client secret: " + api.ClientSecret)
+	logger.InfoLogger.Println("redirect uris: " + strings.Join(api.RedirectURL, ","))
+
 	// create DB connection
 	db.ConnectionSetUp()
 	//
@@ -48,6 +55,5 @@ func main() {
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,
 	}
-
 	log.Fatal(srv.ListenAndServe())
 }
