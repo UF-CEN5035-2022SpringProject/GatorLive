@@ -100,12 +100,12 @@
 .login{
   font-size: 20px;
   cursor: pointer;
-  color: #333;
+  color: rgb(77, 77, 77);
   text-decoration: none;
   background-color: white;
   display: flex;
-  padding: 11px;
-  border: #333 solid 1px;
+  padding: 9px 11px 9px;
+  border: rgb(87, 87, 87) solid 1px;
   margin-left: 80px;
   border-radius: 15px;
 }

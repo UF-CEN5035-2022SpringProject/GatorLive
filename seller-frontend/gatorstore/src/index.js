@@ -19,7 +19,7 @@ ReactDOM.render(
       <Route path="/product-page" element={<ProductPage/>} />
       <Route path="/landingpage" element={<LandingPage/>} />
       <Route path="/productlist" element={<ProductList/>} />
-      <Route path="/login/redirect" element={<LoginRedirect/>} />
+      <Route path="/login" element={<LoginRedirect/>} />
     </Routes>
   </BrowserRouter>,
   document.getElementById('root')

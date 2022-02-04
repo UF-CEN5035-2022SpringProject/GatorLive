@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 
-function Testing() {
+function LoginRedirect() {
     const loginCode = GetUserCode('code');
     //const dateTime = GetDateTime();
     var backendStatus;
@@ -65,4 +65,4 @@ function Testing() {
     );
 }
 
-export default Testing;
+export default LoginRedirect;
