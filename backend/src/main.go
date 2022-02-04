@@ -30,7 +30,7 @@ func main() {
 	// TEST API path
 	testRoutePrefix := "/test/api"
 	r.HandleFunc(testRoutePrefix+"/test", test.EchoString).Methods("GET", "OPTIONS")
-	r.HandleFunc(testRoutePrefix+"/user/login", test.TestDBGetUserObj).Methods("GET", "OPTIONS")
+	r.HandleFunc(testRoutePrefix+"/user/login", test.TestDBGetUserObj).Methods("GET", "POST", "OPTIONS")
 
 	// USER path
 	r.HandleFunc(prodRoutePrefix+"/user/login", api.Login)
