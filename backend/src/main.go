@@ -47,7 +47,7 @@ func main() {
 	logger.InfoLogger.Println("client secret: " + api.ClientSecret)
 	logger.InfoLogger.Println("redirect uris: " + strings.Join(api.RedirectURL, ","))
 
-	// If debug = Ture then set the CORSMethodMiddleware
+	// If debug = True then set the CORSMethodMiddleware
 	if IsDev {
 		r.Use(api.CrossAllowMiddleware)
 		r.Use(mux.CORSMethodMiddleware(r))
