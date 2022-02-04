@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"net/http"
 
@@ -14,6 +15,7 @@ import (
 
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
+
 	youtube "google.golang.org/api/youtube/v3"
 )
 
@@ -30,6 +32,24 @@ type WebStruct struct {
 }
 type credential struct {
 	Web WebStruct
+}
+
+type Response struct {
+	Status int
+	Result interface{}
+}
+type ResultSuccess struct {
+	Id       string
+	Name     string
+	Email    string
+	JwtToken string
+}
+type ResultError struct {
+	ErrorName string
+}
+type Profile struct {
+	Name  string
+	Email string
 }
 
 func ReadCredential() {
@@ -68,14 +88,12 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	keys, ok := r.URL.Query()["code"]
 
 	if !ok || len(keys[0]) < 1 {
-		logger.ErrorLogger.Panic("Url Param 'key' is missing")
+		logger.ErrorLogger.Panic("Url Param 'code' is missing")
 		return
 	}
-
-	// Query()["key"] will return an array of items,
-	// we only want the single item.
 	code := keys[0]
 	tok, err := conf.Exchange(ctx, code)
+
 	if err != nil {
 		logger.DebugLogger.Fatal(err)
 		// log.Fatal(err)
@@ -84,10 +102,47 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	// https://youtube.googleapis.com/youtube/v3/liveBroadcasts?part=snippet%2CcontentDetails%2Cstatus&key=AIzaSyA9rodcA1a-K6QNBMWgBXmNw2zkUsP7WNg
 	client := conf.Client(ctx, tok)
 	// service, e := youtube.New(client)
-	_, e := youtube.New(client)
-	if e != nil {
-		logger.DebugLogger.Fatalf("Unable to create YouTube service: %v", e)
+	// _, err = youtube.New(client)
+	// if err != nil {
+	// 	logger.DebugLogger.Fatalf("Unable to create YouTube service: %v", err)
+	// 	// log.Fatalf("Unable to create YouTube service: %v", e)
+	// }
+	resp, err := client.Get("https://www.googleapis.com/oauth2/v2/userinfo")
+	if err != nil {
+		logger.DebugLogger.Fatal(err)
+		// log.Fatal(err)
+	}
+	b, err := io.ReadAll(resp.Body)
+	if err != nil {
+		logger.DebugLogger.Fatalf("Unable to get Google profile: %v", err)
 		// log.Fatalf("Unable to create YouTube service: %v", e)
+	}
+	fmt.Println("profile:" + string(b))
+	var profile Profile
+	err = json.Unmarshal(b, &profile)
+	if err != nil {
+		logger.DebugLogger.Fatalf("Unable to decode Google profile: %v", err)
+		// log.Fatalf("Unable to create YouTube service: %v", e)
+	}
+	var response Response
+	response.Status = 0
+	result := ResultSuccess{
+		"113024",
+		profile.Name,
+		profile.Email,
+		"gatorStore_qeqweiop122133",
+	}
+	response.Result = result
+	b, err = json.Marshal(response)
+	if err != nil {
+		logger.DebugLogger.Fatal(err)
+		// log.Fatal(err)
+	}
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	_, err = w.Write(b)
+	if err != nil {
+		logger.DebugLogger.Fatal(err)
+		// log.Fatal(err)
 	}
 }
 
