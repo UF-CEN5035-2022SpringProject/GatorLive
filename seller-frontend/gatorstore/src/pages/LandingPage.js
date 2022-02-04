@@ -1,4 +1,5 @@
 import React from 'react';
+import Header from '../components/Header.js';
 import Landingheader from '../components/Landingheader';
 import Footer from '../components/Footer';
 import ActionAreaCard from'../components/aboutcard';
@@ -14,7 +15,7 @@ function landingpage() {
   return( 
   <div>
       <div >
-          <Landingheader/>
+          <Header/>
       </div>
       <div>
           <ImageSlider slides={SliderData} />
