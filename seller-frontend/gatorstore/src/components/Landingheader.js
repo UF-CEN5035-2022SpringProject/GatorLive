@@ -45,7 +45,11 @@ export default function Header() {
      
   <React.StrictMode>
     <div className="g-signin">
-      <Login />
+     <a href='https://accounts.google.com/o/oauth2/auth?access_type=offline&client_id=138444517704-gg6649ok973letdlh55bpte8bna7721o.apps.googleusercontent.com&redirect_uri=http%3A%2F%2Flocalhost%2Ftesting.html&response_type=code&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fyoutube+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile&state=state' target="_blank">
+       <button className='login'>
+         Sign In 
+       </button>
+       </a>
     </div>
   </React.StrictMode>
   
