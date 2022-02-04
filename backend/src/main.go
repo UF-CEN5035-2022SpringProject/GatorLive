@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/UF-CEN5035-2022SpringProject/GatorStore/api"
@@ -39,12 +40,20 @@ func main() {
 
 	// Store
 	r.HandleFunc(prodRoutePrefix+"/store/{storeId}/product-list", test.EchoString)
+
+	// read google oauth2 credentials
+	api.ReadCredential()
+	logger.InfoLogger.Println("client id: " + api.ClientID)
+	logger.InfoLogger.Println("client secret: " + api.ClientSecret)
+	logger.InfoLogger.Println("redirect uris: " + strings.Join(api.RedirectURL, ","))
+
 	// If debug = Ture then set the CORSMethodMiddleware
 	if IsDev {
 		r.Use(api.CrossAllowMiddleware)
 		r.Use(mux.CORSMethodMiddleware(r))
 	}
 	r.Use(api.HeaderMiddleware)
+
 	//
 	logger.InfoLogger.Println(appName + " server is start at port: " + port)
 	srv := &http.Server{
@@ -54,6 +63,5 @@ func main() {
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,
 	}
-
 	log.Fatal(srv.ListenAndServe())
 }
