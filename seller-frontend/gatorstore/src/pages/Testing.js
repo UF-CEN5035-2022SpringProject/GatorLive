@@ -12,25 +12,37 @@ function Testing() {
     }, []);
 
     const SendPost = async () => {
+        console.log("new attempt----------------------------------------");
         const requestOptions = {
             method: 'POST',
-            headers: { },
+            headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({ code: loginCode})
         };
-        const response = await fetch('http://10.136.228.201:8080/test/api/user/login', requestOptions);
-        const loginResponse = await response.json();
-        backendResult = loginResponse.result;
-        backendStatus = loginResponse.status;
+        const res = fetch('http://10.136.228.201:8080/test/api/user/login', requestOptions)
+            .then(response => response.json())
+            .then(response => {
+                backendStatus = response.status;
+                backendResult = response.result;
+                console.log(backendStatus, backendResult);
 
-        if (backendStatus === 0)
-            alert("success");
-        else alert("fail");
+                // proceed or fail:
+                if (backendStatus === 0) {
+                    window.location.href = "http://localhost:3000/landingpage";
+                } else {
+                    alert("ERROR: User was not able to be authenticated.");
+                }
+            })
+            .catch((error) => {
+                console.error(error);
+            });
 
-        /*if (backendStatus === 0) {
-            window.location.href = "http://localhost:3000/landingpage";
-        } else {
-            alert("ERROR: User was not able to be authenticated.");
-        }*/
+        //console.log(backendStatus, backendResult);
+        //if (backendStatus === 0)
+          //  console.log("Success");
+        //else 
+          //  console.log("Fail");
+
+        
     }
 
     function GetDateTime() {
