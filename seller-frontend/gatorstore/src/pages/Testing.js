@@ -1,44 +1,61 @@
-import React from 'react';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
+import React, { useEffect } from 'react';
 
-import GoogleLogin from 'react-google-login';
-
-document.addEventListener("DOMContentLoaded", function(){
+function Testing() {
     const loginCode = GetUserCode('code');
-    
+    const dateTime = GetDateTime();
+    var backendStatus;
     var backendResult;
     
-    // "Frontend will call a backend API to pass the code ":.
-    // API call with this loginCode here 
+    // "Frontend will call a backend API to pass the code ":
     useEffect(() => {
+        SendPost();
+    }, []);
+
+    const SendPost = async () => {
         const requestOptions = {
             method: 'POST',
-            headers: {},
-            body: JSON.stringify({ code: loginCode })
+            headers: { },
+            body: JSON.stringify({ code: loginCode})
         };
-        fetch('http://10.136.88.90:8080/test/api/test', requestOptions)
-            .then(response => response.json())
-            .then(data => {backendResult = data.result});
-    }, []);
-});
+        const response = await fetch('http://10.136.228.201:8080/test/api/user/login', requestOptions);
+        const loginResponse = await response.json();
+        backendResult = loginResponse.result;
+        backendStatus = loginResponse.status;
 
-function GetUserCode(parameterName) { // get whatever is after '?' on the URL
-  const rawQuery = window.location.search;
-  const urlParams = new URLSearchParams(rawQuery);
-  const loginCode = urlParams.get(parameterName);
-  return loginCode;
-}
+        if (backendStatus === 0)
+            alert("success");
+        else alert("fail");
 
+        /*if (backendStatus === 0) {
+            window.location.href = "http://localhost:3000/landingpage";
+        } else {
+            alert("ERROR: User was not able to be authenticated.");
+        }*/
+    }
 
-export default function Testing() {
+    function GetDateTime() {
+        var currentdate = new Date(); 
+        var datetime =   currentdate.getDate() + "/"
+                        + (currentdate.getMonth()+1)  + "/" 
+                        + currentdate.getFullYear() + " @ "  
+                        + currentdate.getHours() + ":"  
+                        + currentdate.getMinutes() + ":" 
+                        + currentdate.getSeconds();
+        return datetime;
+    }
+
+    function GetUserCode(parameterName) { // get whatever is after '?' on the URL
+        const rawQuery = window.location.search;
+        const urlParams = new URLSearchParams(rawQuery);
+        const loginCode = urlParams.get(parameterName);
+        return loginCode;
+    }
+
     return (
-        <div className="RootFlexContainer">
-            <Header />
-            <div style={{padding: 20}}>
-                You made it here. Now pass the code in the URL to the backend! The code is: {GetUserCode('code')}
-            </div>
-            <Footer />
+        <div style={{ padding: 20 }}>
+            Redirecting... The code is: {GetUserCode('code')}
         </div>
     );
 }
+
+export default Testing;
