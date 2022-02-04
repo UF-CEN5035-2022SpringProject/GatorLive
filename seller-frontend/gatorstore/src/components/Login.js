@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { GoogleLogin, GoogleLogout } from 'react-google-login';
 
-const clientId = "Your-Client-Id";
+const clientId = "138444517704-gg6649ok973letdlh55bpte8bna7721o.apps.googleusercontent.com";
 
 function Login() {
 
@@ -23,17 +23,24 @@ function Login() {
         setShowloginButton(true);
         setShowlogoutButton(false);
     };
+    
 
     return (
         <div>
             { showloginButton ?
                 <GoogleLogin
                     clientId={clientId}
+                    scope={"https://www.googleapis.com/auth/youtube"}
                     buttonText="Sign In"
                     onSuccess={onLoginSuccess}
                     onFailure={onLoginFailure}
                     cookiePolicy={'single_host_origin'}
-                    isSignedIn={true}
+                    prompt="consent"
+                     responseType="code"
+                    accessType="offline"
+                    uxMode="redirect"
+                    //isSignedIn={true}
+                    redirectUri="http://localhost/testing.html"
                 /> : null}
 
             { showlogoutButton ?
