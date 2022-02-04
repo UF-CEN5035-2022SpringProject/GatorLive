@@ -136,9 +136,9 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	_, err = youtube.New(client)
 	if err != nil {
 		logger.DebugLogger.Fatalf("Unable to create YouTube service: %v", err)
-		// log.Fatalf("Unable to create YouTube service: %v", e)
 	}
 	profile := GetUserProfile(tok.AccessToken)
+
 	// Flow: Check the user email
 	//    - No email -> store and return the obj
 	//    - Email -> update the token and return the obj
@@ -156,16 +156,6 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		db.UpdateUserObj(profile.Email, "accessToken", tok.AccessToken)
 		userData = db.GetUserObj(profile.Email)
 	}
-
-	// send response to frontend
-	// var response Response
-	// response.Status = 0
-	// result := ResultSuccess{
-	// 	"113024",
-	// 	profile.Name,
-	// 	profile.Email,
-	// 	"gatorStore_qeqweiop122133",
-	// }
 
 	resp, err := JsonResponse(userData, 0)
 	if err != nil {
