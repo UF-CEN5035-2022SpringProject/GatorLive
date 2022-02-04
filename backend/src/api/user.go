@@ -139,28 +139,40 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		// log.Fatalf("Unable to create YouTube service: %v", e)
 	}
 	profile := GetUserProfile(tok.AccessToken)
+	// Flow: Check the user email
+	//    - No email -> store and return the obj
+	//    - Email -> update the token and return the obj
+	userData := db.GetUserObj(profile.Email)
+	if userData == nil {
+		// Add user Data
+		userData = make(map[string]interface{})
+		userData["id"] = "113024"
+		userData["name"] = profile.Name
+		userData["email"] = profile.Email
+		userData["jwtToken"] = "gatorStore_qeqweiop122133"
+		userData["accessToken"] = tok.AccessToken
+		db.AddUserObj(profile.Email, userData)
+	} else {
+		db.UpdateUserObj(profile.Email, "accessToken", tok.AccessToken)
+		userData = db.GetUserObj(profile.Email)
+	}
 
 	// send response to frontend
-	var response Response
-	response.Status = 0
-	result := ResultSuccess{
-		"113024",
-		profile.Name,
-		profile.Email,
-		"gatorStore_qeqweiop122133",
-	}
-	response.Result = result
-	b, err = json.Marshal(response)
+	// var response Response
+	// response.Status = 0
+	// result := ResultSuccess{
+	// 	"113024",
+	// 	profile.Name,
+	// 	profile.Email,
+	// 	"gatorStore_qeqweiop122133",
+	// }
+
+	resp, err := JsonResponse(userData, 0)
 	if err != nil {
-		logger.DebugLogger.Fatal(err)
-		// log.Fatal(err)
+		logger.ErrorLogger.Fatalf("Error on wrapping JSON resp %s", err)
 	}
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	_, err = w.Write(b)
-	if err != nil {
-		logger.DebugLogger.Fatal(err)
-		// log.Fatal(err)
-	}
+	w.WriteHeader(http.StatusOK)
+	w.Write(resp)
 }
 
 func UserInfo(w http.ResponseWriter, r *http.Request) {
