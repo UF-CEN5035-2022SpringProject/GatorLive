@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 
 function Testing() {
     const loginCode = GetUserCode('code');
-    const dateTime = GetDateTime();
+    //const dateTime = GetDateTime();
     var backendStatus;
     var backendResult;
     
@@ -12,7 +12,6 @@ function Testing() {
     }, []);
 
     const SendPost = async () => {
-        console.log("new attempt----------------------------------------");
         const requestOptions = {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
@@ -23,26 +22,22 @@ function Testing() {
             .then(response => {
                 backendStatus = response.status;
                 backendResult = response.result;
-                console.log(backendStatus, backendResult);
 
-                // proceed or fail:
+                // proceed or fail, drip or drown:
                 if (backendStatus === 0) {
-                    window.location.href = "http://localhost:3000/landingpage";
+                    window.sessionStorage.setItem('user-name', response.result.name);
+                    window.sessionStorage.setItem('user-email', response.result.email);
+                    window.sessionStorage.setItem('user-id', response.result.id);
+                    window.sessionStorage.setItem('user-jwtToken', response.result.jwtToken);
+
+                    window.location.href = "http://localhost:3000/store-list";
                 } else {
                     alert("ERROR: User was not able to be authenticated.");
                 }
             })
             .catch((error) => {
                 console.error(error);
-            });
-
-        //console.log(backendStatus, backendResult);
-        //if (backendStatus === 0)
-          //  console.log("Success");
-        //else 
-          //  console.log("Fail");
-
-        
+            });        
     }
 
     function GetDateTime() {
@@ -65,7 +60,7 @@ function Testing() {
 
     return (
         <div style={{ padding: 20 }}>
-            Redirecting... The code is: {GetUserCode('code')}
+            Redirecting...
         </div>
     );
 }

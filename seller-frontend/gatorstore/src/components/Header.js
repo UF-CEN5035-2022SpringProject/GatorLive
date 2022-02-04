@@ -1,14 +1,21 @@
 import * as React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import '../styles/app.css';
 import TextField from "@mui/material/TextField";
 import Button from '@mui/material/Button';
+import HomeIcon from '@mui/icons-material/Home';
+import StorefrontIcon from '@mui/icons-material/Storefront';
+import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import SearchIcon from '@mui/icons-material/Search';
 import PersonIcon from '@mui/icons-material/Person';
+import PushPinIcon from '@mui/icons-material/PushPin';
+import LogoutIcon from '@mui/icons-material/Logout';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 
 import { makeStyles } from '@material-ui/core/styles';
+import { Navigate } from 'react-router-dom';
 
 const useStyles = makeStyles({
   searchBar: {
@@ -23,7 +30,9 @@ function SearchBar() {
   return <TextField className={classes.searchBar} variant ="outlined" color="primary" placeholder="Search" size="small"/>
 }
 
-export default function Header() {
+function SignedInDropdown(userData) {
+  const navigate = useNavigate();
+
   const [anchorEl, setAnchorEl] = React.useState(null); // hook for the user menu dropdown
   const open = Boolean(anchorEl);
 
@@ -33,7 +42,59 @@ export default function Header() {
   const handleClose = () => {
     setAnchorEl(null);
   };
+  const SignOut = () => {
+    window.sessionStorage.clear();
+    window.location.href = "http://localhost:3000/landingpage";
+  };
 
+  return (<>
+    <Button         
+    color="primary" variant="contained" size="medium"
+    startIcon={<PersonIcon />}
+    id="basic-button"
+    aria-controls={open ? 'basic-menu' : undefined}
+    aria-haspopup="true"
+    aria-expanded={open ? 'true' : undefined}
+    onClick={handleOpenMenu}
+    >
+    {userData.name}
+    </Button>
+    <Menu
+      id="basic-menu"
+      anchorEl={anchorEl}
+      open={open}
+      onClose={handleClose}
+    >
+      <div style={{padding: 10, color: 'blue'}}>{userData.email}</div>
+      <MenuItem component="a" href="/landingpage"><HomeIcon style={{marginRight: 20}}/> Home</MenuItem>
+      <MenuItem component="a" href="/store-list"><StorefrontIcon style={{marginRight: 20}}/> My Stores</MenuItem>
+      <MenuItem component="a" href="/productlist"><FormatListBulletedIcon style={{marginRight: 20}}/> My Listings</MenuItem>
+      <MenuItem component="a" href="/product-page"><PushPinIcon style={{marginRight: 20}}/> Pinned Listing</MenuItem>
+      <MenuItem onClick={SignOut}><LogoutIcon style={{marginRight: 20}}/>Logout</MenuItem>
+    </Menu>
+  </>);
+}
+
+function GoogleButton() { // for when user is NOT signed in
+  return (<div>- Put Google Button Here -</div>);
+}
+
+function LoadSessionActions() {
+  // User has NOT signed in:
+  if (sessionStorage.getItem('user-name') === null) {
+    return (<GoogleButton />);
+  }
+  else { // User is signed in:
+    let name = window.sessionStorage.getItem('user-name');
+    let email = window.sessionStorage.getItem('user-email');
+    let id = window.sessionStorage.getItem('user-id');
+    let jwtToken = window.sessionStorage.getItem('user-jwtToken');
+
+    return (<SignedInDropdown name={name} email={email}/>);
+  }
+}
+
+export default function Header() {
   return (<div className="header">
       <div className="headerLogo flexCenter">GatorStore</div>
       <div className="searchBarContainer flexCenter">
@@ -41,28 +102,7 @@ export default function Header() {
         <Button color="primary" variant="contained" size="medium"><SearchIcon/></Button>
       </div>
       <div className="accountButton flexCenter">
-        <Button         
-          color="primary" variant="contained" size="medium"
-          startIcon={<PersonIcon />}
-          id="basic-button"
-          aria-controls={open ? 'basic-menu' : undefined}
-          aria-haspopup="true"
-          aria-expanded={open ? 'true' : undefined}
-          onClick={handleOpenMenu}
-        >
-          My Account
-        </Button>
-        <Menu
-          id="basic-menu"
-          anchorEl={anchorEl}
-          open={open}
-          onClose={handleClose}
-        >
-          <MenuItem onClick={handleClose}>My Stores</MenuItem>
-          <MenuItem onClick={handleClose}>Active Listings</MenuItem>
-          <MenuItem onClick={handleClose}>Settings</MenuItem>
-          <MenuItem onClick={handleClose}>Logout</MenuItem>
-        </Menu>
+        <LoadSessionActions />
       </div>
   </div>);
 }
