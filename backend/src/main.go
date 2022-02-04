@@ -13,8 +13,9 @@ import (
 )
 
 var (
-	port    string = "8000"
+	port    string = "8080"
 	appName string = "GatorStore"
+	IsDev   bool   = true
 )
 
 func main() {
@@ -28,17 +29,21 @@ func main() {
 
 	// TEST API path
 	testRoutePrefix := "/test/api"
-	r.HandleFunc(testRoutePrefix+"/test", test.EchoString)
-	r.HandleFunc(testRoutePrefix+"/user/login", test.TestDBGetUserObj)
+	r.HandleFunc(testRoutePrefix+"/test", test.EchoString).Methods("GET", "OPTIONS")
+	r.HandleFunc(testRoutePrefix+"/user/login", test.TestDBGetUserObj).Methods("GET", "OPTIONS")
 
 	// USER path
 	r.HandleFunc(prodRoutePrefix+"/user/login", api.Login)
-	r.HandleFunc(prodRoutePrefix+"/user/{userId}/info", api.UserInfo).Methods("GET", "PUT") // TODO missing authentication middleware
-	r.HandleFunc(prodRoutePrefix+"/user/{userId}/store-list", test.EchoString)
+	r.HandleFunc(prodRoutePrefix+"/user/info", api.UserInfo).Methods("GET", "PUT", "OPTIONS") // TODO missing authentication middleware
+	r.HandleFunc(prodRoutePrefix+"/user/store-list", test.EchoString)
 
 	// Store
 	r.HandleFunc(prodRoutePrefix+"/store/{storeId}/product-list", test.EchoString)
-
+	// If debug = Ture then set the CORSMethodMiddleware
+	if IsDev {
+		r.Use(api.CrossAllowMiddleware)
+		r.Use(mux.CORSMethodMiddleware(r))
+	}
 	//
 	logger.InfoLogger.Println(appName + " server is start at port: " + port)
 	srv := &http.Server{
