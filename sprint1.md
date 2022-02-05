@@ -15,11 +15,13 @@ We use [Github Project Board](https://github.com/orgs/UF-CEN5035-2022SpringProje
   
 ## Features
 ---
-- User System (Sprint1)
-  - Sellers must log in (Gmail Login)
+### User System (Sprint1)
+  - [Gmail Login for Seller](https://github.com/UF-CEN5035-2022SpringProject/GatorStore/issues/10)
+    
+  
   - Unique ID matching sellers and sellers are able to create stores
 
-- E-commerce System (Sprint1)
+### E-commerce System (Sprint1)
   - Sellers can create products in E-commerce
      - Amount
      - Description
