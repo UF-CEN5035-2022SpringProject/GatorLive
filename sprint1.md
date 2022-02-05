@@ -17,7 +17,11 @@ We use [Github Project Board](https://github.com/orgs/UF-CEN5035-2022SpringProje
 ---
 ### User System (Sprint1)
   - [Gmail Login for Seller](https://github.com/UF-CEN5035-2022SpringProject/GatorStore/issues/10)
-    
+    - Third party login usually will use Oauth2 login process, it's more secure.
+      1. Click the login btn on app and get a one time exchange code.
+      2. Use the code to exchange the accesstoken.
+      3. Call google api by this access token, the API authenthication is base on the scope parameter we first implement
+      4. There is a manage console to control the redirect url and developers account.
   
   - Unique ID matching sellers and sellers are able to create stores
 
