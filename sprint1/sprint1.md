@@ -21,8 +21,37 @@ We use [Github Project Board](https://github.com/orgs/UF-CEN5035-2022SpringProje
      - Description
      - Image
 
+## Issues
+We use project board to define issue into 3 stage
+- ```To do```: after discussion we create issue card and assign to members.
+- ```In Progress```
+- ```Done```: When the issue is close we'll move it to Done.  
+
+![ProjectBoardIssue](https://user-images.githubusercontent.com/69064626/152628222-d657b42a-ef3b-4bd1-9872-9bd0ef424b5a.png)
+
+Accordingly, each component or task will be create into issue and it's also important for us to announce bug as a issue during the development.
+We use different labels to recognize the responsibility.  
+
+![IssueList](https://user-images.githubusercontent.com/69064626/152628355-15e98d74-6767-4676-b524-ef90a468e24a.png)
+
+All the discussions and even surveys we record on the issue to acknowledge all the members.
+For example, 
+- [Google Login Survey](https://github.com/UF-CEN5035-2022SpringProject/GatorStore/issues/7)
+- [User API Design & User Object design](https://github.com/UF-CEN5035-2022SpringProject/GatorStore/issues/12)
+
+## [API Documentations](https://github.com/UF-CEN5035-2022SpringProject/GatorStore#api-document)
+The most critical part is to make a explicit document for the API integration between backend and frontend.
+In the section, we define the request routing url, request body, request method and response type. 
+
+For example, our google login api ([UA1](https://github.com/UF-CEN5035-2022SpringProject/GatorStore#ua1-user-login-api)) is define below as the image shows.
+
+<img width="897" alt="UA1" src="https://user-images.githubusercontent.com/69064626/152628543-2928e86d-272f-4362-a7cf-f0a291fb3a5c.png">
+
 ## Apendix - Document on Setting Develop Environment
 - [Backend Document](https://github.com/UF-CEN5035-2022SpringProject/GatorStore/blob/main/backend/backend-readme.md)
   - Logger
   - DB settings
   - Package Dependencies   
+
+
+
