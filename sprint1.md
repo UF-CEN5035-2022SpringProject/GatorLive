@@ -15,7 +15,7 @@ We use [Github Project Board](https://github.com/orgs/UF-CEN5035-2022SpringProje
   
 ## Features
 ---
-- User System
+- User System (Sprint1)
   - Sellers must log in (Gmail Login)
   - Unique ID matching sellers and sellers are able to create stores
 
