@@ -20,3 +20,7 @@
       - Watch the "live" created by the store and able to buy the products on the list
    - Login
    - Create order
+
+4. Create testing method for both frontend and backend
+   - Design unit test by using ```go test```
+   - Find a tool for frontend testing
