@@ -11,7 +11,7 @@
    
 2. Missing Designs on Seller Frontend Order Page
    - [Discussion] Order Page. In every store will have an order list? OrderList with store filter? 
-   - Create Live Btn on Product List Page
+   - Create Live Btn on Product List Page, and live list(?)
       - Select products to open live
       - Return a live steam url on the webpage for user, use [OBS](https://obsproject.com/) to steam to the url.
         
