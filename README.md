@@ -157,6 +157,8 @@ Golang and backend set up please check [backendend-readme.md](https://github.com
               'email': "yimingchang@ufl.edu",
               'jwtToken': "gatorStore_qeqweiop122133"
               'accessToken': "GatorStore_10302323"
+              'createTime': "2006-01-02T15:04:05Z07:00"
+              'updateTime': "2006-01-02T15:04:05Z07:00"
         }
     }
     ```
@@ -219,7 +221,9 @@ Golang and backend set up please check [backendend-readme.md](https://github.com
               'id': "113024", // livestream id
               'title': "YiMing Chang", // livestream title
               'streamKey': "1324-5678-8974-1230",
-              'streamUrl': "some url"
+              'streamUrl': "some url",
+              'createTime': "2006-01-02T15:04:05Z07:00"
+              'updateTime': "2006-01-02T15:04:05Z07:00"
         }
     }
     ```
@@ -267,8 +271,10 @@ Or else we'll use **email** as a identifier.
 | id | K | string | userId - unique identifier |
 | name |   | string | Receive by google api |
 | email | K | string | unique identifier |
-| jwtToken | O | string | unique jwt authorization key in GatorStore |
-| accessToken | O | string | youtube access token | 
+| jwtToken |  | string | unique jwt authorization key in GatorStore |
+| accessToken |  | string | youtube access token | 
+| createTime |  | string | create datetime | 
+| updateTime |  | string | latest update datetime | 
 
 JSON Example:
 ```
@@ -277,7 +283,9 @@ JSON Example:
   'name': "YiMing Chang",
   'email': "yimingchang@ufl.edu",
   'jwtToken': "gatorStore_qeqweiop122133",
-  'accessToken': "GatorStore_10302323"
+  'accessToken': "GatorStore_10302323",
+  'createTime': "2006-01-02T15:04:05Z07:00"
+  'updateTime': "2006-01-02T15:04:05Z07:00"
 }
 ```
 
