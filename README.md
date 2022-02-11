@@ -156,6 +156,7 @@ Golang and backend set up please check [backendend-readme.md](https://github.com
               'name': "YiMing Chang",
               'email': "yimingchang@ufl.edu",
               'jwtToken': "gatorStore_qeqweiop122133"
+              'accessToken': "GatorStore_10302323"
         }
     }
     ```
@@ -208,10 +209,11 @@ Or else we'll use **email** as a identifier.
 
 | Var/Method | Key/Optional | Type | Description |
 | ---  | --- | --- | --- |
-| `id` | K | string | userId - unique identifier |
+| id | K | string | userId - unique identifier |
 | name |   | string | Receive by google api |
-| `email` | K | string | unique identifier |
+| email | K | string | unique identifier |
 | jwtToken | O | string | unique jwt authorization key in GatorStore |
+| accessToken | O | string | youtube access token | 
 
 JSON Example:
 ```
@@ -220,6 +222,7 @@ JSON Example:
   'name': "YiMing Chang",
   'email': "yimingchang@ufl.edu",
   'jwtToken': "gatorStore_qeqweiop122133",
+  'accessToken': "GatorStore_10302323"
 }
 ```
 
