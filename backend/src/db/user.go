@@ -1,24 +1,74 @@
 package db
 
 import (
+	"strconv"
+
 	"cloud.google.com/go/firestore"
 	"github.com/UF-CEN5035-2022SpringProject/GatorStore/logger"
 )
 
+type JwtObject struct {
+	Email    string `json:"email"`
+	JwtToken string `json:"jwtToken"`
+}
+
+type UserObject struct {
+	Id          string `json:"id"`
+	Name        string `json:"name"`
+	Email       string `json:"email"`
+	JwtToken    string `json:"jwtToken"`
+	AccessToken string `json:"accessToken"`
+}
+
+/*** JWT functions ***/
+func mapJwtToken(jwtToken string) map[string]interface{} {
+	dsnap, err := FireBaseClient.Collection(DbCollections["jwtTokenMap"]).Doc(jwtToken).Get(DatabaseCtx)
+	if err != nil {
+		logger.WarningLogger.Printf("Cannot find user jwtToken (%s). %s", jwtToken, err)
+	}
+	value := dsnap.Data()
+	logger.DebugLogger.Printf("Document data: %#v\n", value)
+	return value
+}
+
+func AddJwtToken(jwtToken string, userEmail string) error {
+	newJwtObject := JwtObject{
+		Email:    userEmail,
+		JwtToken: jwtToken,
+	}
+	_, err := FireBaseClient.Collection(DbCollections["jwtTokenMap"]).Doc(jwtToken).Set(DatabaseCtx, newJwtObject)
+	if err != nil {
+		logger.WarningLogger.Printf("Error adding value. %s", err)
+	}
+	return err
+}
+
+/*** User functions ***/
+func GetUserNewId() string {
+	dsnap, err := FireBaseClient.Collection(DbCollections["settings"]).Doc("userAutoIncrement").Get(DatabaseCtx)
+	if err != nil {
+		logger.WarningLogger.Printf("Cannot userAutoIncrement in settings. Error: %s", err)
+		return ""
+	}
+	value := dsnap.Data()
+	newUserId := value["number"].(int64) + 1
+	logger.DebugLogger.Printf("Document data: %#v\n, %T, newUserId: %v", value["number"], value["number"], newUserId)
+	return strconv.Itoa(int(newUserId))
+}
+
 func GetUserObj(userEmail string) map[string]interface{} {
-	dsnap, err := FireBaseClient.Collection(Collections["users"]).Doc(userEmail).Get(DatabaseCtx)
+	dsnap, err := FireBaseClient.Collection(DbCollections["users"]).Doc(userEmail).Get(DatabaseCtx)
 	if err != nil {
 		logger.WarningLogger.Printf("Cannot find user by email. %s", err)
 		return nil
 	}
 	value := dsnap.Data()
 	logger.DebugLogger.Printf("Document data: %#v\n", value)
-
 	return value
 }
 
 func AddUserObj(userEmail string, userData map[string]interface{}) error {
-	_, err := FireBaseClient.Collection("users").Doc(userEmail).Set(DatabaseCtx, userData)
+	_, err := FireBaseClient.Collection(DbCollections["users"]).Doc(userEmail).Set(DatabaseCtx, userData)
 	if err != nil {
 		logger.WarningLogger.Printf("Error adding value. %s", err)
 	}
@@ -26,7 +76,7 @@ func AddUserObj(userEmail string, userData map[string]interface{}) error {
 }
 
 func UpdateUserObj(userEmail string, fieldStr string, fieldValue interface{}) error {
-	_, err := FireBaseClient.Collection("users").Doc(userEmail).Update(DatabaseCtx, []firestore.Update{
+	_, err := FireBaseClient.Collection(DbCollections["users"]).Doc(userEmail).Update(DatabaseCtx, []firestore.Update{
 		{
 			Path:  fieldStr,
 			Value: fieldValue,
