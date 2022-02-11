@@ -191,23 +191,21 @@ Golang and backend set up please check [backendend-readme.md](https://github.com
 ### Store API URLs
 #### SA1. Store Livestream API
  - Method: POST
- - {routePath}: /store/{user id}/livestream
+ - {routePath}: /store/{store id}/livestream
  - **Header**
    | Name | Type | Description |
    | --- | --- | --- |
-   | time | datetime | string |
+   | jwtToken | string | Use for GatorStore Login |
    
  - **Request Body Table**
    | Name | Type | Description |
    | ---  | --- | --- |
-   | jwtToken | string | Use for GatorStore Login |
    | title | string | Use for naming the new livestream |
    
     Example:
     1. Using user jwtToken login directly
      ```
      {
-         'jwtToken': 'gatorStore_qeqweiop122133'
          'title': '123'
      }
      ```
@@ -218,11 +216,10 @@ Golang and backend set up please check [backendend-readme.md](https://github.com
     {
         "status": 0,
         "result": {
-              'id': "113024",
-              'title': "YiMing Chang",
+              'id': "113024", // livestream id
+              'title': "YiMing Chang", // livestream title
               'streamKey': "1324-5678-8974-1230",
               'streamUrl': "some url"
-              'jwtToken': "gatorStore_qeqweiop122133"
         }
     }
     ```
