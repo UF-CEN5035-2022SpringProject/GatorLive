@@ -189,6 +189,64 @@ Golang and backend set up please check [backendend-readme.md](https://github.com
 
 
 ### Store API URLs
+#### SA1. Store Livestream API
+ - Method: POST
+ - {routePath}: /store/{user id}/livestream
+ - **Header**
+   | Name | Type | Description |
+   | --- | --- | --- |
+   | time | datetime | string |
+   
+ - **Request Body Table**
+   | Name | Type | Description |
+   | ---  | --- | --- |
+   | jwtToken | string | Use for GatorStore Login |
+   | title | string | Use for naming the new livestream |
+   
+    Example:
+    1. Using user jwtToken login directly
+     ```
+     {
+         'jwtToken': 'gatorStore_qeqweiop122133'
+         'title': '123'
+     }
+     ```
+     
+ - **Response**  
+    Success: 
+    ```
+    {
+        "status": 0,
+        "result": {
+              'id': "113024",
+              'title': "YiMing Chang",
+              'streamKey': "1324-5678-8974-1230",
+              'streamUrl': "some url"
+              'jwtToken': "gatorStore_qeqweiop122133"
+        }
+    }
+    ```
+
+    Error:
+     ```
+     {
+         "status": 800,
+         "result": {
+            "errorName": "MISS_PARAMS"
+         }
+     }
+     ```
+   
+     Error Code Table for error situation:
+
+      | ErrorName | ErrorCode | HttpStatus | Description |
+      | ---  | --- | --- | --- |
+      | MISS_PARAMS | 800 | 400 | |
+      | INVALID_PARAMS | 801 | 400 | |
+      | NO_JWTTOKEN | 1000 | 400 | |
+      | INVALID_JWTTOKEN | 1001 | 401 | Expire or invalid jwtToken |
+      | INVALID_ACCESSTOKEN | 9000 | 403 | Expire Google Access Token |
+  
 ### Product API URLs
 
 
