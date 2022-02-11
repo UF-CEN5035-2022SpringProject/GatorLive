@@ -97,7 +97,6 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	// TODO @chouhy
 
 	// setup config
-	logger.DebugLogger.Println("User ___ Login")
 	ctx := context.Background()
 	conf := &oauth2.Config{
 		ClientID:     ClientID,
@@ -105,7 +104,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		Scopes:       []string{youtube.YoutubeScope, g.UserinfoEmailScope, g.UserinfoProfileScope},
 
 		Endpoint:    google.Endpoint,
-		RedirectURL: RedirectURL[0],
+		RedirectURL: RedirectURL[1],
 		// Endpoint: oauth2.Endpoint{
 		// 	AuthURL:  "https://provider.com/o/oauth2/auth",
 		// 	TokenURL: "https://provider.com/o/oauth2/token",
@@ -114,14 +113,19 @@ func Login(w http.ResponseWriter, r *http.Request) {
 
 	// get code or assesstoken from http.request
 	b, err := io.ReadAll(r.Body)
+	logger.DebugLogger.Printf("request login body %s", b)
+
 	if err != nil {
-		logger.DebugLogger.Fatalf("Unable to read login req: %v", err)
+		logger.DebugLogger.Panicf("Unable to read login req: %v", err)
 		// log.Fatalf("Unable to create YouTube service: %v", e)
 	}
+
 	var code Code
+
 	err = json.Unmarshal(b, &code)
+	logger.DebugLogger.Printf("request login code %s", code)
 	if err != nil {
-		logger.DebugLogger.Fatalf("Unable to decode login req: %v", err)
+		logger.DebugLogger.Panicf("Unable to decode login req: %v, code %s", err, code)
 		// log.Fatalf("Unable to create YouTube service: %v", e)
 	}
 	tok, err := conf.Exchange(ctx, code.Code)
@@ -135,7 +139,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	// service, e := youtube.New(client)
 	_, err = youtube.New(client)
 	if err != nil {
-		logger.DebugLogger.Fatalf("Unable to create YouTube service: %v", err)
+		logger.DebugLogger.Panicf("Unable to create YouTube service: %v", err)
 	}
 	profile := GetUserProfile(tok.AccessToken)
 
