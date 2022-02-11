@@ -34,8 +34,8 @@ func main() {
 	r.HandleFunc(testRoutePrefix+"/user/login", test.TestDBGetUserObj).Methods("GET", "POST", "OPTIONS")
 
 	// USER path
-	r.HandleFunc(prodRoutePrefix+"/user/login", api.Login)
-	r.HandleFunc(prodRoutePrefix+"/user/info", api.UserInfo).Methods("GET", "PUT", "OPTIONS") // TODO missing authentication middleware
+	r.HandleFunc(prodRoutePrefix+"/user/login", api.Login).Methods("GET", "POST", "OPTIONS")
+	r.HandleFunc(prodRoutePrefix+"/user/info", api.UserInfo).Methods("GET", "PUT", "OPTIONS")
 	r.HandleFunc(prodRoutePrefix+"/user/store-list", test.EchoString)
 
 	// Store
