@@ -10,6 +10,7 @@ import (
 
 	"github.com/UF-CEN5035-2022SpringProject/GatorStore/db"
 	"github.com/UF-CEN5035-2022SpringProject/GatorStore/logger"
+	"github.com/UF-CEN5035-2022SpringProject/GatorStore/utils"
 	"github.com/gorilla/mux"
 
 	"golang.org/x/oauth2"
@@ -79,6 +80,7 @@ func GetUserProfile(accesstoken string) Profile {
 	}
 	return profile
 }
+
 func ReadCredential() {
 	content, err := ioutil.ReadFile("./client_secret.json")
 	if err != nil {
@@ -93,9 +95,17 @@ func ReadCredential() {
 	ClientSecret = cre.Web.Client_secret
 	RedirectURL = cre.Web.Redirect_uris
 }
+
+func createJwtToken(userId string, userEmail string) string {
+	// store newJwt in DB
+	newJwtToken := utils.JwtPrefix + userId
+	db.AddJwtToken(newJwtToken, userEmail)
+	return newJwtToken
+}
+
+// API ENTRYPOINT
 func Login(w http.ResponseWriter, r *http.Request) {
 	// TODO @chouhy
-
 	// setup config
 	ctx := context.Background()
 	conf := &oauth2.Config{
@@ -148,13 +158,23 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	//    - Email -> update the token and return the obj
 	userData := db.GetUserObj(profile.Email)
 	if userData == nil {
+		// create userId and assign JWT
+		newUserId := db.GetUserNewId()
+		logger.DebugLogger.Printf("New user, assign ID: %s", newUserId)
 		// Add user Data
-		userData = make(map[string]interface{})
-		userData["id"] = "113024"
-		userData["name"] = profile.Name
-		userData["email"] = profile.Email
-		userData["jwtToken"] = "gatorStore_qeqweiop122133"
-		userData["accessToken"] = tok.AccessToken
+		userObj := &db.UserObject{
+			Id:          newUserId,
+			Name:        profile.Name,
+			Email:       profile.Email,
+			JwtToken:    createJwtToken(newUserId, profile.Email),
+			AccessToken: tok.AccessToken,
+		}
+
+		var convertMap map[string]interface{}
+		userObjStr, _ := json.Marshal(userObj)
+		json.Unmarshal(userObjStr, &convertMap)
+
+		userData = convertMap
 		db.AddUserObj(profile.Email, userData)
 	} else {
 		db.UpdateUserObj(profile.Email, "accessToken", tok.AccessToken)
@@ -163,7 +183,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 
 	resp, err := JsonResponse(userData, 0)
 	if err != nil {
-		logger.ErrorLogger.Fatalf("Error on wrapping JSON resp %s", err)
+		logger.ErrorLogger.Fatalf("Error on wrapping JSON resp, Error: %s", err)
 	}
 	w.WriteHeader(http.StatusOK)
 	w.Write(resp)
@@ -176,10 +196,14 @@ func UserInfo(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	if r.Method == "GET" {
 		fmt.Fprintf(w, "Get %v user info", vars["userId"])
-		value := db.GetUserObj(vars["userId"])
-		resp, err := JsonResponse(value, 0)
+		userData := db.GetUserObj(vars["userId"])
+		if userData == nil {
+			// TODO: call error response
+			logger.ErrorLogger.Panicf("Error, unable get user")
+		}
+		resp, err := JsonResponse(userData, 0)
 		if err != nil {
-			logger.ErrorLogger.Fatalf("Error on wrapping JSON resp %s", err)
+			logger.ErrorLogger.Panicf("Error on wrapping JSON resp, Error: %s", err)
 		}
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
