@@ -183,7 +183,8 @@ func Login(w http.ResponseWriter, r *http.Request) {
 
 	resp, err := JsonResponse(userData, 0)
 	if err != nil {
-		logger.ErrorLogger.Fatalf("Error on wrapping JSON resp, Error: %s", err)
+		logger.ErrorLogger.Panicf("Error on wrapping JSON resp, Error: %s", err)
+		// TODO return Error 500
 	}
 	w.WriteHeader(http.StatusOK)
 	w.Write(resp)
