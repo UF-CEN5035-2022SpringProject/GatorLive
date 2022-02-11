@@ -35,7 +35,7 @@ func main() {
 
 	// USER path
 	r.HandleFunc(prodRoutePrefix+"/user/login", api.Login).Methods("GET", "POST", "OPTIONS")
-	r.HandleFunc(prodRoutePrefix+"/user/info", api.UserInfo).Methods("GET", "PUT", "OPTIONS")
+	r.HandleFunc(prodRoutePrefix+"/user/{userId}/info", api.UserInfo).Methods("GET", "PUT", "OPTIONS")
 	r.HandleFunc(prodRoutePrefix+"/user/store-list", test.EchoString)
 
 	// Store
