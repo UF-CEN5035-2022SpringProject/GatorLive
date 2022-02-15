@@ -6,7 +6,7 @@ function LoginRedirect() {
     var backendStatus;
     var backendResult;
     
-    // "Frontend will call a backend API to pass the code ":
+    // Frontend will call a backend API to pass the code:
     useEffect(() => {
         SendPost();
     }, []);
