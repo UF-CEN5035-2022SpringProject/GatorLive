@@ -29,23 +29,28 @@ Go is very hesitant about implicit data conversion. So, we must be clear of the 
 - **&, |, ^, &^** bits operator, let's see the example below.
 
   ```
-  a:= 10 // 1010
-  b:= 3 // 0011
+    a:= 10 // 1010
+    b:= 3 // 0011
 
-  // a & b = 0010
-  // a | b = 1011
-  // a ^ b = 1001
-  // a &^ b = oposite of or = 0100
+    // a & b = 0010
+    // a | b = 1011
+    // a ^ b = 1001
+    // a &^ b = oposite of or = 0100
   ```
 
 - **>>, <<** bit shifting
 
   ```
-  a:=8 // 2^3
-  // a << 3 = 0100 shift 3 bit left = 2^3 * 2^3 = 2^6
-  // a >> 3 = shift 3 bit right = 2^0
+    a:=8 // 2^3
+    // a << 3 = 0100 shift 3 bit left = 2^3 * 2^3 = 2^6
+    // a >> 3 = shift 3 bit right = 2^0
   ```
 
 - Floating point numbers   
-  Follows E 754
-
+  Follows E 754, with 32 bit and 64 bit.
+  
+  ```
+    n := 3.14 (var n float32 = 3.14)
+    n = 13.7e72
+    n = 2.1E14
+  ```
