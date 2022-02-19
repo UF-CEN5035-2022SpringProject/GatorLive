@@ -7,6 +7,7 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
+	"time"
 
 	"github.com/UF-CEN5035-2022SpringProject/GatorStore/db"
 	"github.com/UF-CEN5035-2022SpringProject/GatorStore/logger"
@@ -162,12 +163,16 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		newUserId := db.GetUserNewId()
 		logger.DebugLogger.Printf("New user, assign ID: %s", newUserId)
 		// Add user Data
+
+		nowTime := time.Now().UTC().Format(time.RFC3339)
 		userObj := &db.UserObject{
 			Id:          newUserId,
 			Name:        profile.Name,
 			Email:       profile.Email,
 			JwtToken:    createJwtToken(newUserId, profile.Email),
 			AccessToken: tok.AccessToken,
+			CreateTime:  nowTime,
+			UpdateTime:  nowTime,
 		}
 
 		var convertMap map[string]interface{}
@@ -197,11 +202,20 @@ func UserInfo(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	if r.Method == "GET" {
 		fmt.Fprintf(w, "Get %v user info", vars["userId"])
-		userData := db.GetUserObj(vars["userId"])
+		jwtToken := r.Header.Get("jwtToken")
+		userEmail := db.MapJwtToken(jwtToken)["email"]
+		userData := db.GetUserObj(userEmail.(string))
+
 		if userData == nil {
 			// TODO: call error response
-			logger.ErrorLogger.Panicf("Error, unable get user")
+			logger.ErrorLogger.Panicf("Error, unable get user by jwt")
 		}
+
+		if userData["id"] != vars["userId"] {
+			// TODO: call error response
+			logger.ErrorLogger.Panicf("Error, invald permission")
+		}
+
 		resp, err := JsonResponse(userData, 0)
 		if err != nil {
 			logger.ErrorLogger.Panicf("Error on wrapping JSON resp, Error: %s", err)

@@ -18,10 +18,12 @@ type UserObject struct {
 	Email       string `json:"email"`
 	JwtToken    string `json:"jwtToken"`
 	AccessToken string `json:"accessToken"`
+	CreateTime  string `json:"createTime"`
+	UpdateTime  string `json:"updateTime"`
 }
 
 /*** JWT functions ***/
-func mapJwtToken(jwtToken string) map[string]interface{} {
+func MapJwtToken(jwtToken string) map[string]interface{} {
 	dsnap, err := FireBaseClient.Collection(DbCollections["jwtTokenMap"]).Doc(jwtToken).Get(DatabaseCtx)
 	if err != nil {
 		logger.WarningLogger.Printf("Cannot find user jwtToken (%s). %s", jwtToken, err)
@@ -48,6 +50,7 @@ func GetUserNewId() string {
 	dsnap, err := FireBaseClient.Collection(DbCollections["settings"]).Doc("userAutoIncrement").Get(DatabaseCtx)
 	if err != nil {
 		logger.WarningLogger.Printf("Cannot userAutoIncrement in settings. Error: %s", err)
+		// TODO call Error response
 		return ""
 	}
 	value := dsnap.Data()
