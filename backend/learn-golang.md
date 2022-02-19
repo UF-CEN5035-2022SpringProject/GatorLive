@@ -54,3 +54,26 @@ Go is very hesitant about implicit data conversion. So, we must be clear of the 
     n = 13.7e72
     n = 2.1E14
   ```
+  
+- Complext number
+  ```
+    var n complext64 = 1 + 2i
+  ```
+  - use real(v) to get the real part
+  - use imag(v) to get the imagine part
+
+- string
+  - string can be as array just like C++
+  - ***immutable***
+  - Adding string just use + operator   
+  
+  Covert the string to byte collection (slice of byte)
+  ```
+    s := "We are the best"
+    b := []byte(s)
+    fmt.Printf("%v, %T\n", b, b)
+  ```
+  
+  We get a byte slice with ascii value or utf value, the type result is []unit8  
+  ***Many function in Golang is work as slice of byte (string, files)***
+  
