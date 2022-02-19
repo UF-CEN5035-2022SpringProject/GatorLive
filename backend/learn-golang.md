@@ -47,12 +47,12 @@ Go is very hesitant about implicit data conversion. So, we must be clear of the 
   ```
 
 ## Floating point numbers   
-  Follows E 754, with 32 bit and 64 bit.
+  Follows IEEE 754 standard, with 32 bit and 64 bit.
   
   ```
-    n := 3.14 (var n float32 = 3.14)
-    n = 13.7e72
-    n = 2.1E14
+    n := 3.14 (var n float32 = 3.14) // Decimal
+    n = 13.7e72 // Exponential
+    n = 2.1E14 // 13.7e12
   ```
   
 ## Complext number
