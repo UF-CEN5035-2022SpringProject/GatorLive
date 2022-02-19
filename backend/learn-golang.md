@@ -46,7 +46,7 @@ Go is very hesitant about implicit data conversion. So, we must be clear of the 
     // a >> 3 = shift 3 bit right = 2^0
   ```
 
-- Floating point numbers   
+## Floating point numbers   
   Follows E 754, with 32 bit and 64 bit.
   
   ```
@@ -55,14 +55,14 @@ Go is very hesitant about implicit data conversion. So, we must be clear of the 
     n = 2.1E14
   ```
   
-- Complext number
+## Complext number
   ```
     var n complext64 = 1 + 2i
   ```
   - use real(v) to get the real part
   - use imag(v) to get the imagine part
 
-- string
+## string
   - string can be as array just like C++
   - ***immutable***
   - Adding string just use + operator   
@@ -76,4 +76,17 @@ Go is very hesitant about implicit data conversion. So, we must be clear of the 
   
   We get a byte slice with ascii value or utf value, the type result is []unit8  
   ***Many function in Golang is work as slice of byte (string, files)***
+  
+## rune
+  - Golang doesn't have a char data type. It uses byte and rune to represent character values. 
+  - Alias for int32
+  - Respresent utf32 charater - check this https://pkg.go.dev/strings#Reader.ReadRune
+    - if we are working utf32 we can use the above function to get the information we need.   
+
+  ```  
+  r := 'a'
+  fmt.Printf("%v, %T\n", r, r)
+  
+  // 97, int32
+  ```
   
