@@ -59,8 +59,8 @@ Go is very hesitant about implicit data conversion. So, we must be clear of the 
   ```
     var n complext64 = 1 + 2i
   ```
-  - use real(v) to get the real part
-  - use imag(v) to get the imagine part
+  - use real(v) to get the real part (float)
+  - use imag(v) to get the imagine part (float)
 
 ## string
   - string can be as array just like C++
