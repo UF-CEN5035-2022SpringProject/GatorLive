@@ -34,8 +34,10 @@ func main() {
 	r.HandleFunc(testRoutePrefix+"/user/login", test.TestDBGetUserObj).Methods("GET", "POST", "OPTIONS")
 
 	// USER path
-	r.HandleFunc(prodRoutePrefix+"/user/login", api.Login).Methods("GET", "POST", "OPTIONS")
-	r.HandleFunc(prodRoutePrefix+"/user/{userId}/info", api.UserInfo).Methods("GET", "PUT", "OPTIONS")
+	loginApi := r.PathPrefix(prodRoutePrefix + "/user/login").Subrouter()
+	loginApi.HandleFunc(prodRoutePrefix+"/user/login", api.Login).Methods("GET", "POST", "OPTIONS")
+
+	r.HandleFunc(prodRoutePrefix+"/user/info", api.UserInfo).Methods("GET", "PUT", "OPTIONS")
 	r.HandleFunc(prodRoutePrefix+"/user/store-list", test.EchoString)
 
 	// Store
@@ -51,6 +53,7 @@ func main() {
 	if IsDev {
 		r.Use(api.CrossAllowMiddleware)
 		r.Use(mux.CORSMethodMiddleware(r))
+		r.Use(api.AuthMiddleware)
 	}
 	r.Use(api.HeaderMiddleware)
 
