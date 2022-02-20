@@ -17,6 +17,8 @@ import (
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 
+	b64 "encoding/base64"
+
 	g "google.golang.org/api/oauth2/v2"
 	youtube "google.golang.org/api/youtube/v3"
 )
@@ -99,7 +101,7 @@ func ReadCredential() {
 
 func createJwtToken(userId string, userEmail string) string {
 	// store newJwt in DB
-	newJwtToken := utils.JwtPrefix + userId
+	newJwtToken := b64.StdEncoding.EncodeToString([]byte(utils.JwtPrefix + userId))
 	db.AddJwtToken(newJwtToken, userEmail)
 	return newJwtToken
 }
