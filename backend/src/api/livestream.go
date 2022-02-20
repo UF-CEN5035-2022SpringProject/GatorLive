@@ -2,6 +2,8 @@ package api
 
 import (
 	"context"
+	"fmt"
+
 	// "encoding/json"
 	// "fmt"
 	"encoding/json"
@@ -11,8 +13,9 @@ import (
 	// "io/ioutil"
 	"net/http"
 
+	"github.com/UF-CEN5035-2022SpringProject/GatorStore/db"
 	"github.com/UF-CEN5035-2022SpringProject/GatorStore/logger"
-	// "github.com/UF-CEN5035-2022SpringProject/GatorStore/db"
+
 	// "github.com/UF-CEN5035-2022SpringProject/GatorStore/logger"
 	"github.com/gorilla/mux"
 	"golang.org/x/oauth2"
@@ -73,6 +76,17 @@ func bind(service *youtube.Service, live *youtube.LiveBroadcast, stream *youtube
 func verify(jwtToken string, storeid string) string {
 	return "1"
 }
+func GetEmail(jwtToken string) map[string]interface{} {
+	dsnap, err := db.FireBaseClient.Collection("jwtTokenMap").Doc(jwtToken).Get(db.DatabaseCtx)
+	if err != nil {
+		logger.WarningLogger.Printf("Cannot find user by email. %s", err)
+		return nil
+	}
+	value := dsnap.Data()
+	logger.DebugLogger.Printf("Document data: %#v\n", value)
+
+	return value
+}
 func CreateLivebroadcast(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	storeId := vars["storeId"]
@@ -98,20 +112,29 @@ func CreateLivebroadcast(w http.ResponseWriter, r *http.Request) {
 		// log.Fatalf("Unable to create YouTube service: %v", e)
 	}
 
-	accessToken := oauth2.Token{}
+	emailObj := GetEmail(jwtToken)
+	email := fmt.Sprintf("%v", emailObj["Email"])
+	userProfile := db.GetUserObj(email)
+	tokenByte := []byte(fmt.Sprintf("%v", userProfile["accessToken"]))
 
+	var accessToken oauth2.Token
+	err = json.Unmarshal(tokenByte, &accessToken)
+	if err != nil {
+		logger.DebugLogger.Panicf("Unable to decode accessToken: %v", err)
+		// log.Fatalf("Unable to create YouTube service: %v", e)
+	}
 	ctx := context.Background()
 	client := oauth2.NewClient(ctx, oauth2.StaticTokenSource(&accessToken))
 	service, e := youtube.New(client)
 	if e != nil {
 		logger.DebugLogger.Panicf("Unable to create YouTube service: %v", e)
 	}
-
-	startTime := time.Now().Add(time.Minute * 10)
+	createTime := time.Now()
+	startTime := createTime.Add(time.Minute * 10)
 	endTime := startTime.Add((time.Hour * 24))
 	newLive := &youtube.LiveBroadcast{
 		Snippet: &youtube.LiveBroadcastSnippet{
-			Title:              title.Title + storeId,
+			Title:              storeId + "-" + title.Title,
 			ScheduledStartTime: startTime.UTC().Format(time.RFC3339),
 			ScheduledEndTime:   endTime.UTC().Format(time.RFC3339),
 		},
@@ -128,4 +151,21 @@ func CreateLivebroadcast(w http.ResponseWriter, r *http.Request) {
 
 	stream := getStream(service)
 	bind(service, newLive, stream)
+
+	var response map[string]interface{}
+	response["id"] = newLive.Id
+	response["title"] = newLive.Snippet.Title
+	response["streamKey"] = stream.Cdn.IngestionInfo.StreamName
+	response["streamUrl"] = stream.Cdn.IngestionInfo.IngestionAddress
+	response["createTime"] = createTime.UTC().Format(time.RFC3339)
+	response["updateTime"] = createTime.UTC().Format(time.RFC3339)
+
+	resp, err := JsonResponse(response, 0)
+
+	if err != nil {
+		logger.ErrorLogger.Fatalf("Error on wrapping JSON resp %s", err)
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Write(resp)
 }

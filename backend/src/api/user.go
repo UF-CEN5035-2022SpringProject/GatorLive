@@ -143,6 +143,11 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	}
 	profile := GetUserProfile(tok.AccessToken)
 
+	tokenBytes, err := json.Marshal(tok)
+	if err != nil {
+		logger.DebugLogger.Panicf("Unable to create token json: %v", err)
+	}
+	tokenString := string(tokenBytes)
 	// Flow: Check the user email
 	//    - No email -> store and return the obj
 	//    - Email -> update the token and return the obj
@@ -154,10 +159,10 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		userData["name"] = profile.Name
 		userData["email"] = profile.Email
 		userData["jwtToken"] = "gatorStore_qeqweiop122133"
-		userData["accessToken"] = tok.AccessToken
+		userData["accessToken"] = tokenString
 		db.AddUserObj(profile.Email, userData)
 	} else {
-		db.UpdateUserObj(profile.Email, "accessToken", tok.AccessToken)
+		db.UpdateUserObj(profile.Email, "accessToken", tokenString)
 		userData = db.GetUserObj(profile.Email)
 	}
 

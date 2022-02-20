@@ -40,7 +40,7 @@ func main() {
 
 	// Store
 	r.HandleFunc(prodRoutePrefix+"/store/{storeId}/product-list", test.EchoString)
-
+	r.HandleFunc(prodRoutePrefix+"/store/{storeId}/livestream", api.CreateLivebroadcast)
 	// read google oauth2 credentials
 	api.ReadCredential()
 	logger.InfoLogger.Println("client id: " + api.ClientID)
