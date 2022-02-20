@@ -14,10 +14,12 @@ var FireBaseClient *firestore.Client
 var DatabaseCtx context.Context
 
 // Database Collections(Tables)
-var Collections = map[string]string{
-	"users":    "users",
-	"stores":   "stores",
-	"products": "products",
+var DbCollections = map[string]string{
+	"users":       "users",
+	"stores":      "stores",
+	"products":    "products",
+	"settings":    "settings",
+	"jwtTokenMap": "jwtTokenMap",
 }
 
 func ConnectionCreate() {

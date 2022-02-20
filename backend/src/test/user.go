@@ -10,7 +10,7 @@ import (
 )
 
 func TestDBGetUserObj(w http.ResponseWriter, r *http.Request) {
-	dsnap, err := db.FireBaseClient.Collection(db.Collections["users"]).Doc("test").Get(db.DatabaseCtx)
+	dsnap, err := db.FireBaseClient.Collection(db.DbCollections["users"]).Doc("test").Get(db.DatabaseCtx)
 	if err != nil {
 		// t.Errorf("Error retreiving value in TestDBGetUserObj")
 		logger.ErrorLogger.Fatalf("Error retreiving value in TestDBGetUserObj. %s", err)
