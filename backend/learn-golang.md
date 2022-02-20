@@ -89,4 +89,11 @@ Go is very hesitant about implicit data conversion. So, we must be clear of the 
   
   // 97, int32
   ```
-  
+
+
+# Constant 
+---
+
+# Function
+---
+https://medium.com/rungo/the-anatomy-of-functions-in-go-de56c050fe11
