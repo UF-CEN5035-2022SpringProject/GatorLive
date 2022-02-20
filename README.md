@@ -121,30 +121,23 @@ Golang and backend set up please check [backendend-readme.md](https://github.com
  - **Header**
    | Name | Type | Description |
    | --- | --- | --- |
-   | time | datetime | string |
+   | time | datetime | request time |
+   | Authorization | string | (optional) jwtToken |
    
  - **Request Body Table**
    | Name | Type | Description |
    | ---  | --- | --- |
    | code | string | Oauth2 code for requesting Google API |
-   | jwtToken | string | Use for GatorStore Login |
 
     Example:
     1. Without user jwtToken in web page session, login by Oauth2
      ```
      {
          'code': 'qejklsadiup1io135',
-         'jwtToken': ''
      }
      ```
 
-    2. Using user jwtToken login directly
-     ```
-     {
-         'code': '',
-         'jwtToken': 'gatorStore_qeqweiop122133'
-     }
-     ```
+    2. Using user jwtToken login directly, put the token in the header as "Authorization"
      
  - **Response**  
     Success: 
@@ -184,13 +177,69 @@ Golang and backend set up please check [backendend-readme.md](https://github.com
       | INVALID_ACCESSTOKEN | 9000 | 403 | Expire Google Access Token |
   
 ---
-#### UA2. User Info Update
+#### UA2. Get User Info 
 ---
 #### UA3. User Store List
 ---
+- Method: Get
+ - {routePath}: /user/store-list
+ - **Header**
+   | Name | Type | Description |
+   | --- | --- | --- |
+   | time | datetime | request time |
+   | Authorization | string | jwtToken |
+     
+ - **Response**  
+    Success: 
+    ```
+    {
+        "status": 0,
+        "result": {
+              "store-list": [
+                {
+                  'id': "GatorStore_1",
+                  'name': "GoGoGator",
+                  'userId': "11001",
+                  'createTime': "2006-01-02T15:04:05Z07:00",
+                  'updateTime': "2006-01-02T15:04:05Z07:00",
+                  'isLive': True
+                },
+                {
+                  'id': "GatorStore_1",
+                  'name': "IamTheHero",
+                  'userId': "11001",
+                  'createTime': "2006-01-02T15:04:05Z07:00",
+                  'updateTime': "2006-01-02T15:04:05Z07:00",
+                  'isLive': True
+                },
+              ]
+        }
+    }
+    ```
+
+    Error:
+     ```
+     {
+         "status": 800,
+         "result": {
+            "errorName": "MISS_PARAMS"
+         }
+     }
+     ```
+   
+     Error Code Table for error situation:
+
+      | ErrorName | ErrorCode | HttpStatus | Description |
+      | ---  | --- | --- | --- |
+      | MISS_PARAMS | 800 | 400 | |
+      | INVALID_PARAMS | 801 | 400 | |
+      | NO_JWTTOKEN | 1000 | 401 | empty jwtToken |
+      | INVALID_JWTTOKEN | 1001 | 401 | Expire or invalid jwtToken |
+      | INVALID_ACCESSTOKEN | 9000 | 403 | Expire Google Access Token |
 
 
 ### Store API URLs
+---
 #### SA1. Store Livestream API
  - Method: POST
  - {routePath}: /store/{store id}/livestream
@@ -249,9 +298,12 @@ Golang and backend set up please check [backendend-readme.md](https://github.com
       | INVALID_ACCESSTOKEN | 9000 | 403 | Expire Google Access Token |
   
 ### Product API URLs
+---
 
-
+### Test API URLs
+---
 ## Ojbect Document
+---
 Object Table Columns 
 
 | Name | Description |
@@ -261,7 +313,7 @@ Object Table Columns
 | Type | variable type or method return type |
 | Description | descibe the attribute purpose |
 
-
+---
 #### User Object
 If user has already register, an **uniqueId** will be assigned to user.  
 Or else we'll use **email** as a identifier.
@@ -286,6 +338,31 @@ JSON Example:
   'accessToken': "GatorStore_10302323",
   'createTime': "2006-01-02T15:04:05Z07:00"
   'updateTime': "2006-01-02T15:04:05Z07:00"
+}
+```
+---
+#### Store Object
+
+Each store will have uniqueId, and belong to one user who created it.
+
+| Var/Method | Key/Optional | Type | Description |
+| ---  | --- | --- | --- |
+| id | K | string | storeId - unique identifier |
+| name |   | string | storeName |
+| userId | | string | unique creator |
+| createTime |  | string | create datetime | 
+| updateTime |  | string | latest update datetime | 
+| isLive | | boolean | check if this store is on live |
+
+JSON Example:
+```
+{
+  'id': "GatorStore_1",
+  'name': "GoGoGator",
+  'userId': "11001",
+  'createTime': "2006-01-02T15:04:05Z07:00",
+  'updateTime': "2006-01-02T15:04:05Z07:00",
+  'isLive': True
 }
 ```
 
