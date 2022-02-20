@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/UF-CEN5035-2022SpringProject/GatorStore/db"
 	"github.com/UF-CEN5035-2022SpringProject/GatorStore/logger"
 )
 
@@ -32,7 +33,28 @@ func CrossAllowMiddleware(next http.Handler) http.Handler {
 
 func AuthMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		//TODO: Add authentication
+		// TODO: Add authentication
+		token := r.Header.Get("Authorization")
+		logger.DebugLogger.Printf("Authorization header token %s\n", token)
+
+		if token == "" {
+			logger.WarningLogger.Printf("Authorization empty token %s\n", token)
+			http.Error(w, "UnAuthorized", http.StatusUnauthorized)
+			return
+		}
+
+		jwtMap := db.MapJwtToken(token)
+
+		if user, found := jwtMap[token]; found {
+			// We found the token in our map
+			logger.DebugLogger.Printf("Authenticated user %s\n", user)
+			// Pass down the request to the next middleware (or final handler)
+			next.ServeHTTP(w, r)
+		} else {
+			// Write an error and stop the handler chain
+			http.Error(w, "UnAuthorized", http.StatusUnauthorized)
+			return
+		}
 		next.ServeHTTP(w, r)
 	})
 }

@@ -17,6 +17,8 @@ import (
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 
+	b64 "encoding/base64"
+
 	g "google.golang.org/api/oauth2/v2"
 	youtube "google.golang.org/api/youtube/v3"
 )
@@ -97,16 +99,15 @@ func ReadCredential() {
 	RedirectURL = cre.Web.Redirect_uris
 }
 
-func createJwtToken(userId string, userEmail string) string {
+func createJwtToken(userId string, userEmail string, nowTime string) string {
 	// store newJwt in DB
-	newJwtToken := utils.JwtPrefix + userId
-	db.AddJwtToken(newJwtToken, userEmail)
+	newJwtToken := b64.StdEncoding.EncodeToString([]byte(utils.JwtPrefix + userId))
+	db.AddJwtToken(newJwtToken, userEmail, nowTime)
 	return newJwtToken
 }
 
 // API ENTRYPOINT
 func Login(w http.ResponseWriter, r *http.Request) {
-	// TODO @chouhy
 	// setup config
 	ctx := context.Background()
 	conf := &oauth2.Config{
@@ -169,7 +170,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 			Id:          newUserId,
 			Name:        profile.Name,
 			Email:       profile.Email,
-			JwtToken:    createJwtToken(newUserId, profile.Email),
+			JwtToken:    createJwtToken(newUserId, profile.Email, nowTime),
 			AccessToken: tok.AccessToken,
 			CreateTime:  nowTime,
 			UpdateTime:  nowTime,
@@ -203,6 +204,11 @@ func UserInfo(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
 		fmt.Fprintf(w, "Get %v user info", vars["userId"])
 		jwtToken := r.Header.Get("jwtToken")
+		jwtMapObj := db.MapJwtToken(jwtToken)
+		if jwtMapObj == nil {
+			logger.ErrorLogger.Panicf("Error, unable get jwtMapObj")
+		}
+
 		userEmail := db.MapJwtToken(jwtToken)["email"]
 		userData := db.GetUserObj(userEmail.(string))
 
