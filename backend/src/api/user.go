@@ -155,6 +155,11 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	}
 	profile := GetUserProfile(tok.AccessToken)
 
+	tokenBytes, err := json.Marshal(tok)
+	if err != nil {
+		logger.DebugLogger.Panicf("Unable to create token json: %v", err)
+	}
+	tokenString := string(tokenBytes)
 	// Flow: Check the user email
 	//    - No email -> store and return the obj
 	//    - Email -> update the token and return the obj
@@ -163,8 +168,8 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		// create userId and assign JWT
 		newUserId := db.GetUserNewId()
 		logger.DebugLogger.Printf("New user, assign ID: %s", newUserId)
-		// Add user Data
-
+		
+    // Add user Data
 		nowTime := time.Now().UTC().Format(time.RFC3339)
 		userObj := &db.UserObject{
 			Id:          newUserId,
@@ -181,9 +186,10 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		json.Unmarshal(userObjStr, &convertMap)
 
 		userData = convertMap
+
 		db.AddUserObj(profile.Email, userData)
 	} else {
-		db.UpdateUserObj(profile.Email, "accessToken", tok.AccessToken)
+		db.UpdateUserObj(profile.Email, "accessToken", tokenString)
 		userData = db.GetUserObj(profile.Email)
 	}
 

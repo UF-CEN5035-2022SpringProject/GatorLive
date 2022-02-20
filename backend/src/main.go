@@ -40,6 +40,7 @@ func main() {
 
 	// Store
 	authApis.HandleFunc(prodRoutePrefix+"/store/{storeId}/product-list", test.EchoString)
+  authApis.HandleFunc(prodRoutePrefix+"/store/{storeId}/livestream", api.CreateLivebroadcast)
 
 	// TEST API path
 	r.HandleFunc(testRoutePrefix+"/test", test.EchoString).Methods("GET", "OPTIONS")
