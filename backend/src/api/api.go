@@ -40,6 +40,7 @@ func AuthMiddleware(next http.Handler) http.Handler {
 		if token == "" {
 			logger.WarningLogger.Printf("Authorization empty token %s\n", token)
 			http.Error(w, "UnAuthorized", http.StatusUnauthorized)
+			return
 		}
 
 		jwtMap := db.MapJwtToken(token)
@@ -52,6 +53,7 @@ func AuthMiddleware(next http.Handler) http.Handler {
 		} else {
 			// Write an error and stop the handler chain
 			http.Error(w, "UnAuthorized", http.StatusUnauthorized)
+			return
 		}
 		next.ServeHTTP(w, r)
 	})

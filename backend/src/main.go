@@ -45,6 +45,9 @@ func main() {
 	r.HandleFunc(testRoutePrefix+"/test", test.EchoString).Methods("GET", "OPTIONS")
 	r.HandleFunc(testRoutePrefix+"/user/login", test.TestDBGetUserObj).Methods("GET", "POST", "OPTIONS")
 
+	testAuthApis := r.PathPrefix(testRoutePrefix).Subrouter()
+	testAuthApis.HandleFunc("/user/info", test.TestDBGetUserObj)
+
 	// read google oauth2 credentials
 	api.ReadCredential()
 	logger.InfoLogger.Println("client id: " + api.ClientID)
@@ -56,6 +59,7 @@ func main() {
 		r.Use(api.CrossAllowMiddleware)
 		r.Use(mux.CORSMethodMiddleware(r))
 	}
+	testAuthApis.Use(api.AuthMiddleware)
 	authApis.Use(api.AuthMiddleware)
 	r.Use(api.HeaderMiddleware)
 
