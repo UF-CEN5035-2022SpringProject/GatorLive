@@ -96,4 +96,5 @@ Go is very hesitant about implicit data conversion. So, we must be clear of the 
 
 # Function
 ---
-https://medium.com/rungo/the-anatomy-of-functions-in-go-de56c050fe11
+- https://medium.com/rungo/the-anatomy-of-functions-in-go-de56c050fe11
+- Method (Function) in Golang https://go.dev/tour/methods/1
