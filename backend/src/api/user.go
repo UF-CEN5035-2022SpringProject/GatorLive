@@ -168,15 +168,15 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		// create userId and assign JWT
 		newUserId := db.GetUserNewId()
 		logger.DebugLogger.Printf("New user, assign ID: %s", newUserId)
-		
-    // Add user Data
+
+		// Add user Data
 		nowTime := time.Now().UTC().Format(time.RFC3339)
 		userObj := &db.UserObject{
 			Id:          newUserId,
 			Name:        profile.Name,
 			Email:       profile.Email,
 			JwtToken:    createJwtToken(newUserId, profile.Email, nowTime),
-			AccessToken: tok.AccessToken,
+			AccessToken: tokenString,
 			CreateTime:  nowTime,
 			UpdateTime:  nowTime,
 		}
