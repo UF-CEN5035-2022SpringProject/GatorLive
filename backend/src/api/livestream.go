@@ -152,8 +152,6 @@ func CreateLivebroadcast(w http.ResponseWriter, r *http.Request) {
 	stream := getStream(service)
 	bind(service, newLive, stream)
 
-	// var response map[string]interface{}
-
 	response := make(map[string]interface{})
 	response["id"] = newLive.Id
 	response["title"] = newLive.Snippet.Title
