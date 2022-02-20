@@ -23,7 +23,7 @@ var Collections = map[string]string{
 func ConnectionCreate() {
 	// Use a service account
 	DatabaseCtx = context.Background()
-	sa := option.WithCredentialsFile("./uf-cen5035-se-firebase-adminsdk-ziukh-6d15950729.json")
+	sa := option.WithCredentialsFile("./db_secret.json")
 	app, err := firebase.NewApp(DatabaseCtx, nil, sa)
 	if err != nil {
 		logger.ErrorLogger.Fatalln(err)

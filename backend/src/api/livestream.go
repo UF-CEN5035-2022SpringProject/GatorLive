@@ -90,7 +90,7 @@ func GetEmail(jwtToken string) map[string]interface{} {
 func CreateLivebroadcast(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	storeId := vars["storeId"]
-	jwtToken := r.Header.Get("jwtToken")
+	jwtToken := r.Header.Get("Authorization")
 
 	// TODO verify
 	if verify(jwtToken, storeId) == "" {
@@ -152,7 +152,9 @@ func CreateLivebroadcast(w http.ResponseWriter, r *http.Request) {
 	stream := getStream(service)
 	bind(service, newLive, stream)
 
-	var response map[string]interface{}
+	// var response map[string]interface{}
+
+	response := make(map[string]interface{})
 	response["id"] = newLive.Id
 	response["title"] = newLive.Snippet.Title
 	response["streamKey"] = stream.Cdn.IngestionInfo.StreamName
