@@ -246,7 +246,7 @@ Golang and backend set up please check [backendend-readme.md](https://github.com
  - **Header**
    | Name | Type | Description |
    | --- | --- | --- |
-   | jwtToken | string | Use for GatorStore Login |
+   | Authorization | string | Use for GatorStore Login |
    
  - **Request Body Table**
    | Name | Type | Description |
