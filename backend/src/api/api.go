@@ -35,6 +35,13 @@ func AuthMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// TODO: Add authentication
 		token := r.Header.Get("Authorization")
+		logger.DebugLogger.Printf("Authorization header token %s\n", token)
+
+		if token == "" {
+			logger.WarningLogger.Printf("Authorization empty token %s\n", token)
+			http.Error(w, "UnAuthorized", http.StatusUnauthorized)
+		}
+
 		jwtMap := db.MapJwtToken(token)
 
 		if user, found := jwtMap[token]; found {

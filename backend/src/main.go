@@ -24,24 +24,26 @@ func main() {
 	// create DB connection
 	db.ConnectionCreate()
 
-	r := mux.NewRouter()
-	// set up routing path
+	// set up root routing path
 	prodRoutePrefix := "/api"
-
-	// TEST API path
 	testRoutePrefix := "/test/api"
-	r.HandleFunc(testRoutePrefix+"/test", test.EchoString).Methods("GET", "OPTIONS")
-	r.HandleFunc(testRoutePrefix+"/user/login", test.TestDBGetUserObj).Methods("GET", "POST", "OPTIONS")
 
+	r := mux.NewRouter()
+
+	// login API
+	r.HandleFunc(prodRoutePrefix+"/user/login", api.Login).Methods("GET", "POST", "OPTIONS")
+
+	authApis := r.PathPrefix(prodRoutePrefix).Subrouter()
 	// USER path
-	loginApi := r.PathPrefix(prodRoutePrefix + "/user/login").Subrouter()
-	loginApi.HandleFunc(prodRoutePrefix+"/user/login", api.Login).Methods("GET", "POST", "OPTIONS")
-
-	r.HandleFunc(prodRoutePrefix+"/user/info", api.UserInfo).Methods("GET", "PUT", "OPTIONS")
-	r.HandleFunc(prodRoutePrefix+"/user/store-list", test.EchoString)
+	authApis.HandleFunc("/user/info", api.UserInfo).Methods("GET", "PUT", "OPTIONS")
+	authApis.HandleFunc("/user/store-list", test.EchoString)
 
 	// Store
-	r.HandleFunc(prodRoutePrefix+"/store/{storeId}/product-list", test.EchoString)
+	authApis.HandleFunc(prodRoutePrefix+"/store/{storeId}/product-list", test.EchoString)
+
+	// TEST API path
+	r.HandleFunc(testRoutePrefix+"/test", test.EchoString).Methods("GET", "OPTIONS")
+	r.HandleFunc(testRoutePrefix+"/user/login", test.TestDBGetUserObj).Methods("GET", "POST", "OPTIONS")
 
 	// read google oauth2 credentials
 	api.ReadCredential()
@@ -53,11 +55,10 @@ func main() {
 	if IsDev {
 		r.Use(api.CrossAllowMiddleware)
 		r.Use(mux.CORSMethodMiddleware(r))
-		r.Use(api.AuthMiddleware)
 	}
+	authApis.Use(api.AuthMiddleware)
 	r.Use(api.HeaderMiddleware)
 
-	//
 	logger.InfoLogger.Println(appName + " server is start at port: " + port)
 	srv := &http.Server{
 		Handler: r,
