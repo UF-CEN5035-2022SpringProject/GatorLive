@@ -68,3 +68,16 @@
 .streamChat p {
     padding-bottom: 10px;
 }
+
+.selectStreamItemList {
+    display: flex;
+    flex-direction: row;
+    text-align: center;
+}
+.selectStreamItem {
+    margin-left: 20px;
+}
+.selectStreamItem img {
+    width: 150px;
+    height: 150px; 
+}

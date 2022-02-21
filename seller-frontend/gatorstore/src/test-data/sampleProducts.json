@@ -1,0 +1,17 @@
+[
+    {
+        "name": "Gators Mug",
+        "imgPath": "../images/gator.jpg",
+        "price": 12.50
+    },
+    {
+        "name": "UF Hoodie",
+        "imgPath": "../images/gator-hoodie.png",
+        "price": 30
+    },
+    {
+        "name": "Gator Plush",
+        "imgPath": "../images/gator-plush.png",
+        "price": 15
+    }
+]

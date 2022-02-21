@@ -4,6 +4,8 @@ import Footer from '../components/Footer';
 import Button from '@mui/material/Button';
 import {Grid} from "@material-ui/core";
 import TextField from "@mui/material/TextField";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
 import Productcontent from '../components/ProductContent';
 
 import CircleIcon from '@mui/icons-material/Circle';
@@ -11,8 +13,10 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import '../styles/sellerStorePage.css';
 
 import testStreamObject from '../test-data/streamObject.json';
+import sampleProducts from '../test-data/sampleProducts.json';
+import gatorPlush from '../images/gator-plush.png';
 
-function ProductList() {
+function SellerStorePage() {
   var storeObject = {id: "2", isLive: false}; // TEST: it's a local replica of the test streamObject.json (represents Database)
 
   const [liveInfoBarState, SetLiveInfoBarState] = useState('not-live');
@@ -22,8 +26,8 @@ function ProductList() {
     /* call API - TODO: When Yiming finishes this API. Store the streamObject in variable storeObject
     const requestOptions = {
       method: 'POST',
-      header: {'jwtToken': jwtToken},
-      body: JSON.stringify({ title: sTitle }) 
+      headers: {'jwtToken': jwtToken},
+      body: JSON.stringify({ storeID : storeObject.id }) 
     };
     fetch('http://10.136.228.201:8080/store/'+ storeObject.id +'/livestream', requestOptions)
         .then(response => response.json())
@@ -53,23 +57,12 @@ function ProductList() {
       CheckStoreObject();
     }, 15000);
   
-    return () => clearInterval(interval); // This represents the unmount function, in which you need to clear your interval to prevent memory leaks.
+    return () => clearInterval(interval);
   }, [])
 
-  /* Overlays' hooks:
-  const [successOverlayDisplayed, ChangeSuccessOverlayDisplayed] = useState("none");
-  const [titleOverlayDisplayed, ChangeTitleOverlayDisplayed] = useState("none");
-
-  useEffect(() => {
-    document.body.style.overflowY = (titleOverlayDisplayed !== "none") ? "hidden" : "scroll";    
-  }, [titleOverlayDisplayed]);
-  useEffect(() => {
-    document.body.style.overflowY = (successOverlayDisplayed !== "none") ? "hidden" : "scroll";
-  }, [successOverlayDisplayed]);
-*/
-
-  // High IQ test:
+  // Hook for overlay
   const [currentOverlay, ChangeCurrentOverlay] = useState("none");
+  // Effect for overlay (to freeze scrolling when an overlay is open)
   useEffect(() => {
     document.body.style.overflowY = (currentOverlay !== "none") ? "hidden" : "scroll";    
   }, [currentOverlay]);
@@ -88,10 +81,9 @@ function ProductList() {
             <div class="transparentBG"/>
             <div class="stream-link-container" style={{top: '35vh'}}>
               <p>Enter a title for your stream</p>
-              <TextField id="titleField" variant="outlined" color="primary" placeholder="Title" size="small" onChange={(e) => SetStreamTitle(e.target.value)} style={{width: "100%", marginBottom: 15}}/>
+              <TextField id="titleField" variant="outlined" color="primary" placeholder="Title" size="small" onChange={e => {SetStreamTitle(e.target.value);}} style={{width: "100%", marginBottom: 15}}/>
               <div style={{textAlign: "center"}}>
                 <Button variant="contained" color="warning" onClick={() => {
-                    //ChangeTitleOverlayDisplayed("none");
                     ChangeCurrentOverlay("none");
                 }} size="large" style={{marginRight: "10%"}}>Cancel</Button>
                 
@@ -114,14 +106,24 @@ function ProductList() {
             <div class="stream-link-container">
               <h1>What Products Will You Showcase?</h1>
               
-              <div>
-                nuts
-              </div>
+              <List selectable={true} selected={0} class="selectStreamItemList">
+                {
+                  sampleProducts.map(function (product) {
+                    return (
+                      <ListItem justify="between" class="selectStreamItem" onClick={(e) => {e.target.style.border = "navy solid 2px"}}>
+                        <h3>{product.name}</h3>
+                        <img src={gatorPlush} />
+                        <p>${product.price}</p>
+                      </ListItem>
+                    );
+                  })
+                }
+              </List>
     
               <div style={{textAlign: "center"}}>
                 <Button variant="contained" color="primary" onClick={() => { 
-                  // call YT API with this title: 
-                  GoLive(streamTitle);
+                  // Call YouTube API with this title: 
+                  GoLive("My First Test Livestream - Yiming's UF Store");
                   
                   ChangeCurrentOverlay("showStreamCreated");
                 }} size="large">Continue</Button>
@@ -157,84 +159,23 @@ function ProductList() {
     )
   }
 
-  /* Overlay displaying input for stream title:
-  function StreamTitleOverlay() {
-    const [streamTitle, SetStreamTitle] = useState("");
-
-    return(
-      <div class="go-live-overlay" style={{display: titleOverlayDisplayed}}>
-        <div class="transparentBG"/>
-        <div class="stream-link-container" style={{top: '35vh'}}>
-          <p>Enter a title for your stream</p>
-          <TextField id="titleField" variant="outlined" color="primary" placeholder="Title" size="small" onChange={(e) => SetStreamTitle(e.target.value)} style={{width: "100%", marginBottom: 15}}/>
-          <div style={{textAlign: "center"}}>
-            <Button variant="contained" color="warning" onClick={() => {
-                ChangeTitleOverlayDisplayed("none");
-            }} size="large" style={{marginRight: "10%"}}>Cancel</Button>
-            
-            <Button variant="contained" color="primary" onClick={() => {
-              if (streamTitle !== "") { // if a title was typed
-                ChangeTitleOverlayDisplayed("none");
-
-                // call YT API with this title: 
-                GoLive(streamTitle);
-
-                ChangeSuccessOverlayDisplayed("block"); // display success overlay
-              } else { // give warning that title is required
-                document.getElementById("titleField").style.border = "red solid 2px";
-                document.getElementById("titleField").placeholder = "Title is Required";
-              }
-            }} size="large">Continue</Button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // Overlay displaying url and key for the new stream:
-  function StreamCreatedOverlay() {
-    return(
-      <div class="go-live-overlay" style={{display: successOverlayDisplayed}}>
-        <div class="transparentBG"/>
-        <div class="stream-link-container">
-          <h1>Stream Created!</h1>
-          <p>URL</p>
-          <div class="stream-url-box">
-            <p>{newStream.url}</p>
-            <Button variant="contained" color="secondary" onClick={() => {navigator.clipboard.writeText(newStream.url)}}><ContentCopyIcon/></Button>
-          </div>
-
-          <p>Key</p>
-          <div class="stream-url-box">
-            <p>{newStream.key}</p>
-            <Button variant="contained" color="secondary" onClick={() => {navigator.clipboard.writeText(newStream.key)}}><ContentCopyIcon/></Button>
-          </div>
-
-          <div style={{textAlign: "center"}}>
-            <Button variant="contained" color="primary" onClick={() => {ChangeSuccessOverlayDisplayed("none") }} size="large">Continue</Button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-  */
-
   // useState is needed for a new stream's information to update that HTML on <StreamCreatedOverlay/> upon their change in GoLive()
   const [newStream, SetStreamObject] = useState({key: "", url: ""});
 
   const GoLive = async (sTitle) => {
     var jwtToken = window.sessionStorage.getItem("user-jwtToken");
-
+   
+   //alert(jwtToken);
     //test:
-    SetStreamObject({key: "32432", url: sTitle});
+    //SetStreamObject({key: "32432", url: newStream.url});
 
-    /* call API
+    // call API
     const requestOptions = {
       method: 'POST',
-      header: {'jwtToken': jwtToken},
+      headers: {'Authorization': jwtToken, 'Content-Type': 'application/json'}, // ALWAYS have 'Authorization' with jwtToken in every API
       body: JSON.stringify({ title: sTitle }) 
     };
-    fetch('http://10.136.228.201:8080/store/'+ storeObject.id +'/livestream', requestOptions)
+    fetch('http://10.136.160.70:8080/api/store/'+ storeObject.id +'/livestream', requestOptions)
         .then(response => response.json())
         .then(response => {
           if (response.status === 0) {
@@ -245,13 +186,13 @@ function ProductList() {
         })
         .catch((error) => {
             console.error(error);
-        });*/
+        });
 
     // FOR testing purposes ONLY:
     testStreamObject.isLive = true; // this is equivalent to MAKING the Stream Database's 'isLive' field for this store be set to: TRUE
                   // Which is done via the above 'fetch'. Then the function below is called and it checks that 'isLive' field in the Database
 
-    CheckStoreObject(); // to not wait 60 seconds maybe? although the user will prob need a minute to set up the stream on OBS studio
+    CheckStoreObject(); // to not wait 15 seconds
   }
 
   function LiveInfoBar() {
@@ -265,8 +206,6 @@ function ProductList() {
 
             <Grid item md={4} container justifyContent="flex-end" style={{color: "grey"}}>
               <Button startIcon={<CircleIcon />} variant="contained" color="error" onClick={() => {
-                //ChangeTitleOverlayDisplayed("block");
-
                 ChangeCurrentOverlay("setStreamTitle");
               }} size="large">Go Live</Button>
             </Grid>
@@ -328,6 +267,6 @@ function ProductList() {
   );
 }
 
-export default ProductList;
+export default SellerStorePage;
 
   

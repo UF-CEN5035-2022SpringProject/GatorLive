@@ -16,7 +16,7 @@ function LoginRedirect() {
             method: 'POST',
             body: JSON.stringify({ code: loginCode})
         };
-        const res = fetch('http://10.136.228.201:8080/api/user/login', requestOptions)
+        const res = fetch('http://10.136.160.70:8080/api/user/login', requestOptions)
             .then(response => response.json())
             .then(response => {
                 backendStatus = response.status;
