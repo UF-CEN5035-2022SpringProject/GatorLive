@@ -16,6 +16,8 @@ import testStreamObject from '../test-data/streamObject.json';
 import sampleProducts from '../test-data/sampleProducts.json';
 import gatorPlush from '../images/gator-plush.png';
 
+import settings from '../settings'
+
 function SellerStorePage() {
   var storeObject = {id: "2", isLive: false}; // TEST: it's a local replica of the test streamObject.json (represents Database)
 
@@ -172,10 +174,12 @@ function SellerStorePage() {
     // call API
     const requestOptions = {
       method: 'POST',
-      headers: {'Authorization': jwtToken, 'Content-Type': 'application/json'}, // ALWAYS have 'Authorization' with jwtToken in every API
+      headers: {
+        'Authorization': jwtToken
+      }, // ALWAYS have 'Authorization' with jwtToken in every API
       body: JSON.stringify({ title: sTitle }) 
     };
-    fetch('http://10.136.160.70:8080/api/store/'+ storeObject.id +'/livestream', requestOptions)
+    fetch(settings.apiHostURL + 'store/'+ storeObject.id +'/livestream', requestOptions)
         .then(response => response.json())
         .then(response => {
           if (response.status === 0) {
