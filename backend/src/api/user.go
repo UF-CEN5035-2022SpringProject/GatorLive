@@ -102,7 +102,7 @@ func ReadCredential() {
 
 func createJwtToken(userId string, userEmail string, nowTime string) string {
 	// store newJwt in DB
-	newJwtToken := b64.StdEncoding.EncodeToString([]byte(utils.JwtPrefix+userEmail+userId)) + b64.StdEncoding.EncodeToString([]byte(nowTime))
+	newJwtToken := b64.StdEncoding.EncodeToString([]byte(utils.JwtPrefix+userEmail+userId)) + "_" + b64.StdEncoding.EncodeToString([]byte(nowTime))
 	db.AddJwtToken(newJwtToken, userEmail, nowTime)
 	return "gst." + newJwtToken
 }
