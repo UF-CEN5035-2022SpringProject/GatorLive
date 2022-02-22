@@ -150,7 +150,7 @@ func CreateLivebroadcast(w http.ResponseWriter, r *http.Request) {
 		},
 	}
 	// newLive.Snippet. = []string{"test","api"}
-	call := service.LiveBroadcasts.Insert([]string{"snippet", "status"}, newLive)
+	call := service.LiveBroadcasts.Insert([]string{"snippet", "contentDetails", "status"}, newLive)
 	newLive, err = call.Do()
 	if err != nil {
 		logger.DebugLogger.Panicf("Error making YouTube API call: %v\n", err)
@@ -166,7 +166,7 @@ func CreateLivebroadcast(w http.ResponseWriter, r *http.Request) {
 	response["streamUrl"] = stream.Cdn.IngestionInfo.IngestionAddress
 	response["createTime"] = createTime.UTC().Format(time.RFC3339)
 	response["updateTime"] = createTime.UTC().Format(time.RFC3339)
-
+	response["embedHTML"] = newLive.ContentDetails.MonitorStream.EmbedHtml
 	resp, err := JsonResponse(response, 0)
 
 	if err != nil {
