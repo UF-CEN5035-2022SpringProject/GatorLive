@@ -97,25 +97,19 @@ func CreateLivebroadcast(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	logger.DebugLogger.Printf("r body b: %v, %T", r.Body, r.Body)
 	b, err := io.ReadAll(r.Body)
-	// logger.DebugLogger.Printf("request livestream create body %s", b)
-
 	if err != nil {
 		logger.DebugLogger.Panicf("Unable to read livestream create req: %v", err)
 	}
+	
 	var title Title
-
-	logger.DebugLogger.Printf("body b: %v, %T", b, b)
 	err = json.Unmarshal(b, &title)
 
-	logger.DebugLogger.Printf("after body b: %v, %T. Title %v", b, b, title)
 	if err != nil {
 		logger.DebugLogger.Panicf("Unable to decode livestream create req: %v, code %s", err, jwtToken)
-		// log.Fatalf("Unable to create YouTube service: %v", e)
 	}
 
-	emailObj := GetEmail(jwtToken)
+	emailObj := db.MapJwtToken(jwtToken)
 	email := fmt.Sprintf("%v", emailObj["Email"])
 	userProfile := db.GetUserObj(email)
 	tokenByte := []byte(fmt.Sprintf("%v", userProfile["accessToken"]))
@@ -123,11 +117,9 @@ func CreateLivebroadcast(w http.ResponseWriter, r *http.Request) {
 	var accessToken oauth2.Token
 	err = json.Unmarshal(tokenByte, &accessToken)
 	if err != nil {
-		logger.DebugLogger.Printf("Unable to decode accessToken: %v", err)
-		// log.Fatalf("Unable to create YouTube service: %v", e)
+		logger.DebugLogger.Panicf("Unable to decode accessToken: %v", err)
 	}
 
-	logger.DebugLogger.Printf("stop point1")
 	ctx := context.Background()
 	client := oauth2.NewClient(ctx, oauth2.StaticTokenSource(&accessToken))
 	service, e := youtube.New(client)
@@ -138,7 +130,6 @@ func CreateLivebroadcast(w http.ResponseWriter, r *http.Request) {
 	startTime := createTime.Add(time.Minute * 10)
 	endTime := startTime.Add((time.Hour * 24))
 
-	logger.DebugLogger.Printf("1111 check title: %v", title.Title)
 	newLive := &youtube.LiveBroadcast{
 		Snippet: &youtube.LiveBroadcastSnippet{
 			Title:              storeId + "-" + title.Title,
@@ -150,7 +141,7 @@ func CreateLivebroadcast(w http.ResponseWriter, r *http.Request) {
 		},
 	}
 	// newLive.Snippet. = []string{"test","api"}
-	call := service.LiveBroadcasts.Insert([]string{"snippet", "status"}, newLive)
+	call := service.LiveBroadcasts.Insert([]string{"snippet", "contentDetails", "status"}, newLive)
 	newLive, err = call.Do()
 	if err != nil {
 		logger.DebugLogger.Panicf("Error making YouTube API call: %v\n", err)
@@ -166,7 +157,7 @@ func CreateLivebroadcast(w http.ResponseWriter, r *http.Request) {
 	response["streamUrl"] = stream.Cdn.IngestionInfo.IngestionAddress
 	response["createTime"] = createTime.UTC().Format(time.RFC3339)
 	response["updateTime"] = createTime.UTC().Format(time.RFC3339)
-
+	response["embedHTML"] = newLive.ContentDetails.MonitorStream.EmbedHtml
 	resp, err := JsonResponse(response, 0)
 
 	if err != nil {
