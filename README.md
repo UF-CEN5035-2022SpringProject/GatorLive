@@ -273,6 +273,7 @@ Golang and backend set up please check [backendend-readme.md](https://github.com
               'streamUrl': "some url",
               'createTime': "2006-01-02T15:04:05Z07:00"
               'updateTime': "2006-01-02T15:04:05Z07:00"
+              'embedHTML': "some iframe html"
         }
     }
     ```
