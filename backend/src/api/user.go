@@ -102,9 +102,9 @@ func ReadCredential() {
 
 func createJwtToken(userId string, userEmail string, nowTime string) string {
 	// store newJwt in DB
-	newJwtToken := b64.StdEncoding.EncodeToString([]byte(utils.JwtPrefix+userEmail+userId)) + "_" + b64.StdEncoding.EncodeToString([]byte(nowTime))
+	newJwtToken := "gst." + b64.StdEncoding.EncodeToString([]byte(utils.JwtPrefix+userEmail+userId)) + "_" + b64.StdEncoding.EncodeToString([]byte(nowTime))
 	db.AddJwtToken(newJwtToken, userEmail, nowTime)
-	return "gst." + newJwtToken
+	return newJwtToken
 }
 
 // API ENTRYPOINT
@@ -190,7 +190,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		userData = convertMap
 
 		db.AddUserObj(profile.Email, userData)
-		db.AddUserCount(newUserCount)
+		db.UpdateUserCount(newUserCount)
 	} else {
 		db.UpdateUserObj(profile.Email, "accessToken", tokenString)
 		userData = db.GetUserObj(profile.Email)

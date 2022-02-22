@@ -72,14 +72,6 @@ func GetUserObj(userEmail string) map[string]interface{} {
 	return value
 }
 
-func AddUserCount(newUserCount int) error {
-	_, err := FireBaseClient.Collection(DbCollections["settings"]).Doc("userAutoIncrement").Set(DatabaseCtx, newUserCount)
-	if err != nil {
-		logger.WarningLogger.Printf("Error adding value. %s", err)
-	}
-	return err
-}
-
 func AddUserObj(userEmail string, userData map[string]interface{}) error {
 	_, err := FireBaseClient.Collection(DbCollections["users"]).Doc(userEmail).Set(DatabaseCtx, userData)
 	if err != nil {
@@ -98,6 +90,20 @@ func UpdateUserObj(userEmail string, fieldStr string, fieldValue interface{}) er
 	if err != nil {
 		// Handle any errors in an appropriate way, such as returning them.
 		logger.WarningLogger.Printf("Error updating value on field %s. %s", fieldStr, err)
+	}
+	return err
+}
+
+func UpdateUserCount(newUserCount int) error {
+	_, err := FireBaseClient.Collection(DbCollections["settings"]).Doc("userAutoIncrement").Update(DatabaseCtx, []firestore.Update{
+		{
+			Path:  "number",
+			Value: newUserCount,
+		},
+	})
+	if err != nil {
+		// Handle any errors in an appropriate way, such as returning them.
+		logger.WarningLogger.Printf("Error updating userAutoIncrement to %d, error: %s", newUserCount, err)
 	}
 	return err
 }
