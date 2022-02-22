@@ -115,7 +115,7 @@ func CreateLivebroadcast(w http.ResponseWriter, r *http.Request) {
 		// log.Fatalf("Unable to create YouTube service: %v", e)
 	}
 
-	emailObj := GetEmail(jwtToken)
+	emailObj := db.MapJwtToken(jwtToken)
 	email := fmt.Sprintf("%v", emailObj["Email"])
 	userProfile := db.GetUserObj(email)
 	tokenByte := []byte(fmt.Sprintf("%v", userProfile["accessToken"]))
