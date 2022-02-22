@@ -45,9 +45,7 @@ func AuthMiddleware(next http.Handler) http.Handler {
 
 		jwtMap := db.MapJwtToken(token)
 
-		if user, found := jwtMap[token]; found {
-			// We found the token in our map
-			logger.DebugLogger.Printf("Authenticated user %s\n", user)
+		if jwtMap != nil {
 			// Pass down the request to the next middleware (or final handler)
 			next.ServeHTTP(w, r)
 		} else {
