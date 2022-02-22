@@ -1,8 +1,6 @@
 package db
 
 import (
-	"strconv"
-
 	"cloud.google.com/go/firestore"
 	"github.com/UF-CEN5035-2022SpringProject/GatorStore/logger"
 )
@@ -50,16 +48,17 @@ func AddJwtToken(jwtToken string, userEmail string, nowTime string) error {
 }
 
 /*** User functions ***/
-func GetUserNewId() string {
+func GetUserNewCount() int {
 	dsnap, err := FireBaseClient.Collection(DbCollections["settings"]).Doc("userAutoIncrement").Get(DatabaseCtx)
 	if err != nil {
 		logger.WarningLogger.Printf("Cannot userAutoIncrement in settings. Error: %s", err)
-		return ""
+		return -1
 	}
 	value := dsnap.Data()
 	newUserId := value["number"].(int64) + 1
 	logger.DebugLogger.Printf("Document data: %#v\n, %T, newUserId: %v", value["number"], value["number"], newUserId)
-	return strconv.Itoa(int(newUserId))
+	// return strconv.Itoa(int(newUserId))
+	return int(newUserId)
 }
 
 func GetUserObj(userEmail string) map[string]interface{} {
@@ -71,6 +70,14 @@ func GetUserObj(userEmail string) map[string]interface{} {
 	value := dsnap.Data()
 	logger.DebugLogger.Printf("Document data: %#v\n", value)
 	return value
+}
+
+func AddUserCount(newUserCount int) error {
+	_, err := FireBaseClient.Collection(DbCollections["settings"]).Doc("userAutoIncrement").Set(DatabaseCtx, newUserCount)
+	if err != nil {
+		logger.WarningLogger.Printf("Error adding value. %s", err)
+	}
+	return err
 }
 
 func AddUserObj(userEmail string, userData map[string]interface{}) error {
