@@ -31,7 +31,7 @@ function SellerStorePage() {
       headers: {'jwtToken': jwtToken},
       body: JSON.stringify({ storeID : storeObject.id }) 
     };
-    fetch('http://10.136.228.201:8080/store/'+ storeObject.id +'/livestream', requestOptions)
+    fetch(settings.apiHostURL + storeObject.id +'/livestream', requestOptions)
         .then(response => response.json())
         .then(response => {
           if (response.status === 0) {
@@ -69,9 +69,14 @@ function SellerStorePage() {
     document.body.style.overflowY = (currentOverlay !== "none") ? "hidden" : "scroll";    
   }, [currentOverlay]);
 
-  function Overlay() {
-    const [streamTitle, SetStreamTitle] = useState("");
+  // A twin hook state that holds the same information as streamTitle - it is needed to prevent title reset when switching overlays
+  const [newTitle, SetNewTitle] = useState("");
 
+  function Overlay() {
+    const [streamTitle, SetStreamTitle] = useState(""); // stream title state
+
+    const [productsSelected, setProductSelected] = React.useState([]); // array for products selected
+    
     return(
       <div>
         {currentOverlay === 'setStreamTitle' && (
@@ -91,7 +96,8 @@ function SellerStorePage() {
                 
                 <Button variant="contained" color="primary" onClick={() => {
                   if (streamTitle !== "") { // if a title was typed
-                      ChangeCurrentOverlay("selectStreamProducts");
+                    SetNewTitle(streamTitle);
+                    ChangeCurrentOverlay("selectStreamProducts");
                   } else { // give warning that title is required
                     document.getElementById("titleField").style.border = "red solid 2px";
                     document.getElementById("titleField").placeholder = "Title is Required";
@@ -106,13 +112,28 @@ function SellerStorePage() {
           <div class="go-live-overlay" >
             <div class="transparentBG"/>
             <div class="stream-link-container">
-              <h1>What Products Will You Showcase?</h1>
+              <h2>Select products to showcase</h2>
               
-              <List selectable={true} selected={0} class="selectStreamItemList">
+              <List selected={0} class="selectStreamItemList">
                 {
                   sampleProducts.map(function (product) {
                     return (
-                      <ListItem justify="between" class="selectStreamItem" onClick={(e) => {e.target.style.border = "navy solid 2px"}}>
+                      <ListItem selected="false" justify="between" class="selectStreamItem" onClick={
+                        (e) => {
+                          if (e.currentTarget.style.backgroundColor === "pink") { // being de-selected
+                            e.currentTarget.style.boxShadow = "none";
+                            e.currentTarget.style.backgroundColor = "lightblue";
+
+                            setProductSelected(productsSelected.filter(item => item !== product.name));
+                          } else { // being selected
+                            e.currentTarget.style.boxShadow = "inset 0px 0px 0px 2px navy";
+                            e.currentTarget.style.backgroundColor = "pink";
+
+                            setProductSelected([...productsSelected, product.name]);
+                          }
+                        }
+                        // Note: e.currentTarget manipulates parent's style (ListItem). e.target manipulates children element's style only.
+                      }>
                         <h3>{product.name}</h3>
                         <img src={gatorPlush} />
                         <p>${product.price}</p>
@@ -123,9 +144,9 @@ function SellerStorePage() {
               </List>
     
               <div style={{textAlign: "center"}}>
-                <Button variant="contained" color="primary" onClick={() => { 
+                <Button variant="contained" color="primary" onClick={() => {
                   // Call YouTube API with this title: 
-                  GoLive("My First Test Livestream - Yiming's UF Store");
+                  GoLive(newTitle, productsSelected);
                   
                   ChangeCurrentOverlay("showStreamCreated");
                 }} size="large">Continue</Button>
@@ -164,12 +185,12 @@ function SellerStorePage() {
   // useState is needed for a new stream's information to update that HTML on <StreamCreatedOverlay/> upon their change in GoLive()
   const [newStream, SetStreamObject] = useState({key: "", url: ""});
 
-  const GoLive = async (sTitle) => {
+  const GoLive = async (sTitle, productList) => {
     var jwtToken = window.sessionStorage.getItem("user-jwtToken");
    
-   //alert(jwtToken);
+    //alert(productList);
     //test:
-    //SetStreamObject({key: "32432", url: newStream.url});
+    SetStreamObject({key: "test #", url: sTitle});
 
     // call API
     const requestOptions = {
@@ -185,11 +206,13 @@ function SellerStorePage() {
           if (response.status === 0) {
             SetStreamObject({key: response.result.streamKey, url: response.result.streamUrl});
           } else {
-            alert("ERROR: YouTube API did not respond with 'success' status code 0.");
+            alert("ERROR: YouTube API did not respond with 'success' status code.");
+            window.location.href = "http://localhost:3000/landingpage";
           }
         })
         .catch((error) => {
             console.error(error);
+            alert("ERROR: Back-end is not online or did not respond.");
         });
 
     // FOR testing purposes ONLY:
@@ -229,7 +252,7 @@ function SellerStorePage() {
             </Grid>
             <Grid container spacing={0} justifyContent="center" alignItems="center" direction='row' style={{marginBottom: 20}}>
               <Grid item md={4} container justifyContent='flex-start'>
-                <iframe width="560" height="315" src="https://www.youtube.com/embed/5qap5aO4i9A?autoplay=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/5qap5aO4i9A?autoplay=1" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
               </Grid>
               <Grid item md={4} container>
                 <div class="streamChat">

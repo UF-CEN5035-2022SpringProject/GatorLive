@@ -73,11 +73,21 @@
     display: flex;
     flex-direction: row;
     text-align: center;
+    list-style-type: none;
+    margin: 10px 0 10px;
+    padding-bottom: 10px;
+    overflow-x: auto;
 }
 .selectStreamItem {
-    margin-left: 20px;
+    margin-right: 15px;
+    cursor: pointer;
+    padding: 5px;
+    background-color: lightblue;
+    border-radius: 20px;
 }
 .selectStreamItem img {
-    width: 150px;
-    height: 150px; 
+    margin: 4px 0 3px;
+    border-radius: 10px;
+    width: 130px;
+    height: 130px; 
 }

@@ -13,5 +13,10 @@
         "name": "Gator Plush",
         "imgPath": "../images/gator-plush.png",
         "price": 15
+    }, 
+    {
+        "name": "Gator Shirt",
+        "imgPath": "../images/gator-plush.png",
+        "price": 20
     }
 ]
