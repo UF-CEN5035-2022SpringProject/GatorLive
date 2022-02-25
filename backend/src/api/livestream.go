@@ -28,6 +28,9 @@ import (
 type Title struct {
 	Title string `json:"title"`
 }
+type Status struct {
+	IsLive bool `json:"isLive"`
+}
 
 // func token(accessToken string) (*oauth2.Token, error) {
 // 	return &oauth2.Token{
@@ -165,4 +168,41 @@ func CreateLivebroadcast(w http.ResponseWriter, r *http.Request) {
 	}
 
 	ReturnResponse(w, resp, http.StatusOK)
+}
+func LivestreamStatus(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	storeId := vars["storeId"]
+	jwtToken := r.Header.Get("Authorization")
+
+	// TODO verify jwtToken existence
+	emailObj := db.MapJwtToken(jwtToken)
+	email := fmt.Sprintf("%v", emailObj["Email"])
+	userProfile := db.GetUserObj(email)
+	userId := fmt.Sprintf("%v", userProfile["id"])
+	// update store object
+	if r.Method == "PUT" {
+		// TODO
+		if verify(jwtToken, storeId) == "" {
+			return
+		}
+		b, err := io.ReadAll(r.Body)
+		if err != nil {
+			logger.DebugLogger.Panicf("Unable to read livestream status req: %v", err)
+		}
+		var status Status
+		err = json.Unmarshal(b, &status)
+		if err != nil {
+			logger.DebugLogger.Panicf("Unable to decode livestream status req: %v", err)
+		}
+		db.UpdateStoreObj(userId, "isLive", status.IsLive)
+	}
+	// return store object
+	storeObj := db.GetStoreObj(userId)
+	resp, err := JsonResponse(storeObj, 0)
+	if err != nil {
+		logger.ErrorLogger.Panicf("Error on wrapping JSON resp, Error: %s", err)
+		// TODO return Error 500
+	}
+	w.WriteHeader(http.StatusOK)
+	w.Write(resp)
 }

@@ -21,14 +21,16 @@ func HeaderMiddleware(next http.Handler) http.Handler {
 
 func CrossAllowMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// Do stuff here
 		w.Header().Set("Access-Control-Allow-Origin", "*")
-		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+		w.Header().Set("Access-Control-Allow-Headers", "*")
 		w.Header().Set("Access-Control-Allow-Credentials", "true")
 		w.Header().Set("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT")
-		w.Header().Set("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers")
-		// Call the next handler, which can be another middleware in the chain, or the final handler.
-		next.ServeHTTP(w, r)
+		w.Header().Set("Access-Control-Request-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization")
+		if r.Method == "OPTIONS" {
+			w.WriteHeader(http.StatusOK)
+		} else {
+			next.ServeHTTP(w, r)
+		}
 	})
 }
 
@@ -56,10 +58,12 @@ func AuthMiddleware(next http.Handler) http.Handler {
 			errorMsg := utils.SetErrorMsg("Invalid JWT, not found")
 			resp, _ := RespJSON{int(utils.MissingJwtTokenCode), errorMsg}.SetResponse()
 			ReturnResponse(w, resp, http.StatusUnauthorized)
+
 			return
 		}
 	})
 }
+
 
 // func loggingMiddleware(next http.Handler) http.Handler {
 // 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

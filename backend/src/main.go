@@ -32,7 +32,6 @@ func main() {
 
 	// login API
 	r.HandleFunc(prodRoutePrefix+"/user/login", api.Login).Methods("GET", "POST", "OPTIONS")
-
 	authApis := r.PathPrefix(prodRoutePrefix).Subrouter()
 	// USER path
 	authApis.HandleFunc("/user/{userId}/info", api.UserInfo).Methods("GET", "PUT", "OPTIONS")
@@ -40,7 +39,8 @@ func main() {
 
 	// Store
 	authApis.HandleFunc("/store/{storeId}/product-list", test.EchoString)
-	authApis.HandleFunc("/store/{storeId}/livestream", api.CreateLivebroadcast)
+	authApis.HandleFunc("/store/{storeId}/livestream", api.CreateLivebroadcast).Methods("GET", "POST", "OPTIONS")
+	authApis.HandleFunc("/store/{storeId}/livestreamStatus", api.LivestreamStatus).Methods("GET", "PUT", "OPTIONS")
 
 	// TEST API path
 	r.HandleFunc(testRoutePrefix+"/test", test.EchoString).Methods("GET", "OPTIONS")
@@ -57,6 +57,7 @@ func main() {
 
 	// If debug = True then set the CORSMethodMiddleware
 	if IsDev {
+		r.Use(api.LoggingMiddleware)
 		r.Use(api.CrossAllowMiddleware)
 		r.Use(mux.CORSMethodMiddleware(r))
 	}
