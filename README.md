@@ -297,6 +297,63 @@ Golang and backend set up please check [backendend-readme.md](https://github.com
       | NO_JWTTOKEN | 1000 | 400 | |
       | INVALID_JWTTOKEN | 1001 | 401 | Expire or invalid jwtToken |
       | INVALID_ACCESSTOKEN | 9000 | 403 | Expire Google Access Token |
+      
+#### SA2. Store Livestream status API
+ - Method: GET/PUT
+ - {routePath}: /store/{store id}/livestreamStatus
+ - **Header**
+   | Name | Type | Description |
+   | --- | --- | --- |
+   | Authorization | string | Use for GatorStore Login |
+   
+ - **Request Body Table**
+   | Name | Type | Description |
+   | ---  | --- | --- |
+   | status | boolean | streamStatus |
+   
+    PUT Example:
+     ```
+     {
+         'isLive': true
+     }
+     ```
+    GET Example:
+    ```
+    {
+    }
+    ```
+ - **Response**  
+    Success: 
+    ```
+    {
+      'id': "GatorStore_1",
+      'name': "GoGoGator",
+      'userId': "11001",
+      'createTime': "2006-01-02T15:04:05Z07:00",
+      'updateTime': "2006-01-02T15:04:05Z07:00",
+      'isLive': True // might change
+    }
+    ```
+
+    Error:
+     ```
+     {
+         "status": 800,
+         "result": {
+            "errorName": "MISS_PARAMS"
+         }
+     }
+     ```
+   
+     Error Code Table for error situation:
+
+      | ErrorName | ErrorCode | HttpStatus | Description |
+      | ---  | --- | --- | --- |
+      | MISS_PARAMS | 800 | 400 | |
+      | INVALID_PARAMS | 801 | 400 | |
+      | NO_JWTTOKEN | 1000 | 400 | |
+      | INVALID_JWTTOKEN | 1001 | 401 | Expire or invalid jwtToken |
+      | INVALID_ACCESSTOKEN | 9000 | 403 | Expire Google Access Token |
   
 ### Product API URLs
 ---
