@@ -57,6 +57,10 @@
     margin: 0;
 }
 
+.streamIframe {
+    height: 315px;
+    width: 100%;
+}
 .streamChat {
     background-color: rgb(252, 238, 212);
     border-radius: 10px;

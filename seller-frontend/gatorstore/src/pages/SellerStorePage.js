@@ -22,45 +22,39 @@ function SellerStorePage() {
   var storeObject = {id: "2", isLive: false}; // TEST: it's a local replica of the test streamObject.json (represents Database)
 
   const [liveInfoBarState, SetLiveInfoBarState] = useState('not-live');
+  
+  // DONE ONLY ON LOAD: initial check to check if its live or not:
+  useEffect(() => {
+    CheckStoreObject(); 
+  }, []);
 
   // Checks the status of this store's object in the store API:
-  function CheckStoreObject() { 
-    /* call API - TODO: When Yiming finishes this API. Store the streamObject in variable storeObject
+  function CheckStoreObject() {
+    var jwtToken = window.sessionStorage.getItem("user-jwtToken");
+
+    // call API - TODO: When Yiming finishes this API. Store the embedHTML in variable storeObject
     const requestOptions = {
-      method: 'POST',
-      headers: {'jwtToken': jwtToken},
-      body: JSON.stringify({ storeID : storeObject.id }) 
+      method: 'GET',
+      headers: {'Authorization': jwtToken}
     };
-    fetch(settings.apiHostURL + storeObject.id +'/livestream', requestOptions)
+    fetch(settings.apiHostURL + 'store/' + storeObject.id +'/livestreamStatus', requestOptions)
         .then(response => response.json())
         .then(response => {
           if (response.status === 0) {
-            SetStreamObject({key: response.result.streamKey, url: response.result.streamUrl});
+            // TODO: SetEmbedHTML(response.result.embedHTML); done when this actually is returned by store status API 
+            if (response.result.isLive === true) {
+              SetLiveInfoBarState('live');
+            } else {
+              SetLiveInfoBarState('not-live');
+            }
           } else {
             alert("ERROR: YouTube API did not respond with 'success' status code 0.");
           }
         })
         .catch((error) => {
             console.error(error);
-        });*/
-
-    storeObject.isLive = testStreamObject.isLive;
-    
-    if (storeObject.isLive === true) {
-      SetLiveInfoBarState('live');
-    } else {
-      SetLiveInfoBarState('not-live');
-    }
+        });
   }
-
-  // Run check-object-function every 60 seconds:
-  useEffect(() => {
-    const interval = setInterval(() => {
-      CheckStoreObject();
-    }, 15000);
-  
-    return () => clearInterval(interval);
-  }, [])
 
   // Hook for overlay
   const [currentOverlay, ChangeCurrentOverlay] = useState("none");
@@ -146,7 +140,7 @@ function SellerStorePage() {
               <div style={{textAlign: "center"}}>
                 <Button variant="contained" color="primary" onClick={() => {
                   // Call YouTube API with this title: 
-                  GoLive(newTitle, productsSelected);
+                  GetLivestreamKey(newTitle, productsSelected);
                   
                   ChangeCurrentOverlay("showStreamCreated");
                 }} size="large">Continue</Button>
@@ -173,7 +167,10 @@ function SellerStorePage() {
               </div>
     
               <div style={{textAlign: "center"}}>
-                <Button variant="contained" color="primary" onClick={() => { ChangeCurrentOverlay("none") }} size="large">Continue</Button>
+                <Button variant="contained" color="primary" onClick={() => { 
+                  ChangeCurrentOverlay("none");
+                  SetLiveInfoBarState('live');
+                }} size="large">Go Live</Button>
               </div>
             </div>
           </div>
@@ -182,15 +179,15 @@ function SellerStorePage() {
     )
   }
 
-  // useState is needed for a new stream's information to update that HTML on <StreamCreatedOverlay/> upon their change in GoLive()
+  // useState is needed for a new stream's information to update that HTML on <StreamCreatedOverlay/> upon their change in GetLivestreamKey()
   const [newStream, SetStreamObject] = useState({key: "", url: ""});
 
-  const GoLive = async (sTitle, productList) => {
+  const GetLivestreamKey = async (sTitle, productList) => {
     var jwtToken = window.sessionStorage.getItem("user-jwtToken");
    
     //alert(productList);
     //test:
-    SetStreamObject({key: "test #", url: sTitle});
+    //SetStreamObject({key: "test #", url: sTitle});
 
     // call API
     const requestOptions = {
@@ -201,25 +198,34 @@ function SellerStorePage() {
       body: JSON.stringify({ title: sTitle }) 
     };
     fetch(settings.apiHostURL + 'store/'+ storeObject.id +'/livestream', requestOptions)
-        .then(response => response.json())
-        .then(response => {
-          if (response.status === 0) {
-            SetStreamObject({key: response.result.streamKey, url: response.result.streamUrl});
-          } else {
-            alert("ERROR: YouTube API did not respond with 'success' status code.");
-            window.location.href = "http://localhost:3000/landingpage";
-          }
-        })
-        .catch((error) => {
-            console.error(error);
-            alert("ERROR: Back-end is not online or did not respond.");
-        });
+      .then(response => response.json())
+      .then(response => {
+        if (response.status === 0) {
+          SetStreamObject({key: response.result.streamKey, url: response.result.streamUrl});
+          SetEmbedHTML(response.result.embedHTML);
+        } else {
+          alert("ERROR: YouTube API did not respond with 'success' status code.");
+          window.location.href = "http://localhost:3000/landingpage";
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+        //alert("ERROR: Back-end is not online or did not respond.");
+      });
 
     // FOR testing purposes ONLY:
-    testStreamObject.isLive = true; // this is equivalent to MAKING the Stream Database's 'isLive' field for this store be set to: TRUE
+    //testStreamObject.isLive = true; // this is equivalent to MAKING the Stream Database's 'isLive' field for this store be set to: TRUE
                   // Which is done via the above 'fetch'. Then the function below is called and it checks that 'isLive' field in the Database
 
-    CheckStoreObject(); // to not wait 15 seconds
+    //CheckStoreObject(); // to not wait 15 seconds
+  }
+
+  const [embedHTML, SetEmbedHTML] = useState('');
+
+  function EndLivestream() {
+    SetLiveInfoBarState("not-live");
+
+    // some fetch API request telling them that it is no longer live.
   }
 
   function LiveInfoBar() {
@@ -234,7 +240,7 @@ function SellerStorePage() {
             <Grid item md={4} container justifyContent="flex-end" style={{color: "grey"}}>
               <Button startIcon={<CircleIcon />} variant="contained" color="error" onClick={() => {
                 ChangeCurrentOverlay("setStreamTitle");
-              }} size="large">Go Live</Button>
+              }} size="large">Start Livestream</Button>
             </Grid>
           </Grid> 
         )}
@@ -245,14 +251,22 @@ function SellerStorePage() {
               <Grid item md={4} container justifyContent="flex-start">
                 <h1>StoreName</h1>
               </Grid>
-              <Grid item md={4} container justifyContent="flex-end" style={{color: "red"}}>
+              <Grid item md={2} container style={{color: "red", paddingLeft: 10}}>
                 <CircleIcon style={{verticalAlign: 'middle', marginRight: 10}}/>
                 <p style={{alignSelf: 'center'}} onClick={() => {testStreamObject.isLive = false;}}><b>LIVE | </b> 3 viewers</p>
+                
               </Grid>
+              <Grid item md={2} container style={{justifyContent: "flex-end"}}>
+                <Button variant="contained" color="warning" onClick={() => {
+                    EndLivestream();
+                  }} size="large">End Livestream</Button>
+              </Grid>
+              
             </Grid>
             <Grid container spacing={0} justifyContent="center" alignItems="center" direction='row' style={{marginBottom: 20}}>
               <Grid item md={4} container justifyContent='flex-start'>
-                <iframe width="560" height="315" src="https://www.youtube.com/embed/5qap5aO4i9A?autoplay=1" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                
+                <div style={{width: 560}} dangerouslySetInnerHTML={{ __html: embedHTML }} />
               </Grid>
               <Grid item md={4} container>
                 <div class="streamChat">

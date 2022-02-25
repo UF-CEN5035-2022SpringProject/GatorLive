@@ -13,6 +13,6 @@ export default {
         'major': 'Titillium Web',
         'secondary': 'Audiowide'
     },
-    apiHostURL: 'http://localhost:8080/api/',
-    testApiHostURL: 'http://localhost:8080/test/api'
+    apiHostURL: 'http://10.136.145.189:8080/api/',
+    testApiHostURL: 'http://10.136.145.189:8080/test/api'
 }
