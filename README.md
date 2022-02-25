@@ -423,9 +423,9 @@ JSON Example:
   'isLive': True
 }
 ```
+---
 
 #### Live Object 
-
 Each Live will have uniqueId, and belong
 | Var/Method | Key/Optional | Type | Description |
 | ---  | --- | --- | --- |
@@ -449,6 +449,8 @@ Each Live will have uniqueId, and belong
    'embedHTML': "some iframe html"
  }
  ```
+ 
+---
 ### Global ErrorCode  
 - General Errors such as missing params or invalid params will be under 1000
 - Google Errors error code will be starting with 9xxx
