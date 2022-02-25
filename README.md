@@ -411,6 +411,7 @@ Each Store will have uniqueId, and belong to one user who created it.
 | createTime |  | string | create datetime | 
 | updateTime |  | string | latest update datetime | 
 | isLive | | boolean | check if this store is on live |
+| liveId | | string | liveObj's ID to get live information, empty if isLive is false |
 
 JSON Example:
 ```
@@ -421,6 +422,7 @@ JSON Example:
   'createTime': "2006-01-02T15:04:05Z07:00",
   'updateTime': "2006-01-02T15:04:05Z07:00",
   'isLive': True
+  'liveId': "132001"
 }
 ```
 ---
