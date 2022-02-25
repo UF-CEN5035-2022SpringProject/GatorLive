@@ -172,7 +172,7 @@ Golang and backend set up please check [backendend-readme.md](https://github.com
       | ---  | --- | --- | --- |
       | MISS_PARAMS | 800 | 400 | |
       | INVALID_PARAMS | 801 | 400 | |
-      | NO_JWTTOKEN | 1000 | 400 | |
+      | NO_JWTTOKEN | 1000 | 401 | Missing JwtToken |
       | INVALID_JWTTOKEN | 1001 | 401 | Expire or invalid jwtToken |
       | INVALID_ACCESSTOKEN | 9000 | 403 | Expire Google Access Token |
   
