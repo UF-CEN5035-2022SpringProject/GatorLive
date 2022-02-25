@@ -401,7 +401,7 @@ JSON Example:
 ---
 #### Store Object
 
-Each store will have uniqueId, and belong to one user who created it.
+Each Store will have uniqueId, and belong to one user who created it.
 
 | Var/Method | Key/Optional | Type | Description |
 | ---  | --- | --- | --- |
@@ -424,6 +424,31 @@ JSON Example:
 }
 ```
 
+#### Live Object 
+
+Each Live will have uniqueId, and belong
+| Var/Method | Key/Optional | Type | Description |
+| ---  | --- | --- | --- |
+| id | K | string | live - unique identifier for liveObj |
+| storeId | K | string | store creating this live |
+| title |   | string | storeName |
+| streamKey |  | string | create datetime | 
+| streamUrl |  | string | latest update datetime | 
+| createTime | | datetime | live create time |
+| updateTime | | datetime | live update time |
+| embedHTML | | string | use for web iframe ebmed |
+
+ ```
+ {
+   'id': "113024", // livestream id
+   'title': "YiMing Chang", // livestream title
+   'streamKey': "1324-5678-8974-1230",
+   'streamUrl': "some url",
+   'createTime': "2006-01-02T15:04:05Z07:00"
+   'updateTime': "2006-01-02T15:04:05Z07:00"
+   'embedHTML': "some iframe html"
+ }
+ ```
 ### Global ErrorCode  
 - General Errors such as missing params or invalid params will be under 1000
 - Google Errors error code will be starting with 9xxx
