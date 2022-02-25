@@ -18,12 +18,11 @@ func TestDBGetUserObj(w http.ResponseWriter, r *http.Request) {
 	value := dsnap.Data()
 	logger.DebugLogger.Printf("Document data: %#v\n", value)
 
-	resp, err := api.JsonResponse(value, 0)
+	resp, err := api.RespJSON{0, value}.SetResponse()
 	if err != nil {
 		logger.ErrorLogger.Fatalf("Error on wrapping JSON resp %s", err)
 	}
-	w.WriteHeader(http.StatusOK)
-	w.Write(resp)
+	api.ReturnResponse(w, resp, http.StatusOK)
 }
 
 func TestDBAddUserObj(*testing.T) {

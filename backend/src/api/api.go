@@ -7,6 +7,7 @@ import (
 
 	"github.com/UF-CEN5035-2022SpringProject/GatorStore/db"
 	"github.com/UF-CEN5035-2022SpringProject/GatorStore/logger"
+	"github.com/UF-CEN5035-2022SpringProject/GatorStore/utils"
 )
 
 func HeaderMiddleware(next http.Handler) http.Handler {
@@ -41,48 +42,53 @@ func AuthMiddleware(next http.Handler) http.Handler {
 
 		if token == "" {
 			logger.WarningLogger.Printf("Authorization empty token %s\n", token)
-			http.Error(w, "Unable to get JTW token", http.StatusUnauthorized)
+			errorMsg := utils.SetErrorMsg("Empty JWT")
+			resp, _ := RespJSON{int(utils.MissingJwtTokenCode), errorMsg}.SetResponse()
+			ReturnResponse(w, resp, http.StatusUnauthorized)
 			return
 		}
 
 		jwtMap := db.MapJwtToken(token)
-
 		if jwtMap != nil {
 			// Pass down the request to the next middleware (or final handler)
 			next.ServeHTTP(w, r)
 		} else {
 			// Write an error and stop the handler chain
-			http.Error(w, "invalid JWT token", http.StatusUnauthorized)
+			logger.ErrorLogger.Printf("Invalid JWT, not found")
+			errorMsg := utils.SetErrorMsg("Invalid JWT, not found")
+			resp, _ := RespJSON{int(utils.MissingJwtTokenCode), errorMsg}.SetResponse()
+			ReturnResponse(w, resp, http.StatusUnauthorized)
+
 			return
 		}
 	})
 }
 
-func LoggingMiddleware(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// Do stuff here
-		logger.DebugLogger.Println(r.RequestURI)
-		logger.DebugLogger.Println(r.URL.RawQuery)
-		logger.DebugLogger.Println(r.Method)
-		// Call the next handler, which can be another middleware in the chain, or the final handler.
-		next.ServeHTTP(w, r)
-	})
-}
 
-type respJSON struct {
+// func loggingMiddleware(next http.Handler) http.Handler {
+// 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+// 		// Do stuff here
+// 		logger.DebugLogger.Println(r.RequestURI)
+// 		logger.DebugLogger.Println(r.URL.RawQuery)
+// 		// Call the next handler, which can be another middleware in the chain, or the final handler.
+// 		next.ServeHTTP(w, r)
+// 	})
+// }
+type RespJSON struct {
 	Status int                    `json:"status"`
 	Result map[string]interface{} `json:"result"`
 }
 
-func JsonResponse(result map[string]interface{}, errorCode int) ([]byte, error) {
-	respObj := &respJSON{
-		Status: errorCode,
-		Result: result,
-	}
-
+func (respObj RespJSON) SetResponse() ([]byte, error) {
 	jsonResponse, err := json.Marshal(respObj)
 	if err != nil {
 		fmt.Println("Unable to encode JSON")
 	}
 	return jsonResponse, err
+}
+
+func ReturnResponse(w http.ResponseWriter, resp []byte, httpStatus int) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(httpStatus)
+	w.Write(resp)
 }

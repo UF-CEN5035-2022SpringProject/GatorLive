@@ -7,6 +7,7 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/UF-CEN5035-2022SpringProject/GatorStore/db"
@@ -101,7 +102,7 @@ func ReadCredential() {
 
 func createJwtToken(userId string, userEmail string, nowTime string) string {
 	// store newJwt in DB
-	newJwtToken := b64.StdEncoding.EncodeToString([]byte(utils.JwtPrefix + userId))
+	newJwtToken := "gst." + b64.StdEncoding.EncodeToString([]byte(utils.JwtPrefix+userEmail+userId)) + "_" + b64.StdEncoding.EncodeToString([]byte(nowTime))
 	db.AddJwtToken(newJwtToken, userEmail, nowTime)
 	return newJwtToken
 }
@@ -128,37 +129,54 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	logger.DebugLogger.Printf("request login body %s", b)
 
 	if err != nil {
-		logger.DebugLogger.Panicf("Unable to read login req: %v", err)
-		// log.Fatalf("Unable to create YouTube service: %v", e)
+		logger.ErrorLogger.Panicf("Unable to read login request body, err: %v", err)
+		errorMsg := utils.SetErrorMsg("error occurs before google login")
+		resp, _ := RespJSON{int(utils.InvalidParamsCode), errorMsg}.SetResponse()
+		ReturnResponse(w, resp, http.StatusInternalServerError)
+		return
 	}
 
 	var code Code
-
 	err = json.Unmarshal(b, &code)
 	logger.DebugLogger.Printf("request login code %s", code)
 	if err != nil {
-		logger.DebugLogger.Panicf("Unable to decode login req: %v, code %s", err, code)
-		// log.Fatalf("Unable to create YouTube service: %v", e)
+		logger.DebugLogger.Panicf("Unable to decode login request body, err: %v, google api code %s", err, code)
+		errorMsg := utils.SetErrorMsg("error occurs before google login")
+		resp, _ := RespJSON{int(utils.InvalidParamsCode), errorMsg}.SetResponse()
+		ReturnResponse(w, resp, http.StatusInternalServerError)
+		return
 	}
-	tok, err := conf.Exchange(ctx, code.Code)
 
+	tok, err := conf.Exchange(ctx, code.Code)
 	if err != nil {
-		logger.DebugLogger.Panic(err)
-		// log.Fatal(err)
+		logger.ErrorLogger.Panicf("Exchange token by code failed! err: %v", err)
+		errorMsg := utils.SetErrorMsg("Exchange token by code failed!")
+		resp, _ := RespJSON{int(utils.InvalidGoogleCode), errorMsg}.SetResponse()
+		ReturnResponse(w, resp, http.StatusBadRequest)
+		return
 	}
 
 	client := conf.Client(ctx, tok)
 	// service, e := youtube.New(client)
 	_, err = youtube.New(client)
 	if err != nil {
-		logger.DebugLogger.Panicf("Unable to create YouTube service: %v", err)
+		logger.ErrorLogger.Panicf("Unable to create YouTube service with token %v, err %v", tok, err)
+		errorMsg := utils.SetErrorMsg("Exchange token by code failed!")
+		resp, _ := RespJSON{int(utils.InvalidAccessTokenCode), errorMsg}.SetResponse()
+		ReturnResponse(w, resp, http.StatusBadRequest)
+		return
 	}
 	profile := GetUserProfile(tok.AccessToken)
 
 	tokenBytes, err := json.Marshal(tok)
 	if err != nil {
-		logger.DebugLogger.Panicf("Unable to create token json: %v", err)
+		logger.ErrorLogger.Panicf("Unable to decode token into byte, err: %v", err)
+		errorMsg := utils.SetErrorMsg("error occurs after google login")
+		resp, _ := RespJSON{int(utils.InvalidAccessTokenCode), errorMsg}.SetResponse()
+		ReturnResponse(w, resp, http.StatusBadRequest)
+		return
 	}
+
 	tokenString := string(tokenBytes)
 	// Flow: Check the user email
 	//    - No email -> store and return the obj
@@ -166,7 +184,8 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	userData := db.GetUserObj(profile.Email)
 	if userData == nil {
 		// create userId and assign JWT
-		newUserId := db.GetUserNewId()
+		newUserCount := db.GetUserNewCount()
+		newUserId := strconv.Itoa(newUserCount)
 		logger.DebugLogger.Printf("New user, assign ID: %s", newUserId)
 
 		// Add user Data
@@ -188,18 +207,21 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		userData = convertMap
 
 		db.AddUserObj(profile.Email, userData)
+		db.UpdateUserCount(newUserCount)
 	} else {
 		db.UpdateUserObj(profile.Email, "accessToken", tokenString)
 		userData = db.GetUserObj(profile.Email)
 	}
 
-	resp, err := JsonResponse(userData, 0)
+	resp, err := RespJSON{0, userData}.SetResponse()
 	if err != nil {
-		logger.ErrorLogger.Panicf("Error on wrapping JSON resp, Error: %s", err)
-		// TODO return Error 500
+		logger.ErrorLogger.Panicf("Error on wrapping JSON resp, err: %v", err)
+		errorMsg := utils.SetErrorMsg("Error on wrapping JSON resp")
+		resp, _ := RespJSON{int(utils.InvalidAccessTokenCode), errorMsg}.SetResponse()
+		ReturnResponse(w, resp, http.StatusInternalServerError)
+		return
 	}
-	w.WriteHeader(http.StatusOK)
-	w.Write(resp)
+	ReturnResponse(w, resp, http.StatusOK)
 }
 
 func UserInfo(w http.ResponseWriter, r *http.Request) {
@@ -210,32 +232,33 @@ func UserInfo(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
 		fmt.Fprintf(w, "Get %v user info", vars["userId"])
 		jwtToken := r.Header.Get("jwtToken")
-		jwtMapObj := db.MapJwtToken(jwtToken)
-		if jwtMapObj == nil {
-			logger.ErrorLogger.Panicf("Error, unable get jwtMapObj")
-		}
 
 		userEmail := db.MapJwtToken(jwtToken)["email"]
 		userData := db.GetUserObj(userEmail.(string))
 
 		if userData == nil {
-			// TODO: call error response
-			logger.ErrorLogger.Panicf("Error, unable get user by jwt")
+			logger.ErrorLogger.Panicf("Invalid JWT, unable to get user")
+			errorMsg := utils.SetErrorMsg("Invalid JWT, unable to get user")
+			resp, _ := RespJSON{int(utils.InvalidJwtTokenCode), errorMsg}.SetResponse()
+			ReturnResponse(w, resp, http.StatusUnauthorized)
+			return
 		}
 
 		if userData["id"] != vars["userId"] {
-			// TODO: call error response
-			logger.ErrorLogger.Panicf("Error, invald permission")
+			logger.ErrorLogger.Panicf("invald request")
+			errorMsg := utils.SetErrorMsg("invald request")
+			resp, _ := RespJSON{int(utils.InvalidJwtTokenCode), errorMsg}.SetResponse()
+			ReturnResponse(w, resp, http.StatusBadRequest)
+			return
 		}
 
-		resp, err := JsonResponse(userData, 0)
+		resp, err := RespJSON{0, userData}.SetResponse()
 		if err != nil {
 			logger.ErrorLogger.Panicf("Error on wrapping JSON resp, Error: %s", err)
 		}
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		w.Write(resp)
 
+		ReturnResponse(w, resp, http.StatusOK)
+		return
 	} else if r.Method == "PUT" {
 		fmt.Fprintf(w, "Update %v user info", vars["userId"])
 	}

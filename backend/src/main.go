@@ -34,7 +34,7 @@ func main() {
 	r.HandleFunc(prodRoutePrefix+"/user/login", api.Login).Methods("GET", "POST", "OPTIONS")
 	authApis := r.PathPrefix(prodRoutePrefix).Subrouter()
 	// USER path
-	authApis.HandleFunc("/user/info", api.UserInfo).Methods("GET", "PUT", "OPTIONS")
+	authApis.HandleFunc("/user/{userId}/info", api.UserInfo).Methods("GET", "PUT", "OPTIONS")
 	authApis.HandleFunc("/user/store-list", test.EchoString)
 
 	// Store
