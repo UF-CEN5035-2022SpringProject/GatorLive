@@ -47,13 +47,12 @@ func AuthMiddleware(next http.Handler) http.Handler {
 		}
 
 		jwtMap := db.MapJwtToken(token)
-
 		if jwtMap != nil {
 			// Pass down the request to the next middleware (or final handler)
 			next.ServeHTTP(w, r)
 		} else {
 			// Write an error and stop the handler chain
-			logger.ErrorLogger.Panicf("Invalid JWT, not found")
+			logger.ErrorLogger.Printf("Invalid JWT, not found")
 			errorMsg := utils.SetErrorMsg("Invalid JWT, not found")
 			resp, _ := RespJSON{int(utils.MissingJwtTokenCode), errorMsg}.SetResponse()
 			ReturnResponse(w, resp, http.StatusUnauthorized)
