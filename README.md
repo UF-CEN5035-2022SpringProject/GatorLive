@@ -444,6 +444,7 @@ Each Live will have uniqueId, and belong
  {
    'id': "113024", // livestream id
    'title': "YiMing Chang", // livestream title
+   'storeId': "122323"
    'streamKey': "1324-5678-8974-1230",
    'streamUrl': "some url",
    'createTime': "2006-01-02T15:04:05Z07:00"
