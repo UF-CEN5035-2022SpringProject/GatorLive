@@ -175,15 +175,6 @@ func LivestreamStatus(w http.ResponseWriter, r *http.Request) {
 	storeId := vars["storeId"]
 	jwtToken := r.Header.Get("Authorization")
 
-	b, err := io.ReadAll(r.Body)
-	if err != nil {
-		logger.DebugLogger.Panicf("Unable to read livestream status req: %v", err)
-	}
-	var status Status
-	err = json.Unmarshal(b, &status)
-	if err != nil {
-		logger.DebugLogger.Panicf("Unable to decode livestream status req: %v", err)
-	}
 	// TODO verify jwtToken existence
 	emailObj := db.MapJwtToken(jwtToken)
 	email := fmt.Sprintf("%v", emailObj["Email"])
@@ -194,6 +185,15 @@ func LivestreamStatus(w http.ResponseWriter, r *http.Request) {
 		// TODO
 		if verify(jwtToken, storeId) == "" {
 			return
+		}
+		b, err := io.ReadAll(r.Body)
+		if err != nil {
+			logger.DebugLogger.Panicf("Unable to read livestream status req: %v", err)
+		}
+		var status Status
+		err = json.Unmarshal(b, &status)
+		if err != nil {
+			logger.DebugLogger.Panicf("Unable to decode livestream status req: %v", err)
 		}
 		db.UpdateStoreObj(userId, "isLive", status.IsLive)
 	}
