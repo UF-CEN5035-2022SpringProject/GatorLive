@@ -101,7 +101,7 @@ func CreateLivebroadcast(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		logger.DebugLogger.Panicf("Unable to read livestream create req: %v", err)
 	}
-	
+
 	var title Title
 	err = json.Unmarshal(b, &title)
 
@@ -158,12 +158,11 @@ func CreateLivebroadcast(w http.ResponseWriter, r *http.Request) {
 	response["createTime"] = createTime.UTC().Format(time.RFC3339)
 	response["updateTime"] = createTime.UTC().Format(time.RFC3339)
 	response["embedHTML"] = newLive.ContentDetails.MonitorStream.EmbedHtml
-	resp, err := JsonResponse(response, 0)
 
+	resp, err := RespJSON{0, response}.SetResponse()
 	if err != nil {
 		logger.ErrorLogger.Fatalf("Error on wrapping JSON resp %s", err)
 	}
 
-	w.WriteHeader(http.StatusOK)
-	w.Write(resp)
+	ReturnResponse(w, resp, http.StatusOK)
 }
