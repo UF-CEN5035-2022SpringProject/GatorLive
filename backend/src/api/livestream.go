@@ -140,7 +140,8 @@ func CreateLivebroadcast(w http.ResponseWriter, r *http.Request) {
 			ScheduledEndTime:   endTime.UTC().Format(time.RFC3339),
 		},
 		Status: &youtube.LiveBroadcastStatus{
-			PrivacyStatus: "unlisted",
+			PrivacyStatus:           "unlisted",
+			SelfDeclaredMadeForKids: false,
 		},
 	}
 	// newLive.Snippet. = []string{"test","api"}
@@ -198,11 +199,11 @@ func LivestreamStatus(w http.ResponseWriter, r *http.Request) {
 	}
 	// return store object
 	storeObj := db.GetStoreObj(userId)
-	resp, err := JsonResponse(storeObj, 0)
+	resp, err := RespJSON{0, storeObj}.SetResponse()
 	if err != nil {
-		logger.ErrorLogger.Panicf("Error on wrapping JSON resp, Error: %s", err)
-		// TODO return Error 500
+		logger.ErrorLogger.Printf("Error on wrapping JSON resp, Error: %s", err)
 	}
-	w.WriteHeader(http.StatusOK)
-	w.Write(resp)
+	ReturnResponse(w, resp, http.StatusOK)
+	return
+
 }
