@@ -459,12 +459,30 @@ Each Live will have uniqueId, and belong
 - Google Errors error code will be starting with 9xxx
 - GatorStore Errors will be in range 1000 ~ 8xxx
 
-- Table
-   | ErrorName | ErrorCode | HttpStatus | Description |
-   | ---  | --- | --- | --- |
-   | MISS_PARAMS | 800 | 400 | |
-   | INVALID_PARAMS | 801 | 400 | |
-   | NO_JWTTOKEN | 1000 | 400 | |
-   | INVALID_JWTTOKEN | 1001 | 401 | Expire or invalid jwtToken |
-   | INVALID_ACCESSTOKEN | 9000 | 403 | Expire Google Access Token |
+- Server Request Errors
+   | ErrorName | ErrorCode | Description |
+   | ---  | --- | --- |
+   | UnknownInternalErrCode | 800 |  |
+   | MissingParamsCode | 801 |  | 
+   | InvalidParamsCode | 802 |  | 
+   
+- DB errors
+   | ErrorName | ErrorCode | Description |
+   | ---  | --- | --- |
+   | UnknownDbErrCode | 900 | |
+   | UnableToGetDbObj | 901 | |
+ 
+- JWT errors
+   | ErrorName | ErrorCode | Description |
+   | ---  | --- | --- |
+   | MissingJwtTokenCode | 1000 | | Empty jwtToken |
+   | InvalidAccessTokenCode | 1001 |  | Expire or invalid jwtToken |
+
+- Error with Google
+   | ErrorName | ErrorCode | Description |
+   | ---  | --- | --- |
+   | MissingAccessTokenCode | 9000 | |
+   | InvalidAccessTokenCode | 9001 | |
+   | InvalidGoogleCode | 9002 | |
+   
  
