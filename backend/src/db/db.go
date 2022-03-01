@@ -20,10 +20,10 @@ var DbCollections = map[string]string{
 	"products":    "products",
 	"settings":    "settings",
 	"jwtTokenMap": "jwtTokenMap",
+	"lives":       "lives",
 }
 
 func ConnectionCreate() {
-	// Use a service account
 	DatabaseCtx = context.Background()
 	sa := option.WithCredentialsFile("./db_secret.json")
 	app, err := firebase.NewApp(DatabaseCtx, nil, sa)
