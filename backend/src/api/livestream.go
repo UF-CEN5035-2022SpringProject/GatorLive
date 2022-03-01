@@ -28,6 +28,9 @@ import (
 type Title struct {
 	Title string `json:"title"`
 }
+type Status struct {
+	IsLive bool `json:"isLive"`
+}
 
 // func token(accessToken string) (*oauth2.Token, error) {
 // 	return &oauth2.Token{
@@ -101,7 +104,7 @@ func CreateLivebroadcast(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		logger.DebugLogger.Panicf("Unable to read livestream create req: %v", err)
 	}
-	
+
 	var title Title
 	err = json.Unmarshal(b, &title)
 
@@ -137,7 +140,8 @@ func CreateLivebroadcast(w http.ResponseWriter, r *http.Request) {
 			ScheduledEndTime:   endTime.UTC().Format(time.RFC3339),
 		},
 		Status: &youtube.LiveBroadcastStatus{
-			PrivacyStatus: "unlisted",
+			PrivacyStatus:           "unlisted",
+			SelfDeclaredMadeForKids: false,
 		},
 	}
 	// newLive.Snippet. = []string{"test","api"}
@@ -158,12 +162,48 @@ func CreateLivebroadcast(w http.ResponseWriter, r *http.Request) {
 	response["createTime"] = createTime.UTC().Format(time.RFC3339)
 	response["updateTime"] = createTime.UTC().Format(time.RFC3339)
 	response["embedHTML"] = newLive.ContentDetails.MonitorStream.EmbedHtml
-	resp, err := JsonResponse(response, 0)
 
+	resp, err := RespJSON{0, response}.SetResponse()
 	if err != nil {
 		logger.ErrorLogger.Fatalf("Error on wrapping JSON resp %s", err)
 	}
 
-	w.WriteHeader(http.StatusOK)
-	w.Write(resp)
+	ReturnResponse(w, resp, http.StatusOK)
+}
+func LivestreamStatus(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	storeId := vars["storeId"]
+	jwtToken := r.Header.Get("Authorization")
+
+	// TODO verify jwtToken existence
+	emailObj := db.MapJwtToken(jwtToken)
+	email := fmt.Sprintf("%v", emailObj["Email"])
+	userProfile := db.GetUserObj(email)
+	userId := fmt.Sprintf("%v", userProfile["id"])
+	// update store object
+	if r.Method == "PUT" {
+		// TODO
+		if verify(jwtToken, storeId) == "" {
+			return
+		}
+		b, err := io.ReadAll(r.Body)
+		if err != nil {
+			logger.DebugLogger.Panicf("Unable to read livestream status req: %v", err)
+		}
+		var status Status
+		err = json.Unmarshal(b, &status)
+		if err != nil {
+			logger.DebugLogger.Panicf("Unable to decode livestream status req: %v", err)
+		}
+		db.UpdateStoreObj(userId, "isLive", status.IsLive)
+	}
+	// return store object
+	storeObj := db.GetStoreObj(userId)
+	resp, err := RespJSON{0, storeObj}.SetResponse()
+	if err != nil {
+		logger.ErrorLogger.Printf("Error on wrapping JSON resp, Error: %s", err)
+	}
+	ReturnResponse(w, resp, http.StatusOK)
+	return
+
 }

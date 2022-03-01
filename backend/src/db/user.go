@@ -94,6 +94,7 @@ func UpdateUserObj(userEmail string, fieldStr string, fieldValue interface{}) er
 	return err
 }
 
+
 func UpdateUserCount(newUserCount int) error {
 	_, err := FireBaseClient.Collection(DbCollections["settings"]).Doc("userAutoIncrement").Update(DatabaseCtx, []firestore.Update{
 		{
@@ -102,8 +103,32 @@ func UpdateUserCount(newUserCount int) error {
 		},
 	})
 	if err != nil {
-		// Handle any errors in an appropriate way, such as returning them.
-		logger.WarningLogger.Printf("Error updating userAutoIncrement to %d, error: %s", newUserCount, err)
+    logger.WarningLogger.Printf("Error updating userAutoIncrement to %d, error: %s", newUserCount, err)
+    }
+	return err
+}
+
+/*** Store functions ***/
+func GetStoreObj(userId string) map[string]interface{} {
+	dsnap, err := FireBaseClient.Collection(DbCollections["stores"]).Doc(userId).Get(DatabaseCtx)
+	if err != nil {
+		logger.WarningLogger.Printf("Cannot find user by userId. %s", err)
+		return nil
 	}
+	value := dsnap.Data()
+	logger.DebugLogger.Printf("Document data: %#v\n", value)
+	return value
+}
+
+func UpdateStoreObj(userId string, fieldStr string, fieldValue interface{}) error {
+	_, err := FireBaseClient.Collection(DbCollections["stores"]).Doc(userId).Update(DatabaseCtx, []firestore.Update{
+		{
+			Path:  fieldStr,
+			Value: fieldValue,
+		},
+	})
+	if err != nil {
+    logger.WarningLogger.Printf("Error updating value on field %s. %s", fieldStr, err)
+    }
 	return err
 }
