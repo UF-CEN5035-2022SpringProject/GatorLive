@@ -9,6 +9,18 @@ describe("Renders the home page", () => {
     })
 })
 
+describe('Google Login Test', function () {
+  beforeEach(function () {
+    //cy.task('db:seed')
+    cy.loginByGoogleApi()
+  })
+
+  /*it('shows onboarding', function () {
+    cy.contains('Get Started').should('be.visible')
+  })*/
+})
+
+/*
 describe('Login', () => {
     it('Login through Google', () => {
       const username = Cypress.env('googleSocialLoginUsername')
@@ -24,6 +36,8 @@ describe('Login', () => {
         loginSelector: 'a[id="loginButton"]',
         postLoginSelector: '.slider'
       }
+
+      cy.clearCookies()
   
       return cy.task('GoogleSocialLogin', socialLoginOptions).then(({cookies}) => {
         cy.clearCookies()
@@ -44,4 +58,4 @@ describe('Login', () => {
         }
       })
     })
-  })
+  })*/

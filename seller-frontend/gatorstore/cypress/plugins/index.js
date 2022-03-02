@@ -12,7 +12,16 @@
 // This function is called when a project is opened or re-opened (e.g. due to
 // the project's config changing)
 
-const {GoogleSocialLogin} = require('cypress-social-logins').plugins
+//const {GoogleSocialLogin} = require('cypress-social-logins').plugins
+
+
+// .env
+REACT_APP_GOOGLE_CLIENTID = 'your-client-id'
+REACT_APP_GOOGLE_CLIENT_SECRET = 'your-client-secret'
+GOOGLE_REFRESH_TOKEN = 'your-refresh-token'
+
+//dotenv.config()
+
 
 /**
  * @type {Cypress.PluginConfig}
@@ -21,7 +30,14 @@ const {GoogleSocialLogin} = require('cypress-social-logins').plugins
 module.exports = (on, config) => {
   // `on` is used to hook into various events Cypress emits
   // `config` is the resolved Cypress config
-  on('task', {
+  /*on('task', {
     GoogleSocialLogin: GoogleSocialLogin
-  })
+  })*/
+
+  
+  config.env.googleRefreshToken = REACT_APP_GOOGLE_CLIENTID 
+  config.env.googleClientId = REACT_APP_GOOGLE_CLIENTID
+  config.env.googleClientSecret = REACT_APP_GOOGLE_CLIENT_SECRET 
+
+  return config
 }

@@ -1,9 +1,13 @@
 {
     "baseUrl": "http://localhost:3000",
     "experimentalStudio": true,
+    "chromeWebSecurity": false,
     "env": {
         "googleSocialLoginUsername": "ericblackking001",
         "googleSocialLoginPassword": "test55665566",
-        "loginUrl": "http://localhost:3000/landingpage"
+        "loginUrl": "http://localhost:3000/landingpage",
+        "REACT_APP_GOOGLE_CLIENTID": "11001",
+        "REACT_APP_GOOGLE_CLIENT_SECRET": "ya29.A0ARrdaM_dezBHnM7xSvA4JAeqfy544qKRLGvTlcbdyZ0-2gpbHNWL6-ko4Ss-_msGf-uJN3AUgQuzt1ngGdBJCRXHQdpZkoeEZNkoufIdL9TTQiPHDoUpPUODx_Kj0tX-tr2dOW8BdTTi31Y90tuvKMIorxAV",
+        "GOOGLE_REFRESH_TOKEN": "1//01P4XwRhSDonNCgYIARAAGAESNwF-L9IrWWPOAuZTDk5L78K7qEfFsyskVYkOK-y_TCrKkuB70fVOD3Ch4PmkswFpSpgyHfuSH_A"
     }
 }
