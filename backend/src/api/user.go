@@ -237,7 +237,7 @@ func UserInfo(w http.ResponseWriter, r *http.Request) {
 		userData := db.GetUserObj(userEmail.(string))
 
 		if userData == nil {
-			logger.ErrorLogger.Panicf("Invalid JWT, unable to get user")
+			logger.ErrorLogger.Printf("Invalid JWT, unable to get user")
 			errorMsg := utils.SetErrorMsg("Invalid JWT, unable to get user")
 			resp, _ := RespJSON{int(utils.InvalidJwtTokenCode), errorMsg}.SetResponse()
 			ReturnResponse(w, resp, http.StatusUnauthorized)
@@ -245,7 +245,7 @@ func UserInfo(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if userData["id"] != vars["userId"] {
-			logger.ErrorLogger.Panicf("invald request")
+			logger.ErrorLogger.Printf("invald request")
 			errorMsg := utils.SetErrorMsg("invald request")
 			resp, _ := RespJSON{int(utils.InvalidJwtTokenCode), errorMsg}.SetResponse()
 			ReturnResponse(w, resp, http.StatusBadRequest)
@@ -254,7 +254,7 @@ func UserInfo(w http.ResponseWriter, r *http.Request) {
 
 		resp, err := RespJSON{0, userData}.SetResponse()
 		if err != nil {
-			logger.ErrorLogger.Panicf("Error on wrapping JSON resp, Error: %s", err)
+			logger.ErrorLogger.Printf("Error on wrapping JSON resp, Error: %s", err)
 		}
 
 		ReturnResponse(w, resp, http.StatusOK)
