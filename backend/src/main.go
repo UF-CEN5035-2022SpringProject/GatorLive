@@ -22,7 +22,7 @@ var (
 func main() {
 	logger.InitLogger()
 	// create DB connection
-	db.ConnectionCreate(false)
+	db.ConnectionCreate()
 
 	// set up root routing path
 	prodRoutePrefix := "/api"

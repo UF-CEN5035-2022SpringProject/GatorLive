@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 
@@ -37,17 +38,25 @@ func TestGetUserProfile(t *testing.T) {
 		t.Errorf("expected res to be %v got %v", *expect, res)
 	}
 }
+
 func dbSetup() {
 	cwd, _ := os.Getwd()
-	os.Chdir(cwd + "..")
-	db.ConnectionCreate(false)
+	parent := filepath.Dir(cwd)
+	os.Chdir(parent)
+	db.ConnectionCreate()
 }
+
 func loggerSetup() {
-	os.Chdir("/home/chouhy/GatorStore/backend/src/")
+	cwd, _ := os.Getwd()
+	parent := filepath.Dir(cwd)
+	os.Chdir(parent)
 	logger.InitLogger()
 }
+
 func apiSetup() {
-	os.Chdir("/home/chouhy/GatorStore/backend/src/")
+	cwd, _ := os.Getwd()
+	parent := filepath.Dir(cwd)
+	os.Chdir(parent)
 	ReadCredential()
 }
 func TestLogin(t *testing.T) {

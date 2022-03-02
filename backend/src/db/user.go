@@ -94,7 +94,6 @@ func UpdateUserObj(userEmail string, fieldStr string, fieldValue interface{}) er
 	return err
 }
 
-
 func UpdateUserCount(newUserCount int) error {
 	_, err := FireBaseClient.Collection(DbCollections["settings"]).Doc("userAutoIncrement").Update(DatabaseCtx, []firestore.Update{
 		{
@@ -103,8 +102,8 @@ func UpdateUserCount(newUserCount int) error {
 		},
 	})
 	if err != nil {
-    logger.WarningLogger.Printf("Error updating userAutoIncrement to %d, error: %s", newUserCount, err)
-    }
+		logger.WarningLogger.Printf("Error updating userAutoIncrement to %d, error: %s", newUserCount, err)
+	}
 	return err
 }
 
@@ -128,7 +127,7 @@ func UpdateStoreObj(userId string, fieldStr string, fieldValue interface{}) erro
 		},
 	})
 	if err != nil {
-    logger.WarningLogger.Printf("Error updating value on field %s. %s", fieldStr, err)
-    }
+		logger.WarningLogger.Printf("Error updating value on field %s. %s", fieldStr, err)
+	}
 	return err
 }

@@ -9,10 +9,6 @@ import (
 )
 
 func TestDBGetUserObj(w http.ResponseWriter, r *http.Request) {
-	if db.FireBaseClient == nil || db.DatabaseCtx == nil {
-		db.ConnectionCreate(true)
-	}
-
 	dsnap, err := db.FireBaseClient.Collection(db.DbCollections["users"]).Doc("test").Get(db.DatabaseCtx)
 	if err != nil {
 		errorMsg := utils.SetErrorMsg("Test failed. Error retreiving user obj.")

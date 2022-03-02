@@ -22,17 +22,11 @@ var DbCollections = map[string]string{
 	"lives":       "lives",
 }
 
-var credentialDebugPath = "../db_secret.json"
 var credentailPath = "./db_secret.json"
 
-func ConnectionCreate(debug bool) {
+func ConnectionCreate() {
 	DatabaseCtx = context.Background()
-	keyPath := credentailPath
-	if debug {
-		keyPath = credentialDebugPath
-	}
-
-	sa := option.WithCredentialsFile(keyPath)
+	sa := option.WithCredentialsFile(credentailPath)
 	app, err := firebase.NewApp(DatabaseCtx, nil, sa)
 	if err != nil {
 		log.Fatalln(err)
