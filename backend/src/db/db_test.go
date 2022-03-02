@@ -1,6 +1,7 @@
 package db
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 	"testing"
@@ -8,34 +9,62 @@ import (
 	"github.com/UF-CEN5035-2022SpringProject/GatorStore/logger"
 )
 
-func dbSetup() {
+func pathSetup() {
 	cwd, _ := os.Getwd()
 	parent := filepath.Dir(cwd)
 	os.Chdir(parent)
-	ConnectionCreate()
+	fmt.Println("tt:" + cwd)
 }
 
-func loggerSetup() {
-	cwd, _ := os.Getwd()
-	parent := filepath.Dir(cwd)
-	os.Chdir(parent)
+func TestSetUpEnv(t *testing.T) {
+	pathSetup()
 	logger.InitLogger()
 }
 
 // check the connection function
 func TestDbConnection(t *testing.T) {
-	cwd, _ := os.Getwd()
-	parent := filepath.Dir(cwd)
-	os.Chdir(parent)
 	ConnectionCreate()
 }
+
+func TestMapJWTObj(t *testing.T) {
+	jwtToken := "test"
+	jwtMap := MapJwtToken(jwtToken)
+	if jwtMap == nil {
+		t.Errorf("unable to get jwt obj from db")
+	}
+	logger.DebugLogger.Printf("[Test] TestJWTObj %v", jwtMap)
+}
 func TestGetUserObj(t *testing.T) {
-	dbSetup()
-	loggerSetup()
 	email := "test"
 	userData := GetUserObj(email)
 	if userData == nil {
 		t.Errorf("unable to get user obj from db")
 	}
-	logger.DebugLogger.Printf("TestGetStoreObj %v", userData)
+	logger.DebugLogger.Printf("[Test] TestGetUserObj %v", userData)
+}
+
+func TestGetStoreObj(t *testing.T) {
+	storeId := "test"
+	storeObj := GetStoreObj(storeId)
+	if storeObj == nil {
+		t.Errorf("unable to get jwt obj from db")
+	}
+	logger.DebugLogger.Printf("[Test] TestGetStoreObj %v", storeObj)
+}
+
+func TestGetStoreObjbyUser(t *testing.T) {
+	userId := "test"
+	storeObj := GetStoreObjbyUserId(storeId)
+	if storeObj == nil {
+		t.Errorf("unable to get jwt obj from db")
+	}
+	logger.DebugLogger.Printf("[Test] TestGetStoreObj %v", storeObj)
+}
+func TestLiveObj(t *testing.T) {
+	liveId := "test"
+	liveObj := GetStoreObj(storeId)
+	if storeObj == nil {
+		t.Errorf("unable to get jwt obj from db")
+	}
+	logger.DebugLogger.Printf("[Test] TestGetStoreObj %v", storeObj)
 }
