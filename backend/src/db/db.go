@@ -6,7 +6,6 @@ import (
 
 	"cloud.google.com/go/firestore"
 	firebase "firebase.google.com/go"
-	"github.com/UF-CEN5035-2022SpringProject/GatorStore/logger"
 	"google.golang.org/api/option"
 )
 
@@ -20,23 +19,29 @@ var DbCollections = map[string]string{
 	"products":    "products",
 	"settings":    "settings",
 	"jwtTokenMap": "jwtTokenMap",
+	"lives":       "lives",
 }
 
-func ConnectionCreate() {
-	// Use a service account
+var credentialDebugPath = "../db_secret.json"
+var credentailPath = "./db_secret.json"
+
+func ConnectionCreate(debug bool) {
 	DatabaseCtx = context.Background()
-	sa := option.WithCredentialsFile("./db_secret.json")
+	keyPath := credentailPath
+	if debug {
+		keyPath = credentialDebugPath
+	}
+
+	sa := option.WithCredentialsFile(keyPath)
 	app, err := firebase.NewApp(DatabaseCtx, nil, sa)
 	if err != nil {
-		logger.ErrorLogger.Fatalln(err)
 		log.Fatalln(err)
 	}
 
 	client, err := app.Firestore(DatabaseCtx)
 	if err != nil {
-		logger.ErrorLogger.Fatalln(err)
+		log.Fatalln(err)
 	}
 
 	FireBaseClient = client
-	logger.DebugLogger.Println("Successfully connect to FireStore")
 }

@@ -140,7 +140,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	err = json.Unmarshal(b, &code)
 	logger.DebugLogger.Printf("request login code %s", code)
 	if err != nil {
-		logger.DebugLogger.Printf("Unable to decode login request body, err: %v, google api code %s", err, code)
+		logger.ErrorLogger.Printf("Unable to decode login request body, err: %v, google api code %s", err, code)
 		errorMsg := utils.SetErrorMsg("error occurs before google login")
 		resp, _ := RespJSON{int(utils.InvalidParamsCode), errorMsg}.SetResponse()
 		ReturnResponse(w, resp, http.StatusInternalServerError)

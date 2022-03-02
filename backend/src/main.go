@@ -22,7 +22,7 @@ var (
 func main() {
 	logger.InitLogger()
 	// create DB connection
-	db.ConnectionCreate()
+	db.ConnectionCreate(false)
 
 	// set up root routing path
 	prodRoutePrefix := "/api"
@@ -43,11 +43,10 @@ func main() {
 	authApis.HandleFunc("/store/{storeId}/livestreamStatus", api.LivestreamStatus).Methods("GET", "PUT", "OPTIONS")
 
 	// TEST API path
-	r.HandleFunc(testRoutePrefix+"/test", test.EchoString).Methods("GET", "OPTIONS")
-	r.HandleFunc(testRoutePrefix+"/user/login", test.TestDBGetUserObj).Methods("GET", "POST", "OPTIONS")
-
-	testAuthApis := r.PathPrefix(testRoutePrefix).Subrouter()
-	testAuthApis.HandleFunc("/user/info", test.TestDBGetUserObj)
+	r.HandleFunc(testRoutePrefix+"/echo", test.EchoString).Methods("GET", "OPTIONS")
+	r.HandleFunc(testRoutePrefix+"/user/info", test.TestDBGetUserObj).Methods("GET", "OPTIONS")
+	// testAuthApis := r.PathPrefix(testRoutePrefix).Subrouter()
+	//testAuthApis.HandleFunc("/user/info", test.TestDBGetUserObj)
 
 	// read google oauth2 credentials
 	api.ReadCredential()
@@ -61,7 +60,7 @@ func main() {
 		r.Use(api.CrossAllowMiddleware)
 		r.Use(mux.CORSMethodMiddleware(r))
 	}
-	testAuthApis.Use(api.AuthMiddleware)
+	// testAuthApis.Use(api.AuthMiddleware)
 	authApis.Use(api.AuthMiddleware)
 	r.Use(api.HeaderMiddleware)
 
