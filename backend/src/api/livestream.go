@@ -71,13 +71,14 @@ func getStream(service *youtube.Service) (*youtube.LiveStream, error) {
 	}
 	return newStream, nil
 }
-func bind(service *youtube.Service, live *youtube.LiveBroadcast, stream *youtube.LiveStream) {
+func bind(service *youtube.Service, live *youtube.LiveBroadcast, stream *youtube.LiveStream) error {
 	bindS := service.LiveBroadcasts.Bind(live.Id, []string{"snippet", "status"})
 	bindS = bindS.StreamId(stream.Id)
 	_, err := bindS.Do()
 	if err != nil {
-		logger.ErrorLogger.Printf("Error making YouTube API call bind: %v\n", err)
+		return err
 	}
+	return nil
 }
 func verify(jwtToken string, storeid string) string {
 	return "1"
@@ -182,7 +183,13 @@ func CreateLivebroadcast(w http.ResponseWriter, r *http.Request) {
 		resp, _ := RespJSON{int(utils.InvalidAccessTokenCode), errorMsg}.SetResponse()
 		ReturnResponse(w, resp, http.StatusUnauthorized)
 	}
-	bind(service, newLive, stream)
+	err = bind(service, newLive, stream)
+	if err != nil {
+		logger.ErrorLogger.Printf("Error binding YouTube broadcast and stream: %v\n", err)
+		errorMsg := utils.SetErrorMsg("Error binding YouTube broadcast and stream")
+		resp, _ := RespJSON{int(utils.InvalidAccessTokenCode), errorMsg}.SetResponse()
+		ReturnResponse(w, resp, http.StatusUnauthorized)
+	}
 
 	response := make(map[string]interface{})
 	response["id"] = newLive.Id
