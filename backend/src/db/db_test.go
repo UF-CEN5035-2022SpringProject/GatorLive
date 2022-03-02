@@ -2,12 +2,18 @@ package db
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
+	"net/http"
+	"net/http/httptest"
 	"os"
 	"testing"
 
 	firebase "firebase.google.com/go"
+	"github.com/UF-CEN5035-2022SpringProject/GatorStore/api"
+	"github.com/UF-CEN5035-2022SpringProject/GatorStore/test"
 	"google.golang.org/api/option"
 )
 
@@ -34,20 +40,22 @@ func TestDbConnection(t *testing.T) {
 	}
 }
 
-// check the use info retrieving
 func TestRequestUserObj(t *testing.T) {
-	// expected := "dummy user data"
-	// svr := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-	// 	fmt.Fprintf(w, expected)
-	// }))
-	// defer svr.Close()
-	// c := NewClient(svr.URL)
-	// res, err := c.UpperCase("anything")
-	// if err != nil {
-	// 	t.Errorf("expected err to be nil got %v", err)
-	// }
-	// res = strings.TrimSpace(res)
-	// if res != expected {
-	// 	t.Errorf("expected res to be %s got %s", expected, res)
-	// }
+	r := httptest.NewRequest(http.MethodGet, "/test/api/user/info", nil)
+	w := httptest.NewRecorder()
+
+	test.TestDBGetUserObj(w, r)
+	resp := w.Result()
+	defer resp.Body.Close()
+	b, err := io.ReadAll(r.Body)
+	if err != nil {
+		t.Errorf("expected error to be nil got %v", err)
+	}
+
+	var response api.RespJSON
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		t.Errorf("expected error to be nil got %v", err)
+	}
+	fmt.Printf("resp %v", response)
 }
