@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -11,29 +12,35 @@ import (
 
 	"github.com/UF-CEN5035-2022SpringProject/GatorStore/db"
 	"github.com/UF-CEN5035-2022SpringProject/GatorStore/logger"
+	"github.com/UF-CEN5035-2022SpringProject/GatorStore/utils"
 	// "fmt"
 )
 
 func TestGetUserProfile(t *testing.T) {
+	loggerSetup()
+	dbSetup()
 	expect := &Profile{
-		Name:  "Hung-You Chou",
-		Email: "jimchou1995@gmail.com",
+		Name:  "YiMing Chang",
+		Email: "yimingchang@ufl.edu",
 	}
 	// svr := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 	//     fmt.Fprintf(w, "%v", expect)
 	// }))
-
+	userTest := db.GetUserObj("test")
 	// defer svr.Close()
 	// c := NewClient(svr.URL)
-	accessToken := ""
+	accessToken := fmt.Sprintf("%s", userTest["accessToken"])
+	// if no accesstoken
+	expect = &Profile{}
 	res := GetUserProfile(accessToken)
 	if res != *expect {
 		t.Errorf("expected res to be %v got %v", *expect, res)
 	}
 }
 func dbSetup() {
-	os.Chdir("/home/chouhy/GatorStore/backend/src/")
-	db.ConnectionCreate()
+	cwd, _ := os.Getwd()
+	os.Chdir(cwd + "..")
+	db.ConnectionCreate(false)
 }
 func loggerSetup() {
 	os.Chdir("/home/chouhy/GatorStore/backend/src/")
@@ -45,7 +52,7 @@ func apiSetup() {
 }
 func TestLogin(t *testing.T) {
 	loggerSetup()
-	dbSetup()
+	// dbSetup()
 	apiSetup()
 	data := &Code{
 		Code: "4/0AX4XfWhXHAUcU6v5oBWSGC5sxEwRkHdfjaEgGv4blsqJJxphuEtUVpp4ur7ZJNl-q8O7kw",
@@ -56,27 +63,28 @@ func TestLogin(t *testing.T) {
 
 	Login(w, req)
 
-	expectedUserData := make(map[string]interface{})
-	expectedUserData["createTime"] = "2022-02-22T02:29:37Z"
-	expectedUserData["email"] = "jimchou1995@gmail.com"
-	expectedUserData["updateTime"] = "2022-02-22T02:29:37Z"
-	expectedUserData["jwtToken"] = "gst.R2F0b3JTdG9yZV9qaW1jaG91MTk5NUBnbWFpbC5jb20xMTAwMw==_MjAyMi0wMi0yMlQwMjoyOTozN1o="
-	expectedUserData["id"] = "11003"
-	expectedUserData["name"] = "Hung-You Chou"
+	errorMsg := utils.SetErrorMsg("Exchange token by code failed!")
+	expectedUserData, _ := RespJSON{int(utils.InvalidGoogleCode), errorMsg}.SetResponse()
 
 	b, _ := io.ReadAll(w.Result().Body)
-	var resUserData map[string]interface{}
-	// var temp db.UserObject
-	// json.Unmarshal(b, &temp)
-	// userObjStr, _ := json.Marshal(userObj)
-	json.Unmarshal(b, &resUserData)
-	delete(resUserData, "accessToken")
 
-	resB, _ := json.Marshal(resUserData)
-	expectB, _ := json.Marshal(expectedUserData)
-	resStr := string(resB)
-	expectStr := string(expectB)
+	resStr := string(b)
+	expectStr := string(expectedUserData)
 	if resStr != expectStr {
 		t.Errorf("expected res to be %v got %v", expectStr, resStr)
 	}
+}
+
+func TestCreateLivebroadcast(t *testing.T) {
+	loggerSetup()
+	dbSetup()
+	data := &Title{
+		Title: "123",
+	}
+	codeByte, _ := json.Marshal(data)
+	req := httptest.NewRequest(http.MethodPost, "/store/1/livestream", strings.NewReader(string(codeByte)))
+	req.Header.Add("Authorization", "test(Do not delete)")
+	w := httptest.NewRecorder()
+
+	CreateLivebroadcast(w, req)
 }
