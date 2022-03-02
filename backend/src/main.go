@@ -57,7 +57,7 @@ func main() {
 
 	// If debug = True then set the CORSMethodMiddleware
 	if IsDev {
-		r.Use(api.LoggingMiddleware)
+		// r.Use(api.LoggingMiddleware)
 		r.Use(api.CrossAllowMiddleware)
 		r.Use(mux.CORSMethodMiddleware(r))
 	}
