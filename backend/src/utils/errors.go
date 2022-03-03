@@ -6,8 +6,15 @@ const JwtPrefix = "GatorStore_"
 
 // Server Request Errors
 const (
-	MissingParamsCode ErrorCode = iota + 800
+	UnknownInternalErrCode ErrorCode = iota + 800
+	MissingParamsCode
 	InvalidParamsCode
+)
+
+// DB errors
+const (
+	UnknownDbErrCode ErrorCode = iota + 900
+	UnableToGetDbObj
 )
 
 // 1000 JWT

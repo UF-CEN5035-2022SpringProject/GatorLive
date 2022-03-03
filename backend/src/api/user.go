@@ -18,8 +18,6 @@ import (
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 
-	b64 "encoding/base64"
-
 	g "google.golang.org/api/oauth2/v2"
 	youtube "google.golang.org/api/youtube/v3"
 )
@@ -100,13 +98,6 @@ func ReadCredential() {
 	RedirectURL = cre.Web.Redirect_uris
 }
 
-func createJwtToken(userId string, userEmail string, nowTime string) string {
-	// store newJwt in DB
-	newJwtToken := "gst." + b64.StdEncoding.EncodeToString([]byte(utils.JwtPrefix+userEmail+userId)) + "_" + b64.StdEncoding.EncodeToString([]byte(nowTime))
-	db.AddJwtToken(newJwtToken, userEmail, nowTime)
-	return newJwtToken
-}
-
 // API ENTRYPOINT
 func Login(w http.ResponseWriter, r *http.Request) {
 	// setup config
@@ -129,7 +120,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	logger.DebugLogger.Printf("request login body %s", b)
 
 	if err != nil {
-		logger.ErrorLogger.Panicf("Unable to read login request body, err: %v", err)
+		logger.ErrorLogger.Printf("Unable to read login request body, err: %v", err)
 		errorMsg := utils.SetErrorMsg("error occurs before google login")
 		resp, _ := RespJSON{int(utils.InvalidParamsCode), errorMsg}.SetResponse()
 		ReturnResponse(w, resp, http.StatusInternalServerError)
@@ -140,7 +131,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	err = json.Unmarshal(b, &code)
 	logger.DebugLogger.Printf("request login code %s", code)
 	if err != nil {
-		logger.DebugLogger.Panicf("Unable to decode login request body, err: %v, google api code %s", err, code)
+		logger.ErrorLogger.Printf("Unable to decode login request body, err: %v, google api code %s", err, code)
 		errorMsg := utils.SetErrorMsg("error occurs before google login")
 		resp, _ := RespJSON{int(utils.InvalidParamsCode), errorMsg}.SetResponse()
 		ReturnResponse(w, resp, http.StatusInternalServerError)
@@ -149,7 +140,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 
 	tok, err := conf.Exchange(ctx, code.Code)
 	if err != nil {
-		logger.ErrorLogger.Panicf("Exchange token by code failed! err: %v", err)
+		logger.ErrorLogger.Printf("Exchange token by code failed! err: %v", err)
 		errorMsg := utils.SetErrorMsg("Exchange token by code failed!")
 		resp, _ := RespJSON{int(utils.InvalidGoogleCode), errorMsg}.SetResponse()
 		ReturnResponse(w, resp, http.StatusBadRequest)
@@ -160,7 +151,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	// service, e := youtube.New(client)
 	_, err = youtube.New(client)
 	if err != nil {
-		logger.ErrorLogger.Panicf("Unable to create YouTube service with token %v, err %v", tok, err)
+		logger.ErrorLogger.Printf("Unable to create YouTube service with token %v, err %v", tok, err)
 		errorMsg := utils.SetErrorMsg("Exchange token by code failed!")
 		resp, _ := RespJSON{int(utils.InvalidAccessTokenCode), errorMsg}.SetResponse()
 		ReturnResponse(w, resp, http.StatusBadRequest)
@@ -170,7 +161,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 
 	tokenBytes, err := json.Marshal(tok)
 	if err != nil {
-		logger.ErrorLogger.Panicf("Unable to decode token into byte, err: %v", err)
+		logger.ErrorLogger.Printf("Unable to decode token into byte, err: %v", err)
 		errorMsg := utils.SetErrorMsg("error occurs after google login")
 		resp, _ := RespJSON{int(utils.InvalidAccessTokenCode), errorMsg}.SetResponse()
 		ReturnResponse(w, resp, http.StatusBadRequest)
@@ -190,15 +181,17 @@ func Login(w http.ResponseWriter, r *http.Request) {
 
 		// Add user Data
 		nowTime := time.Now().UTC().Format(time.RFC3339)
+		newUserToken := utils.CreateJwtToken(newUserId, profile.Email, nowTime)
 		userObj := &db.UserObject{
 			Id:          newUserId,
 			Name:        profile.Name,
 			Email:       profile.Email,
-			JwtToken:    createJwtToken(newUserId, profile.Email, nowTime),
+			JwtToken:    newUserToken,
 			AccessToken: tokenString,
 			CreateTime:  nowTime,
 			UpdateTime:  nowTime,
 		}
+		db.AddJwtToken(newUserToken, userObj.Email, nowTime)
 
 		var convertMap map[string]interface{}
 		userObjStr, _ := json.Marshal(userObj)
@@ -215,7 +208,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 
 	resp, err := RespJSON{0, userData}.SetResponse()
 	if err != nil {
-		logger.ErrorLogger.Panicf("Error on wrapping JSON resp, err: %v", err)
+		logger.ErrorLogger.Printf("Error on wrapping JSON resp, err: %v", err)
 		errorMsg := utils.SetErrorMsg("Error on wrapping JSON resp")
 		resp, _ := RespJSON{int(utils.InvalidAccessTokenCode), errorMsg}.SetResponse()
 		ReturnResponse(w, resp, http.StatusInternalServerError)
@@ -237,7 +230,7 @@ func UserInfo(w http.ResponseWriter, r *http.Request) {
 		userData := db.GetUserObj(userEmail.(string))
 
 		if userData == nil {
-			logger.ErrorLogger.Panicf("Invalid JWT, unable to get user")
+			logger.ErrorLogger.Printf("Invalid JWT, unable to get user")
 			errorMsg := utils.SetErrorMsg("Invalid JWT, unable to get user")
 			resp, _ := RespJSON{int(utils.InvalidJwtTokenCode), errorMsg}.SetResponse()
 			ReturnResponse(w, resp, http.StatusUnauthorized)
@@ -245,7 +238,7 @@ func UserInfo(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if userData["id"] != vars["userId"] {
-			logger.ErrorLogger.Panicf("invald request")
+			logger.ErrorLogger.Printf("invald request")
 			errorMsg := utils.SetErrorMsg("invald request")
 			resp, _ := RespJSON{int(utils.InvalidJwtTokenCode), errorMsg}.SetResponse()
 			ReturnResponse(w, resp, http.StatusBadRequest)
@@ -254,7 +247,7 @@ func UserInfo(w http.ResponseWriter, r *http.Request) {
 
 		resp, err := RespJSON{0, userData}.SetResponse()
 		if err != nil {
-			logger.ErrorLogger.Panicf("Error on wrapping JSON resp, Error: %s", err)
+			logger.ErrorLogger.Printf("Error on wrapping JSON resp, Error: %s", err)
 		}
 
 		ReturnResponse(w, resp, http.StatusOK)
