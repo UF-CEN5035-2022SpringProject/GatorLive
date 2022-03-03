@@ -18,8 +18,6 @@ import (
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 
-	b64 "encoding/base64"
-
 	g "google.golang.org/api/oauth2/v2"
 	youtube "google.golang.org/api/youtube/v3"
 )
@@ -98,13 +96,6 @@ func ReadCredential() {
 	ClientID = cre.Web.Client_id
 	ClientSecret = cre.Web.Client_secret
 	RedirectURL = cre.Web.Redirect_uris
-}
-
-func createJwtToken(userId string, userEmail string, nowTime string) string {
-	// store newJwt in DB
-	newJwtToken := "gst." + b64.StdEncoding.EncodeToString([]byte(utils.JwtPrefix+userEmail+userId)) + "_" + b64.StdEncoding.EncodeToString([]byte(nowTime))
-	db.AddJwtToken(newJwtToken, userEmail, nowTime)
-	return newJwtToken
 }
 
 // API ENTRYPOINT
@@ -190,15 +181,17 @@ func Login(w http.ResponseWriter, r *http.Request) {
 
 		// Add user Data
 		nowTime := time.Now().UTC().Format(time.RFC3339)
+		newUserToken := utils.CreateJwtToken(newUserId, profile.Email, nowTime)
 		userObj := &db.UserObject{
 			Id:          newUserId,
 			Name:        profile.Name,
 			Email:       profile.Email,
-			JwtToken:    createJwtToken(newUserId, profile.Email, nowTime),
+			JwtToken:    newUserToken,
 			AccessToken: tokenString,
 			CreateTime:  nowTime,
 			UpdateTime:  nowTime,
 		}
+		db.AddJwtToken(newUserToken, userObj.Email, nowTime)
 
 		var convertMap map[string]interface{}
 		userObjStr, _ := json.Marshal(userObj)

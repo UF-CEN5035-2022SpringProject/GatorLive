@@ -94,6 +94,15 @@ func UpdateUserObj(userEmail string, fieldStr string, fieldValue interface{}) er
 	return err
 }
 
+func DeleteUserObj(userEmail string) error {
+	_, err := FireBaseClient.Collection(DbCollections["users"]).Doc(userEmail).Delete(DatabaseCtx)
+	if err != nil {
+		// Handle any errors in an appropriate way, such as returning them.
+		logger.WarningLogger.Printf("Error Deleting user obj with key: %s", userEmail)
+	}
+	return err
+}
+
 func UpdateUserCount(newUserCount int) error {
 	_, err := FireBaseClient.Collection(DbCollections["settings"]).Doc("userAutoIncrement").Update(DatabaseCtx, []firestore.Update{
 		{

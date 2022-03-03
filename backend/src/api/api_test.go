@@ -78,7 +78,7 @@ func TestCreateLivebroadcast(t *testing.T) {
 	}
 	codeByte, _ := json.Marshal(data)
 	req := httptest.NewRequest(http.MethodPost, "/store/1/livestream", strings.NewReader(string(codeByte)))
-	req.Header.Add("Authorization", "test(Do not delete)")
+	req.Header.Add("Authorization", "test")
 	w := httptest.NewRecorder()
 
 	CreateLivebroadcast(w, req)

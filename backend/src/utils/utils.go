@@ -1,6 +1,7 @@
 package utils
 
 import (
+	b64 "encoding/base64"
 	"log"
 	"os"
 )
@@ -21,4 +22,10 @@ func CreateFile(dirPath string, fileName string) (*os.File, error) {
 	}
 
 	return file, nil
+}
+
+func CreateJwtToken(userId string, userEmail string, nowTime string) string {
+	// store newJwt in DB
+	newJwtToken := "gst." + b64.StdEncoding.EncodeToString([]byte(JwtPrefix+userEmail+userId)) + "_" + b64.StdEncoding.EncodeToString([]byte(nowTime))
+	return newJwtToken
 }
