@@ -26,6 +26,15 @@ For a more detailed explanation, refer to issue [#54](https://github.com/UF-CEN5
 ---
 ## Testing
 1. Golang Backend Testing
+   Check out more details in this issue -
+   [Build backend server test](https://github.com/UF-CEN5035-2022SpringProject/GatorStore/issues/27)
+
+   We'll do these tests in the order below: 
+   - Unit test on database operations
+   - Unit test on Login and LiveStream APIs
+     Since the database operations use by these APIs have been tested. We'll focus on the http tesing by using [httptest](https://pkg.go.dev/net/http/httptest)
+
+   
 2. Cypress Frontend Testing (using "cypress-social-logins" library with problems; these are being explored in issue [#67](https://github.com/UF-CEN5035-2022SpringProject/GatorStore/issues/67))
 
 
