@@ -191,16 +191,21 @@ func CreateLivebroadcast(w http.ResponseWriter, r *http.Request) {
 		ReturnResponse(w, resp, http.StatusUnauthorized)
 	}
 
-	response := make(map[string]interface{})
-	response["id"] = newLive.Id
-	response["title"] = newLive.Snippet.Title
-	response["streamKey"] = stream.Cdn.IngestionInfo.StreamName
-	response["streamUrl"] = stream.Cdn.IngestionInfo.IngestionAddress
-	response["createTime"] = createTime.UTC().Format(time.RFC3339)
-	response["updateTime"] = createTime.UTC().Format(time.RFC3339)
-	response["embedHTML"] = newLive.ContentDetails.MonitorStream.EmbedHtml
+	liveObj := make(map[string]interface{})
+	liveObj["id"] = newLive.Id
+	liveObj["title"] = newLive.Snippet.Title
+	liveObj["streamKey"] = stream.Cdn.IngestionInfo.StreamName
+	liveObj["streamUrl"] = stream.Cdn.IngestionInfo.IngestionAddress
+	liveObj["createTime"] = createTime.UTC().Format(time.RFC3339)
+	liveObj["updateTime"] = createTime.UTC().Format(time.RFC3339)
+	liveObj["embedHTML"] = newLive.ContentDetails.MonitorStream.EmbedHtml
 
-	resp, _ := RespJSON{0, response}.SetResponse()
+	if db.GetLiveObj(newLive.Id) == nil {
+		db.AddLiveObj(newLive.Id, liveObj)
+	} else {
+		// TODO: Update Live Obj
+	}
+	resp, _ := RespJSON{0, liveObj}.SetResponse()
 	ReturnResponse(w, resp, http.StatusOK)
 }
 func LivestreamStatus(w http.ResponseWriter, r *http.Request) {
@@ -243,8 +248,13 @@ func LivestreamStatus(w http.ResponseWriter, r *http.Request) {
 		db.UpdateStoreObj(userId, "isLive", status.IsLive)
 	}
 	// return store object
-	storeObj := db.GetStoreObj(userId)
-	resp, _ := RespJSON{0, storeObj}.SetResponse()
+
+	storeObj := db.GetStoreObjbyUserId(userId)
+	resp, err := RespJSON{0, storeObj}.SetResponse()
+	if err != nil {
+		logger.ErrorLogger.Printf("Error on wrapping JSON resp, Error: %s", err)
+	}
+  
 	ReturnResponse(w, resp, http.StatusOK)
 	return
 
