@@ -14,6 +14,11 @@
 
 const {GoogleSocialLogin} = require('cypress-social-logins').plugins
 
+// .env
+REACT_APP_GOOGLE_CLIENTID = 'your-client-id'
+REACT_APP_GOOGLE_CLIENT_SECRET = 'your-client-secret'
+GOOGLE_REFRESH_TOKEN = 'your-refresh-token'
+
 /**
  * @type {Cypress.PluginConfig}
  */
@@ -21,7 +26,15 @@ const {GoogleSocialLogin} = require('cypress-social-logins').plugins
 module.exports = (on, config) => {
   // `on` is used to hook into various events Cypress emits
   // `config` is the resolved Cypress config
+
+  // enable GoogleSocialLogin portion of "cypress-social-logins" library
   on('task', {
     GoogleSocialLogin: GoogleSocialLogin
   })
+  
+  config.env.googleRefreshToken = REACT_APP_GOOGLE_CLIENTID 
+  config.env.googleClientId = REACT_APP_GOOGLE_CLIENTID
+  config.env.googleClientSecret = REACT_APP_GOOGLE_CLIENT_SECRET 
+
+  return config
 }
