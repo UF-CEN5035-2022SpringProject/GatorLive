@@ -372,10 +372,33 @@ Object Table Columns
 | Description | descibe the attribute purpose |
 
 ---
+#### JWT Object
+This object will be use for respresenting the user in server, every user has an unique JWT token for requesting API.
+Use it as Authentication in the middleware of the server (before the request passby).
+If the token object does not match to the request, return httpStatus 401 or 403.
+
+The key will be ***jwtToken***, and the value will be as below:
+| Var/Method | Key/Optional | Type | Description |
+| ---  | --- | --- | --- |
+| jwtToken | k | string | unique jwt authorization key in GatorStore|
+| email | | string | unique identifier |
+| createTime |  | string | create datetime | 
+
+JSON Example:
+```
+{
+  'email': "yimingchang@ufl.edu",
+  'jwtToken': "gst.R2F0b3JTdG9yZV95aW1pbmdzdGFyNTU2NkBnbWFpbC5jb20xMTAwMg==_MjAyMi0wMi0yMlQwMjoyNTowMVo=",
+  'createTime': "2006-01-02T15:04:05Z07:00"
+}
+```
+
+---
 #### User Object
 If user has already register, an **uniqueId** will be assigned to user.  
 Or else we'll use **email** as a identifier.
 
+The key will be **email**, and the value will be as below:
 | Var/Method | Key/Optional | Type | Description |
 | ---  | --- | --- | --- |
 | id | K | string | userId - unique identifier |
@@ -392,7 +415,7 @@ JSON Example:
   'id': "113024",
   'name': "YiMing Chang",
   'email': "yimingchang@ufl.edu",
-  'jwtToken': "gatorStore_qeqweiop122133",
+  'jwtToken': "gst.R2F0b3JTdG9yZV95aW1pbmdzdGFyNTU2NkBnbWFpbC5jb20xMTAwMg==_MjAyMi0wMi0yMlQwMjoyNTowMVo=",
   'accessToken': "GatorStore_10302323",
   'createTime': "2006-01-02T15:04:05Z07:00"
   'updateTime': "2006-01-02T15:04:05Z07:00"
@@ -400,9 +423,9 @@ JSON Example:
 ```
 ---
 #### Store Object
-
 Each Store will have uniqueId, and belong to one user who created it.
 
+The key will be **storeId**, and the value will be as below:
 | Var/Method | Key/Optional | Type | Description |
 | ---  | --- | --- | --- |
 | id | K | string | storeId - unique identifier |
@@ -428,7 +451,7 @@ JSON Example:
 ---
 
 #### Live Object 
-Each Live will have uniqueId, and belong
+The key will be **liveId**, and the value will be as below:
 | Var/Method | Key/Optional | Type | Description |
 | ---  | --- | --- | --- |
 | id | K | string | live - unique identifier for liveObj |
