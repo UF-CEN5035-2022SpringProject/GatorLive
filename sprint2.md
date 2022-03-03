@@ -8,11 +8,10 @@
 
 1. APIs
    - Integrate Youtube APIs
-   - Live APIs
+   - Integrate Live APIs
       - Start & End Live
       - Live Status   
    - JWT token in APIs header
-   - Integrate 
 2. Authentications
 3. Embed Iframe in Frontend
 
