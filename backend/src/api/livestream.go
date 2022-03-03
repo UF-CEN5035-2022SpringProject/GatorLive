@@ -15,6 +15,7 @@ import (
 
 	"github.com/UF-CEN5035-2022SpringProject/GatorStore/db"
 	"github.com/UF-CEN5035-2022SpringProject/GatorStore/logger"
+	"github.com/UF-CEN5035-2022SpringProject/GatorStore/utils"
 
 	// "github.com/UF-CEN5035-2022SpringProject/GatorStore/logger"
 	"github.com/gorilla/mux"
@@ -38,15 +39,16 @@ type Status struct {
 // 		TokenType:   "Bearer",
 // 	}, nil
 // }
-func getStream(service *youtube.Service) *youtube.LiveStream {
+func getStream(service *youtube.Service) (*youtube.LiveStream, error) {
 	list := service.LiveStreams.List([]string{"id", "cdn"})
 	list = list.Mine(true)
 	rList, err := list.Do()
 	if err != nil {
-		logger.DebugLogger.Panicf("Error making YouTube API call list: %v\n", err)
+		// logger.ErrorLogger.Printf("Error making YouTube API call list: %v\n", err)
+		return nil, err
 	}
 	if len(rList.Items) != 0 {
-		return rList.Items[0]
+		return rList.Items[0], nil
 	}
 	newStream := &youtube.LiveStream{
 		Snippet: &youtube.LiveStreamSnippet{
@@ -64,17 +66,19 @@ func getStream(service *youtube.Service) *youtube.LiveStream {
 	stream := service.LiveStreams.Insert([]string{"snippet", "cdn", "contentDetails", "status"}, newStream)
 	newStream, err = stream.Do()
 	if err != nil {
-		logger.DebugLogger.Panicf("Error making YouTube API call stream: %v\n", err)
+		// logger.ErrorLogger.Printf("Error making YouTube API call stream: %v\n", err)
+		return nil, err
 	}
-	return newStream
+	return newStream, nil
 }
-func bind(service *youtube.Service, live *youtube.LiveBroadcast, stream *youtube.LiveStream) {
+func bind(service *youtube.Service, live *youtube.LiveBroadcast, stream *youtube.LiveStream) error {
 	bindS := service.LiveBroadcasts.Bind(live.Id, []string{"snippet", "status"})
 	bindS = bindS.StreamId(stream.Id)
 	_, err := bindS.Do()
 	if err != nil {
-		logger.DebugLogger.Panicf("Error making YouTube API call bind: %v\n", err)
+		return err
 	}
+	return nil
 }
 func verify(jwtToken string, storeid string) string {
 	return "1"
@@ -86,7 +90,7 @@ func GetEmail(jwtToken string) map[string]interface{} {
 		return nil
 	}
 	value := dsnap.Data()
-	logger.DebugLogger.Printf("Document data: %#v\n", value)
+	logger.ErrorLogger.Printf("Document data: %#v\n", value)
 
 	return value
 }
@@ -101,18 +105,30 @@ func CreateLivebroadcast(w http.ResponseWriter, r *http.Request) {
 	}
 
 	b, err := io.ReadAll(r.Body)
-	if err != nil {
-		logger.DebugLogger.Panicf("Unable to read livestream create req: %v", err)
+	if err != nil || jwtToken == "" {
+		logger.ErrorLogger.Printf("Unable to read livestream create req: %v", err)
+		errorMsg := utils.SetErrorMsg("Unable to read livestream create req")
+		resp, _ := RespJSON{int(utils.InvalidParamsCode), errorMsg}.SetResponse()
+		ReturnResponse(w, resp, http.StatusBadRequest)
 	}
 
 	var title Title
 	err = json.Unmarshal(b, &title)
 
 	if err != nil {
-		logger.DebugLogger.Panicf("Unable to decode livestream create req: %v, code %s", err, jwtToken)
+		logger.ErrorLogger.Printf("Unable to decode livestream create req: %v, code %s", err, jwtToken)
+		errorMsg := utils.SetErrorMsg("Unable to decode livestream create req")
+		resp, _ := RespJSON{int(utils.InvalidParamsCode), errorMsg}.SetResponse()
+		ReturnResponse(w, resp, http.StatusBadRequest)
 	}
 
 	emailObj := db.MapJwtToken(jwtToken)
+	if emailObj == nil {
+		logger.ErrorLogger.Printf("Invalid JwtToken")
+		errorMsg := utils.SetErrorMsg("Invalid JwtToken")
+		resp, _ := RespJSON{int(utils.InvalidJwtTokenCode), errorMsg}.SetResponse()
+		ReturnResponse(w, resp, http.StatusUnauthorized)
+	}
 	email := fmt.Sprintf("%v", emailObj["Email"])
 	userProfile := db.GetUserObj(email)
 	tokenByte := []byte(fmt.Sprintf("%v", userProfile["accessToken"]))
@@ -120,14 +136,20 @@ func CreateLivebroadcast(w http.ResponseWriter, r *http.Request) {
 	var accessToken oauth2.Token
 	err = json.Unmarshal(tokenByte, &accessToken)
 	if err != nil {
-		logger.DebugLogger.Panicf("Unable to decode accessToken: %v", err)
+		logger.ErrorLogger.Printf("Unable to decode accessToken: %v", err)
+		errorMsg := utils.SetErrorMsg("Unable to decode accessToken")
+		resp, _ := RespJSON{int(utils.InvalidAccessTokenCode), errorMsg}.SetResponse()
+		ReturnResponse(w, resp, http.StatusUnauthorized)
 	}
 
 	ctx := context.Background()
 	client := oauth2.NewClient(ctx, oauth2.StaticTokenSource(&accessToken))
 	service, e := youtube.New(client)
 	if e != nil {
-		logger.DebugLogger.Panicf("Unable to create YouTube service: %v", e)
+		logger.ErrorLogger.Printf("Unable to create YouTube service: %v", e)
+		errorMsg := utils.SetErrorMsg("Unable to create YouTube service")
+		resp, _ := RespJSON{int(utils.InvalidAccessTokenCode), errorMsg}.SetResponse()
+		ReturnResponse(w, resp, http.StatusUnauthorized)
 	}
 	createTime := time.Now()
 	startTime := createTime.Add(time.Minute * 10)
@@ -148,11 +170,26 @@ func CreateLivebroadcast(w http.ResponseWriter, r *http.Request) {
 	call := service.LiveBroadcasts.Insert([]string{"snippet", "contentDetails", "status"}, newLive)
 	newLive, err = call.Do()
 	if err != nil {
-		logger.DebugLogger.Panicf("Error making YouTube API call: %v\n", err)
+		logger.ErrorLogger.Printf("Error making YouTube API call: %v\n", err)
+		errorMsg := utils.SetErrorMsg("Error making YouTube API call")
+		resp, _ := RespJSON{int(utils.InvalidAccessTokenCode), errorMsg}.SetResponse()
+		ReturnResponse(w, resp, http.StatusUnauthorized)
 	}
 
-	stream := getStream(service)
-	bind(service, newLive, stream)
+	stream, err := getStream(service)
+	if err != nil {
+		logger.ErrorLogger.Printf("Error make YouTube API get/create Stream: %v\n", err)
+		errorMsg := utils.SetErrorMsg("Error make YouTube API get/create Stream")
+		resp, _ := RespJSON{int(utils.InvalidAccessTokenCode), errorMsg}.SetResponse()
+		ReturnResponse(w, resp, http.StatusUnauthorized)
+	}
+	err = bind(service, newLive, stream)
+	if err != nil {
+		logger.ErrorLogger.Printf("Error binding YouTube broadcast and stream: %v\n", err)
+		errorMsg := utils.SetErrorMsg("Error binding YouTube broadcast and stream")
+		resp, _ := RespJSON{int(utils.InvalidAccessTokenCode), errorMsg}.SetResponse()
+		ReturnResponse(w, resp, http.StatusUnauthorized)
+	}
 
 	liveObj := make(map[string]interface{})
 	liveObj["id"] = newLive.Id
@@ -168,12 +205,7 @@ func CreateLivebroadcast(w http.ResponseWriter, r *http.Request) {
 	} else {
 		// TODO: Update Live Obj
 	}
-
-	resp, err := RespJSON{0, liveObj}.SetResponse()
-	if err != nil {
-		logger.ErrorLogger.Fatalf("Error on wrapping JSON resp %s", err)
-	}
-
+	resp, _ := RespJSON{0, liveObj}.SetResponse()
 	ReturnResponse(w, resp, http.StatusOK)
 }
 func LivestreamStatus(w http.ResponseWriter, r *http.Request) {
@@ -183,6 +215,12 @@ func LivestreamStatus(w http.ResponseWriter, r *http.Request) {
 
 	// TODO verify jwtToken existence
 	emailObj := db.MapJwtToken(jwtToken)
+	if emailObj == nil {
+		logger.ErrorLogger.Printf("Invalid JwtToken")
+		errorMsg := utils.SetErrorMsg("Invalid JwtToken")
+		resp, _ := RespJSON{int(utils.InvalidJwtTokenCode), errorMsg}.SetResponse()
+		ReturnResponse(w, resp, http.StatusUnauthorized)
+	}
 	email := fmt.Sprintf("%v", emailObj["Email"])
 	userProfile := db.GetUserObj(email)
 	userId := fmt.Sprintf("%v", userProfile["id"])
@@ -194,21 +232,29 @@ func LivestreamStatus(w http.ResponseWriter, r *http.Request) {
 		}
 		b, err := io.ReadAll(r.Body)
 		if err != nil {
-			logger.DebugLogger.Panicf("Unable to read livestream status req: %v", err)
+			logger.ErrorLogger.Printf("Unable to read livestream status req: %v", err)
+			errorMsg := utils.SetErrorMsg("Unable to read livestream status req")
+			resp, _ := RespJSON{int(utils.InvalidParamsCode), errorMsg}.SetResponse()
+			ReturnResponse(w, resp, http.StatusBadRequest)
 		}
 		var status Status
 		err = json.Unmarshal(b, &status)
 		if err != nil {
-			logger.DebugLogger.Panicf("Unable to decode livestream status req: %v", err)
+			logger.ErrorLogger.Printf("Unable to decode livestream status req: %v", err)
+			errorMsg := utils.SetErrorMsg("Unable to decode livestream status req")
+			resp, _ := RespJSON{int(utils.InvalidParamsCode), errorMsg}.SetResponse()
+			ReturnResponse(w, resp, http.StatusBadRequest)
 		}
 		db.UpdateStoreObj(userId, "isLive", status.IsLive)
 	}
 	// return store object
+
 	storeObj := db.GetStoreObjbyUserId(userId)
 	resp, err := RespJSON{0, storeObj}.SetResponse()
 	if err != nil {
 		logger.ErrorLogger.Printf("Error on wrapping JSON resp, Error: %s", err)
 	}
+  
 	ReturnResponse(w, resp, http.StatusOK)
 	return
 
