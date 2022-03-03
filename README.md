@@ -2,9 +2,9 @@
 ---
 ## Project Members
 Canvas Group Link - https://ufl.instructure.com/groups/419331/users   
-[Yi-Ming Chang](yimingchang@ufl.edu)  
-[Hung-You Chou](hchou@ufl.edu)  
-[Sebastian Llerena](llerenabarruetos@ufl.edu)  
+[Yi-Ming Chang](mailto:yimingchang@ufl.edu)  
+[Hung-You Chou](mailto:hchou@ufl.edu)  
+[Sebastian Llerena](mailto:llerenabarruetos@ufl.edu)  
 
 ## Introduction
 For course CEN5035, our group are building a AmazonLive Clone.
