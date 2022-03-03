@@ -157,7 +157,10 @@ func CreateLivebroadcast(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	createTime := time.Now()
-	startTime := createTime.Add(time.Minute * 10)
+	// startTime := createTime.Add(time.Minute * 10)
+	// endTime := startTime.Add((time.Hour * 24))
+
+	startTime := createTime
 	endTime := startTime.Add((time.Hour * 24))
 
 	newLive := &youtube.LiveBroadcast{
