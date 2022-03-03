@@ -3,7 +3,7 @@
 ## Project Members
 Canvas Group Link - https://ufl.instructure.com/groups/419331/users   
 [Yi-Ming Chang](yimingchang@ufl.edu)  
-[Hung-You Chou](hchou@ufl.edu)
+[Hung-You Chou](hchou@ufl.edu)  
 [Sebastian Llerena](llerenabarruetos@ufl.edu)  
 
 ## Introduction
