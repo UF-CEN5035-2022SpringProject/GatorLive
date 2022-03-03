@@ -17,9 +17,20 @@ import (
 	// "fmt"
 )
 
+func pathSetup() {
+	cwd, _ := os.Getwd()
+	parent := filepath.Dir(cwd)
+	os.Chdir(parent)
+}
+
+func TestSetUpEnv(t *testing.T) {
+	pathSetup()
+	logger.InitLogger()
+	db.ConnectionCreate()
+	ReadCredential()
+}
+
 func TestGetUserProfile(t *testing.T) {
-	loggerSetup()
-	dbSetup()
 	expect := &Profile{
 		Name:  "YiMing Chang",
 		Email: "yimingchang@ufl.edu",
@@ -39,30 +50,7 @@ func TestGetUserProfile(t *testing.T) {
 	}
 }
 
-func dbSetup() {
-	cwd, _ := os.Getwd()
-	parent := filepath.Dir(cwd)
-	os.Chdir(parent)
-	db.ConnectionCreate()
-}
-
-func loggerSetup() {
-	cwd, _ := os.Getwd()
-	parent := filepath.Dir(cwd)
-	os.Chdir(parent)
-	logger.InitLogger()
-}
-
-func apiSetup() {
-	cwd, _ := os.Getwd()
-	parent := filepath.Dir(cwd)
-	os.Chdir(parent)
-	ReadCredential()
-}
 func TestLogin(t *testing.T) {
-	loggerSetup()
-	// dbSetup()
-	apiSetup()
 	data := &Code{
 		Code: "4/0AX4XfWhXHAUcU6v5oBWSGC5sxEwRkHdfjaEgGv4blsqJJxphuEtUVpp4ur7ZJNl-q8O7kw",
 	}
@@ -85,8 +73,6 @@ func TestLogin(t *testing.T) {
 }
 
 func TestCreateLivebroadcast(t *testing.T) {
-	loggerSetup()
-	dbSetup()
 	data := &Title{
 		Title: "123",
 	}
