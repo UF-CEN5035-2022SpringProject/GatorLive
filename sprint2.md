@@ -1,31 +1,37 @@
 # Sprint 2
+## Demo Video
+
+## Project Board
+ 
 ---
 ## Features
-1. Finish Seller Frontend API 
-   - Store API 
-   - Product List API 
-   - Product API 
-   
-   - Order API 
-   - Create Live API
-   
-2. Missing Designs on Seller Frontend Order Page
-  
-   - Create Live Btn on Product List Page
-      - Select products to open live
-      - Return a live steam url on the webpage for user, use [OBS](https://obsproject.com/) to steam to the url.
 
-3. Create testing method for both frontend and backend
-   - Design unit test by using ```go test```
-   - Find a tool for frontend testing
+1. APIs
+   - Integrate Youtube APIs
+   - Live APIs
+      - Start & End Live
+      - Live Status   
+   - JWT token in APIs header
+   - Integrate 
+2. Authentications
+3. Embed Iframe in Frontend
+
+4. Build the API document format
+---
+## Testing
+1. Golang Backend Testing
+2. Cypress Frontend Testing
+
 
 ---
-## Sprint3
-4. Seller
-   - [Discussion] Order Page. In every store will have an order list? OrderList with store filter? 
-5. Design Buyer Frontend Page
+## Future Work in Sprint3
+1. Design Buyer Frontend Page
    - Product List Page 
       - Watch the "live" created by the store and able to buy the products on the list
-   - Login
-   - Create order
+   - Create Order System
+   - Finish the Product System
+2. Solve the automation testing in frontend 
+   - Unable to use Cypress to test Google Login, blocked by Google server
  
+3. Fix the embeded iframe issue (We have to wait 15s till the Youtube server get the stream)
+   - Might want to keep checking the youtube channel status and show the iframe in proper time
