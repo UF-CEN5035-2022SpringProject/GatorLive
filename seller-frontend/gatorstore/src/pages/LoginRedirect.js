@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import settings from '../settings'
 
 function LoginRedirect() {
     const loginCode = GetUserCode('code');
@@ -6,7 +7,7 @@ function LoginRedirect() {
     var backendStatus;
     var backendResult;
     
-    // "Frontend will call a backend API to pass the code ":
+    // Frontend will call a backend API to pass the code:
     useEffect(() => {
         SendPost();
     }, []);
@@ -14,9 +15,9 @@ function LoginRedirect() {
     const SendPost = async () => {
         const requestOptions = {
             method: 'POST',
-            body: JSON.stringify({ code: loginCode})
+            body: JSON.stringify({code: loginCode})
         };
-        const res = fetch('http://10.136.228.201:8080/api/user/login', requestOptions)
+        const res = fetch(settings.apiHostURL + 'user/login', requestOptions)
             .then(response => response.json())
             .then(response => {
                 backendStatus = response.status;
