@@ -108,7 +108,9 @@ func UpdateUserCount(newUserCount int) error {
 }
 
 /*** Store functions ***/
-func GetStoreObj(userId string) map[string]interface{} {
+func GetStoreObjbyUserId(userId string) map[string]interface{} {
+	// TODO: Change this to search value of the same userId
+	// The key is the storeId
 	dsnap, err := FireBaseClient.Collection(DbCollections["stores"]).Doc(userId).Get(DatabaseCtx)
 	if err != nil {
 		logger.WarningLogger.Printf("Cannot find user by userId. %s", err)

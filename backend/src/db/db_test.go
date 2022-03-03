@@ -43,6 +43,15 @@ func TestGetUserObj(t *testing.T) {
 	logger.DebugLogger.Printf("[Test] TestGetUserObj %v", userData)
 }
 
+func TestGetStoreObjbyUser(t *testing.T) {
+	userId := "test"
+	storeObj := GetStoreObjbyUserId(userId)
+	if storeObj == nil {
+		t.Errorf("unable to get store obj from db")
+	}
+	logger.DebugLogger.Printf("[Test] TestGetStoreObjbyUser %v", storeObj)
+}
+
 func TestGetStoreObj(t *testing.T) {
 	storeId := "test"
 	storeObj := GetStoreObj(storeId)
@@ -51,20 +60,11 @@ func TestGetStoreObj(t *testing.T) {
 	}
 	logger.DebugLogger.Printf("[Test] TestGetStoreObj %v", storeObj)
 }
-
-func TestGetStoreObjbyUser(t *testing.T) {
-	userId := "test"
-	storeObj := GetStoreObjbyUserId(storeId)
-	if storeObj == nil {
-		t.Errorf("unable to get jwt obj from db")
-	}
-	logger.DebugLogger.Printf("[Test] TestGetStoreObj %v", storeObj)
-}
 func TestLiveObj(t *testing.T) {
 	liveId := "test"
-	liveObj := GetStoreObj(storeId)
-	if storeObj == nil {
-		t.Errorf("unable to get jwt obj from db")
+	liveObj := GetLiveObj(liveId)
+	if liveObj == nil {
+		t.Errorf("unable to get live obj from db")
 	}
-	logger.DebugLogger.Printf("[Test] TestGetStoreObj %v", storeObj)
+	logger.DebugLogger.Printf("[Test] TestLiveObj %v", liveObj)
 }
