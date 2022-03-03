@@ -10,7 +10,7 @@
    - Integrate Youtube APIs
    - Integrate Live APIs
       - Start & End Live
-      - Live Status   
+      - Live Status [#59](https://github.com/UF-CEN5035-2022SpringProject/GatorStore/issues/59)
    - JWT token in APIs header
 2. Authentications
 3. Embed Iframe in Frontend (Requires timing, but this issue is being explored in issue [#72](https://github.com/UF-CEN5035-2022SpringProject/GatorStore/issues/72))
