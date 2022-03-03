@@ -1,0 +1,9 @@
+{
+    "baseUrl": "http://localhost:3000",
+    "experimentalStudio": true,
+    "env": {
+        "googleSocialLoginUsername": "ericblackking001",
+        "googleSocialLoginPassword": "test55665566",
+        "loginUrl": "http://localhost:3000/landingpage"
+    }
+}

@@ -69,7 +69,7 @@ function SignedInDropdown(userData) {
       <div style={{padding: 10, color: 'blue'}}>{userData.email}</div>
       <MenuItem component="a" href="/landingpage"><HomeIcon style={{marginRight: 20}}/> Home</MenuItem>
       <MenuItem component="a" href="/store-list"><StorefrontIcon style={{marginRight: 20}}/> My Stores</MenuItem>
-      <MenuItem component="a" href="/productlist"><FormatListBulletedIcon style={{marginRight: 20}}/> My Listings</MenuItem>
+      <MenuItem component="a" href="/store-page"><FormatListBulletedIcon style={{marginRight: 20}}/> My Listings</MenuItem>
       <MenuItem component="a" href="/product-page"><PushPinIcon style={{marginRight: 20}}/> Pinned Listing</MenuItem>
       <MenuItem onClick={SignOut}><LogoutIcon style={{marginRight: 20}}/>Logout</MenuItem>
     </Menu>
@@ -78,7 +78,7 @@ function SignedInDropdown(userData) {
 
 function GoogleButton() { // for when user is NOT signed in
   return (<div className="g-signin">
-    <a style={{textDecoration: 'none'}} href='https://accounts.google.com/o/oauth2/auth?access_type=offline&client_id=138444517704-gg6649ok973letdlh55bpte8bna7721o.apps.googleusercontent.com&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Flogin&response_type=code&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fyoutube+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile&state=state' >
+    <a id="loginButton" style={{textDecoration: 'none'}} href='https://accounts.google.com/o/oauth2/auth?access_type=offline&client_id=138444517704-gg6649ok973letdlh55bpte8bna7721o.apps.googleusercontent.com&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Flogin&response_type=code&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fyoutube+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile&state=state' >
       <button className='login'>
         <GoogleIcon style={{verticalAlign: 'middle', marginRight: 10}}/> Sign-In 
       </button>
