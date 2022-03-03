@@ -93,7 +93,7 @@ func TestCreateLivebroadcast(t *testing.T) {
 }
 
 func TestLivestreamStatus(t *testing.T) {
-	req := httptest.NewRequest(http.MethodPost, "/store/1/livestream", nil)
+	req := httptest.NewRequest(http.MethodGet, "/store/1/livestreamStatus", nil)
 	req.Header.Add("Authorization", "test")
 	w := httptest.NewRecorder()
 	vars := map[string]string{
