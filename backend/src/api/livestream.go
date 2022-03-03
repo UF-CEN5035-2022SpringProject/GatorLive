@@ -258,12 +258,17 @@ func LivestreamStatus(w http.ResponseWriter, r *http.Request) {
 	// return store object
 
 	storeObj := db.GetStoreObjbyUserId(userId)
+	if storeObj == nil {
+		logger.ErrorLogger.Printf("Unable to get storeObj by userId %s", userId)
+		errorMsg := utils.SetErrorMsg("Unable to get storeObj by userId")
+		resp, _ := RespJSON{int(utils.InvalidParamsCode), errorMsg}.SetResponse()
+		ReturnResponse(w, resp, http.StatusBadRequest)
+	}
+
 	resp, err := RespJSON{0, storeObj}.SetResponse()
 	if err != nil {
 		logger.ErrorLogger.Printf("Error on wrapping JSON resp, Error: %s", err)
 	}
-
 	ReturnResponse(w, resp, http.StatusOK)
 	return
-
 }

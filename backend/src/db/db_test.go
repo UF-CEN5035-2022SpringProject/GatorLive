@@ -39,7 +39,7 @@ func TestJWTObj(t *testing.T) {
 
 func TestUserObj(t *testing.T) {
 	// Fully Test DB user functions Get, Add, Update, Delete
-	email := "test"
+	email := "testUserObj"
 	userData := GetUserObj(email)
 	if userData != nil {
 		t.Errorf("dirty test user data still in db")
@@ -48,10 +48,10 @@ func TestUserObj(t *testing.T) {
 	// Test Add User Obj
 	nowTime := time.Now().UTC().Format(time.RFC3339)
 	testUserObj := UserObject{
-		Id:          "test",
-		Name:        "test",
+		Id:          email,
+		Name:        email,
 		Email:       email,
-		JwtToken:    utils.CreateJwtToken("test", "test", "test"),
+		JwtToken:    utils.CreateJwtToken(email, email, nowTime),
 		AccessToken: "testToken0",
 		CreateTime:  nowTime,
 		UpdateTime:  nowTime,

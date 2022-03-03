@@ -122,7 +122,7 @@ func GetStoreObjbyUserId(userId string) map[string]interface{} {
 	// The key is the storeId
 	dsnap, err := FireBaseClient.Collection(DbCollections["stores"]).Doc(userId).Get(DatabaseCtx)
 	if err != nil {
-		logger.WarningLogger.Printf("Cannot find user by userId. %s", err)
+		logger.WarningLogger.Printf("Cannot find user by userId %s. Error - %s", userId, err)
 		return nil
 	}
 	value := dsnap.Data()

@@ -114,6 +114,8 @@ func TestLivestreamStatus(t *testing.T) {
 	expectStr := string(b)
 	b, _ = io.ReadAll(w.Result().Body)
 	resStr := string(b)
+	logger.DebugLogger.Printf("expected a %v, resp: %v", expectStr, resStr)
+
 	if expectStr != resStr {
 		t.Fatalf("expected a %v, instead got: %v", expectStr, resStr)
 	}
