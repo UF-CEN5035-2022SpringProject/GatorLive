@@ -21,5 +21,8 @@ describe("Creates Stream", () => {
         // Go live and see stream iframe
         cy.get('.stream-link-container > div > .MuiButton-root').click();
         cy.get('[style="text-align: center;"] > .MuiButton-root').click();
+
+        // Check for UI's responsiveness to going to the "live" state
+        cy.get(".streamChat").should("exist");
     })
 })
