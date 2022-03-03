@@ -13,13 +13,13 @@
       - Live Status   
    - JWT token in APIs header
 2. Authentications
-3. Embed Iframe in Frontend
+3. Embed Iframe in Frontend (Requires timing, but this issue is being explored in issue [#72](https://github.com/UF-CEN5035-2022SpringProject/GatorStore/issues/72))
 
 4. Build the API document format
 ---
 ## Testing
 1. Golang Backend Testing
-2. Cypress Frontend Testing
+2. Cypress Frontend Testing (using "cypress-social-logins" library with problems; these are being explored in issue [#67](https://github.com/UF-CEN5035-2022SpringProject/GatorStore/issues/67))
 
 
 ---
