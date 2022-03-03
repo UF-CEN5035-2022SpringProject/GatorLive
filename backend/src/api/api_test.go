@@ -14,6 +14,7 @@ import (
 	"github.com/UF-CEN5035-2022SpringProject/GatorStore/db"
 	"github.com/UF-CEN5035-2022SpringProject/GatorStore/logger"
 	"github.com/UF-CEN5035-2022SpringProject/GatorStore/utils"
+	"github.com/gorilla/mux"
 	// "fmt"
 )
 
@@ -78,8 +79,42 @@ func TestCreateLivebroadcast(t *testing.T) {
 	}
 	codeByte, _ := json.Marshal(data)
 	req := httptest.NewRequest(http.MethodPost, "/store/1/livestream", strings.NewReader(string(codeByte)))
-	req.Header.Add("Authorization", "test(Do not delete)")
+	req.Header.Add("Authorization", "test")
 	w := httptest.NewRecorder()
-
+	vars := map[string]string{
+		"storeId": "1",
+	}
+	req = mux.SetURLVars(req, vars)
 	CreateLivebroadcast(w, req)
+
+	if want, got := http.StatusUnauthorized, w.Result().StatusCode; want != got {
+		t.Fatalf("expected a %d, instead got: %d", want, got)
+	}
+}
+
+func TestLivestreamStatus(t *testing.T) {
+	req := httptest.NewRequest(http.MethodPost, "/store/1/livestream", nil)
+	req.Header.Add("Authorization", "test")
+	w := httptest.NewRecorder()
+	vars := map[string]string{
+		"storeId": "1",
+	}
+	req = mux.SetURLVars(req, vars)
+	LivestreamStatus(w, req)
+
+	expect := make(map[string]interface{})
+	expect["createTime"] = "2006-01-02T15:04:05Z07:00"
+	expect["id"] = "test"
+	expect["isLive"] = false
+	expect["name"] = "testStore"
+	expect["updateTime"] = "2006-01-02T15:04:05Z07:00"
+	expect["userID"] = "test"
+
+	b, _ := RespJSON{0, expect}.SetResponse()
+	expectStr := string(b)
+	b, _ = io.ReadAll(w.Result().Body)
+	resStr := string(b)
+	if expectStr != resStr {
+		t.Fatalf("expected a %v, instead got: %v", expectStr, resStr)
+	}
 }

@@ -110,6 +110,7 @@ func CreateLivebroadcast(w http.ResponseWriter, r *http.Request) {
 		errorMsg := utils.SetErrorMsg("Unable to read livestream create req")
 		resp, _ := RespJSON{int(utils.InvalidParamsCode), errorMsg}.SetResponse()
 		ReturnResponse(w, resp, http.StatusBadRequest)
+		return
 	}
 
 	var title Title
@@ -120,6 +121,7 @@ func CreateLivebroadcast(w http.ResponseWriter, r *http.Request) {
 		errorMsg := utils.SetErrorMsg("Unable to decode livestream create req")
 		resp, _ := RespJSON{int(utils.InvalidParamsCode), errorMsg}.SetResponse()
 		ReturnResponse(w, resp, http.StatusBadRequest)
+		return
 	}
 
 	emailObj := db.MapJwtToken(jwtToken)
@@ -128,6 +130,7 @@ func CreateLivebroadcast(w http.ResponseWriter, r *http.Request) {
 		errorMsg := utils.SetErrorMsg("Invalid JwtToken")
 		resp, _ := RespJSON{int(utils.InvalidJwtTokenCode), errorMsg}.SetResponse()
 		ReturnResponse(w, resp, http.StatusUnauthorized)
+		return
 	}
 	email := fmt.Sprintf("%v", emailObj["Email"])
 	userProfile := db.GetUserObj(email)
@@ -140,6 +143,7 @@ func CreateLivebroadcast(w http.ResponseWriter, r *http.Request) {
 		errorMsg := utils.SetErrorMsg("Unable to decode accessToken")
 		resp, _ := RespJSON{int(utils.InvalidAccessTokenCode), errorMsg}.SetResponse()
 		ReturnResponse(w, resp, http.StatusUnauthorized)
+		return
 	}
 
 	ctx := context.Background()
@@ -150,6 +154,7 @@ func CreateLivebroadcast(w http.ResponseWriter, r *http.Request) {
 		errorMsg := utils.SetErrorMsg("Unable to create YouTube service")
 		resp, _ := RespJSON{int(utils.InvalidAccessTokenCode), errorMsg}.SetResponse()
 		ReturnResponse(w, resp, http.StatusUnauthorized)
+		return
 	}
 	createTime := time.Now()
 	startTime := createTime.Add(time.Minute * 10)
@@ -174,6 +179,7 @@ func CreateLivebroadcast(w http.ResponseWriter, r *http.Request) {
 		errorMsg := utils.SetErrorMsg("Error making YouTube API call")
 		resp, _ := RespJSON{int(utils.InvalidAccessTokenCode), errorMsg}.SetResponse()
 		ReturnResponse(w, resp, http.StatusUnauthorized)
+		return
 	}
 
 	stream, err := getStream(service)
@@ -182,6 +188,7 @@ func CreateLivebroadcast(w http.ResponseWriter, r *http.Request) {
 		errorMsg := utils.SetErrorMsg("Error make YouTube API get/create Stream")
 		resp, _ := RespJSON{int(utils.InvalidAccessTokenCode), errorMsg}.SetResponse()
 		ReturnResponse(w, resp, http.StatusUnauthorized)
+		return
 	}
 	err = bind(service, newLive, stream)
 	if err != nil {
@@ -189,6 +196,7 @@ func CreateLivebroadcast(w http.ResponseWriter, r *http.Request) {
 		errorMsg := utils.SetErrorMsg("Error binding YouTube broadcast and stream")
 		resp, _ := RespJSON{int(utils.InvalidAccessTokenCode), errorMsg}.SetResponse()
 		ReturnResponse(w, resp, http.StatusUnauthorized)
+		return
 	}
 
 	liveObj := make(map[string]interface{})
@@ -254,7 +262,7 @@ func LivestreamStatus(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		logger.ErrorLogger.Printf("Error on wrapping JSON resp, Error: %s", err)
 	}
-  
+
 	ReturnResponse(w, resp, http.StatusOK)
 	return
 
