@@ -7,9 +7,9 @@
 ## Features
 
 1. APIs
-   - Integrate Youtube APIs
+   - Integrate Youtube APIs [#55](https://github.com/UF-CEN5035-2022SpringProject/GatorStore/issues/55)
    - Integrate Live APIs
-      - Start & End Live [#55](https://github.com/UF-CEN5035-2022SpringProject/GatorStore/issues/55)
+      - Start & End Live 
       - Live Status [#59](https://github.com/UF-CEN5035-2022SpringProject/GatorStore/issues/59)
    - JWT token in APIs header
 2. Authentications
