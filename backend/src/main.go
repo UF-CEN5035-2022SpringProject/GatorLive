@@ -24,22 +24,29 @@ func main() {
 	// create DB connection
 	db.ConnectionCreate()
 
-	r := mux.NewRouter()
-	// set up routing path
+	// set up root routing path
 	prodRoutePrefix := "/api"
-
-	// TEST API path
 	testRoutePrefix := "/test/api"
-	r.HandleFunc(testRoutePrefix+"/test", test.EchoString).Methods("GET", "OPTIONS")
-	r.HandleFunc(testRoutePrefix+"/user/login", test.TestDBGetUserObj).Methods("GET", "POST", "OPTIONS")
 
-	// USER path
+	r := mux.NewRouter()
+
+	// login API
 	r.HandleFunc(prodRoutePrefix+"/user/login", api.Login).Methods("GET", "POST", "OPTIONS")
-	r.HandleFunc(prodRoutePrefix+"/user/info", api.UserInfo).Methods("GET", "PUT", "OPTIONS")
-	r.HandleFunc(prodRoutePrefix+"/user/store-list", test.EchoString)
+	authApis := r.PathPrefix(prodRoutePrefix).Subrouter()
+	// USER path
+	authApis.HandleFunc("/user/{userId}/info", api.UserInfo).Methods("GET", "PUT", "OPTIONS")
+	authApis.HandleFunc("/user/store-list", test.EchoString)
 
 	// Store
-	r.HandleFunc(prodRoutePrefix+"/store/{storeId}/product-list", test.EchoString)
+	authApis.HandleFunc("/store/{storeId}/product-list", test.EchoString)
+	authApis.HandleFunc("/store/{storeId}/livestream", api.CreateLivebroadcast).Methods("GET", "POST", "OPTIONS")
+	authApis.HandleFunc("/store/{storeId}/livestreamStatus", api.LivestreamStatus).Methods("GET", "PUT", "OPTIONS")
+
+	// TEST API path
+	r.HandleFunc(testRoutePrefix+"/echo", test.EchoString).Methods("GET", "OPTIONS")
+	r.HandleFunc(testRoutePrefix+"/user/info", test.TestDBGetUserObj).Methods("GET", "OPTIONS")
+	// testAuthApis := r.PathPrefix(testRoutePrefix).Subrouter()
+	//testAuthApis.HandleFunc("/user/info", test.TestDBGetUserObj)
 
 	// read google oauth2 credentials
 	api.ReadCredential()
@@ -49,12 +56,14 @@ func main() {
 
 	// If debug = True then set the CORSMethodMiddleware
 	if IsDev {
+		// r.Use(api.LoggingMiddleware)
 		r.Use(api.CrossAllowMiddleware)
 		r.Use(mux.CORSMethodMiddleware(r))
 	}
+	// testAuthApis.Use(api.AuthMiddleware)
+	authApis.Use(api.AuthMiddleware)
 	r.Use(api.HeaderMiddleware)
 
-	//
 	logger.InfoLogger.Println(appName + " server is start at port: " + port)
 	srv := &http.Server{
 		Handler: r,

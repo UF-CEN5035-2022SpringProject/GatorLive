@@ -7,9 +7,12 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
+	"strconv"
+	"time"
 
 	"github.com/UF-CEN5035-2022SpringProject/GatorStore/db"
 	"github.com/UF-CEN5035-2022SpringProject/GatorStore/logger"
+	"github.com/UF-CEN5035-2022SpringProject/GatorStore/utils"
 	"github.com/gorilla/mux"
 
 	"golang.org/x/oauth2"
@@ -79,6 +82,7 @@ func GetUserProfile(accesstoken string) Profile {
 	}
 	return profile
 }
+
 func ReadCredential() {
 	content, err := ioutil.ReadFile("./client_secret.json")
 	if err != nil {
@@ -93,9 +97,9 @@ func ReadCredential() {
 	ClientSecret = cre.Web.Client_secret
 	RedirectURL = cre.Web.Redirect_uris
 }
-func Login(w http.ResponseWriter, r *http.Request) {
-	// TODO @chouhy
 
+// API ENTRYPOINT
+func Login(w http.ResponseWriter, r *http.Request) {
 	// setup config
 	ctx := context.Background()
 	conf := &oauth2.Config{
@@ -116,57 +120,101 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	logger.DebugLogger.Printf("request login body %s", b)
 
 	if err != nil {
-		logger.DebugLogger.Panicf("Unable to read login req: %v", err)
-		// log.Fatalf("Unable to create YouTube service: %v", e)
+		logger.ErrorLogger.Printf("Unable to read login request body, err: %v", err)
+		errorMsg := utils.SetErrorMsg("error occurs before google login")
+		resp, _ := RespJSON{int(utils.InvalidParamsCode), errorMsg}.SetResponse()
+		ReturnResponse(w, resp, http.StatusInternalServerError)
+		return
 	}
 
 	var code Code
-
 	err = json.Unmarshal(b, &code)
 	logger.DebugLogger.Printf("request login code %s", code)
 	if err != nil {
-		logger.DebugLogger.Panicf("Unable to decode login req: %v, code %s", err, code)
-		// log.Fatalf("Unable to create YouTube service: %v", e)
+		logger.ErrorLogger.Printf("Unable to decode login request body, err: %v, google api code %s", err, code)
+		errorMsg := utils.SetErrorMsg("error occurs before google login")
+		resp, _ := RespJSON{int(utils.InvalidParamsCode), errorMsg}.SetResponse()
+		ReturnResponse(w, resp, http.StatusInternalServerError)
+		return
 	}
-	tok, err := conf.Exchange(ctx, code.Code)
 
+	tok, err := conf.Exchange(ctx, code.Code)
 	if err != nil {
-		logger.DebugLogger.Panic(err)
-		// log.Fatal(err)
+		logger.ErrorLogger.Printf("Exchange token by code failed! err: %v", err)
+		errorMsg := utils.SetErrorMsg("Exchange token by code failed!")
+		resp, _ := RespJSON{int(utils.InvalidGoogleCode), errorMsg}.SetResponse()
+		ReturnResponse(w, resp, http.StatusBadRequest)
+		return
 	}
 
 	client := conf.Client(ctx, tok)
 	// service, e := youtube.New(client)
 	_, err = youtube.New(client)
 	if err != nil {
-		logger.DebugLogger.Panicf("Unable to create YouTube service: %v", err)
+		logger.ErrorLogger.Printf("Unable to create YouTube service with token %v, err %v", tok, err)
+		errorMsg := utils.SetErrorMsg("Exchange token by code failed!")
+		resp, _ := RespJSON{int(utils.InvalidAccessTokenCode), errorMsg}.SetResponse()
+		ReturnResponse(w, resp, http.StatusBadRequest)
+		return
 	}
 	profile := GetUserProfile(tok.AccessToken)
 
+	tokenBytes, err := json.Marshal(tok)
+	if err != nil {
+		logger.ErrorLogger.Printf("Unable to decode token into byte, err: %v", err)
+		errorMsg := utils.SetErrorMsg("error occurs after google login")
+		resp, _ := RespJSON{int(utils.InvalidAccessTokenCode), errorMsg}.SetResponse()
+		ReturnResponse(w, resp, http.StatusBadRequest)
+		return
+	}
+
+	tokenString := string(tokenBytes)
 	// Flow: Check the user email
 	//    - No email -> store and return the obj
 	//    - Email -> update the token and return the obj
 	userData := db.GetUserObj(profile.Email)
 	if userData == nil {
+		// create userId and assign JWT
+		newUserCount := db.GetUserNewCount()
+		newUserId := strconv.Itoa(newUserCount)
+		logger.DebugLogger.Printf("New user, assign ID: %s", newUserId)
+
 		// Add user Data
-		userData = make(map[string]interface{})
-		userData["id"] = "113024"
-		userData["name"] = profile.Name
-		userData["email"] = profile.Email
-		userData["jwtToken"] = "gatorStore_qeqweiop122133"
-		userData["accessToken"] = tok.AccessToken
+		nowTime := time.Now().UTC().Format(time.RFC3339)
+		newUserToken := utils.CreateJwtToken(newUserId, profile.Email, nowTime)
+		userObj := &db.UserObject{
+			Id:          newUserId,
+			Name:        profile.Name,
+			Email:       profile.Email,
+			JwtToken:    newUserToken,
+			AccessToken: tokenString,
+			CreateTime:  nowTime,
+			UpdateTime:  nowTime,
+		}
+		db.AddJwtToken(newUserToken, userObj.Email, nowTime)
+
+		var convertMap map[string]interface{}
+		userObjStr, _ := json.Marshal(userObj)
+		json.Unmarshal(userObjStr, &convertMap)
+
+		userData = convertMap
+
 		db.AddUserObj(profile.Email, userData)
+		db.UpdateUserCount(newUserCount)
 	} else {
-		db.UpdateUserObj(profile.Email, "accessToken", tok.AccessToken)
+		db.UpdateUserObj(profile.Email, "accessToken", tokenString)
 		userData = db.GetUserObj(profile.Email)
 	}
 
-	resp, err := JsonResponse(userData, 0)
+	resp, err := RespJSON{0, userData}.SetResponse()
 	if err != nil {
-		logger.ErrorLogger.Fatalf("Error on wrapping JSON resp %s", err)
+		logger.ErrorLogger.Printf("Error on wrapping JSON resp, err: %v", err)
+		errorMsg := utils.SetErrorMsg("Error on wrapping JSON resp")
+		resp, _ := RespJSON{int(utils.InvalidAccessTokenCode), errorMsg}.SetResponse()
+		ReturnResponse(w, resp, http.StatusInternalServerError)
+		return
 	}
-	w.WriteHeader(http.StatusOK)
-	w.Write(resp)
+	ReturnResponse(w, resp, http.StatusOK)
 }
 
 func UserInfo(w http.ResponseWriter, r *http.Request) {
@@ -176,15 +224,34 @@ func UserInfo(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	if r.Method == "GET" {
 		fmt.Fprintf(w, "Get %v user info", vars["userId"])
-		value := db.GetUserObj(vars["userId"])
-		resp, err := JsonResponse(value, 0)
-		if err != nil {
-			logger.ErrorLogger.Fatalf("Error on wrapping JSON resp %s", err)
-		}
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		w.Write(resp)
+		jwtToken := r.Header.Get("jwtToken")
 
+		userEmail := db.MapJwtToken(jwtToken)["email"]
+		userData := db.GetUserObj(userEmail.(string))
+
+		if userData == nil {
+			logger.ErrorLogger.Printf("Invalid JWT, unable to get user")
+			errorMsg := utils.SetErrorMsg("Invalid JWT, unable to get user")
+			resp, _ := RespJSON{int(utils.InvalidJwtTokenCode), errorMsg}.SetResponse()
+			ReturnResponse(w, resp, http.StatusUnauthorized)
+			return
+		}
+
+		if userData["id"] != vars["userId"] {
+			logger.ErrorLogger.Printf("invald request")
+			errorMsg := utils.SetErrorMsg("invald request")
+			resp, _ := RespJSON{int(utils.InvalidJwtTokenCode), errorMsg}.SetResponse()
+			ReturnResponse(w, resp, http.StatusBadRequest)
+			return
+		}
+
+		resp, err := RespJSON{0, userData}.SetResponse()
+		if err != nil {
+			logger.ErrorLogger.Printf("Error on wrapping JSON resp, Error: %s", err)
+		}
+
+		ReturnResponse(w, resp, http.StatusOK)
+		return
 	} else if r.Method == "PUT" {
 		fmt.Fprintf(w, "Update %v user info", vars["userId"])
 	}
