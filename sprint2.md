@@ -20,7 +20,7 @@
    - User inputs URL and key into OBS Studio and starts livestreaming
    - After some seconds, user clicks on "GO LIVE" to see the iframe embedded
    - User can click on "End Livestream" to return to "not-live" state
-For a more detailed explanation, refer to issue [#54](https://github.com/UF-CEN5035-2022SpringProject/GatorStore/issues/54)
+For a more detailed explanation, refer to issue [that specifies the flow and features of Sprint 2](https://github.com/UF-CEN5035-2022SpringProject/GatorStore/issues/54)
 
 4. Build the API document format
 ---
@@ -35,7 +35,7 @@ For a more detailed explanation, refer to issue [#54](https://github.com/UF-CEN5
      Since the database operations use by these APIs have been tested. We'll focus on the http tesing by using [httptest](https://pkg.go.dev/net/http/httptest)
 
    
-2. Cypress Frontend Testing (using "cypress-social-logins" library with problems; these are being explored in issue [#67](https://github.com/UF-CEN5035-2022SpringProject/GatorStore/issues/67))
+2. Cypress Frontend Testing (using "cypress-social-logins" library with problems; these are being explored in issue [#67, which details how Cypress is unable to get past the Google authentification, as well as the approaches attempted](https://github.com/UF-CEN5035-2022SpringProject/GatorStore/issues/67))
 
 
 ---
