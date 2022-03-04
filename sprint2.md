@@ -1,18 +1,40 @@
 # Sprint 2
 ## Demo Video
+https://www.youtube.com/watch?v=9eUHQexsQaA
 
 ## Project Board
- 
----
-## Features
+https://github.com/orgs/UF-CEN5035-2022SpringProject/projects/1
 
-1. APIs
-   - Integrate Youtube APIs
+Down below link is the cards with sprint2 label  
+https://github.com/orgs/UF-CEN5035-2022SpringProject/projects/1?card_filter_query=label%3Asprint2
+
+## What we have done in Sprint2
+- Backend and frontend are integrated
+  - Using RESTful API with JSON format to communicate
+- Tesing for both frontend and backend - Check [Testing Chapter](https://github.com/UF-CEN5035-2022SpringProject/GatorStore/blob/main/sprint2.md#testing) for more details
+  - Cypress + unit tests in the framework you are using
+    - Automation testing on Google Login and Live Streaming page
+    - Unit test the button and components on 2 major pages
+  - Unit tests for the backend
+    - Using go test to test dp operations and Login and Live APIs
+
+- Documentation for the backend API developed - [API document](https://github.com/UF-CEN5035-2022SpringProject/GatorStore#api-document)
+
+---
+## New Features
+1. APIs & Frontend
+   - Integrate Youtube Live Steam APIs and Implement Youtube Iframe in Frontend 
+     - Check out issue [#54](https://github.com/UF-CEN5035-2022SpringProject/GatorStore/issues/54) 
+     - Backend api integration with frontend and also youtube APIs
    - Integrate Live APIs
-      - Start & End Live
-      - Live Status   
-   - JWT token in APIs header
-2. Authentications
+     - Check out issue [#45](https://github.com/UF-CEN5035-2022SpringProject/GatorStore/issues/45)
+     - Start & End Live
+     - Live Status   
+   - JWT token in APIs header for **Authentications** 
+     - Adding JWT object to database and require in frontend request header
+2. User Authentications
+   - Build JWT authentication in the middleware - check issue [Build Server JWT generator and authorization functions](https://github.com/UF-CEN5035-2022SpringProject/GatorStore/issues/51)
+
 3. Embed Iframe in Frontend
    - Logged in seller clicks on "Start Livestream" and selects a title and products to advertise
    - Back-end receives user information and title, which it uses to create livestream
@@ -22,7 +44,18 @@
    - User can click on "End Livestream" to return to "not-live" state
 For a more detailed explanation, refer to issue [that specifies the flow and features of Sprint 2](https://github.com/UF-CEN5035-2022SpringProject/GatorStore/issues/54)
 
-4. Build the API document format
+4. Build the [API document](https://github.com/UF-CEN5035-2022SpringProject/GatorStore#api-document)
+   We are using RESTful API with JSON format, and we names each APIs with there property of the feature.
+   We have defined 
+    - API URL
+    - Header
+    - Return Body
+    - Error Code & Error Response
+
+5. [Error code documents](https://github.com/UF-CEN5035-2022SpringProject/GatorStore#global-errorcode)
+   Define proper error response for frontend to make the correct reaction.
+   - Check issue [#62](https://github.com/UF-CEN5035-2022SpringProject/GatorStore/issues/62)
+ 
 ---
 ## Testing
 1. Golang Backend Testing
@@ -34,7 +67,6 @@ For a more detailed explanation, refer to issue [that specifies the flow and fea
    - Unit test on Login and LiveStream APIs
      Since the database operations use by these APIs have been tested. We'll focus on the http tesing by using [httptest](https://pkg.go.dev/net/http/httptest)
 
-   
 2. Cypress Frontend Testing (using "cypress-social-logins" library with problems; these are being explored in issue [#67, which details how Cypress is unable to get past the Google authentification, as well as the approaches attempted](https://github.com/UF-CEN5035-2022SpringProject/GatorStore/issues/67))
 
 
