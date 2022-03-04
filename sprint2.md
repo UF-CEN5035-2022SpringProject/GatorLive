@@ -60,10 +60,10 @@ For a more detailed explanation, refer to issue [that specifies the flow and fea
 ## Testing
 1. Golang Backend Testing
    Check out more details in this issue -
-   [Build backend server test](https://github.com/UF-CEN5035-2022SpringProject/GatorStore/issues/27)
+   issue - [Build backend server test](https://github.com/UF-CEN5035-2022SpringProject/GatorStore/issues/27)
 
    We'll do these tests in the order below: 
-   - Unit test on database operations
+   - Unit test on database operations 
    - Unit test on Login and LiveStream APIs
      Since the database operations use by these APIs have been tested. We'll focus on the http tesing by using [httptest](https://pkg.go.dev/net/http/httptest)
 
