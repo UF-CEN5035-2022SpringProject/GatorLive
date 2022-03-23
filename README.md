@@ -380,11 +380,10 @@ Get the products according to the store, split the item with page
      ```
    
      Error Code Table for error situation:
-
-      | ErrorName | ErrorCode | HttpStatus | Description |
-      | ---  | --- | --- | --- |
-      | MissingJwtTokenCode | 1000 | 401 | |
-      | InvalidJwtTokenCode | 1001 | 401 | Expire or invalid jwtToken |
+     | ErrorName | ErrorCode | HttpStatus | Description |
+     | ---  | --- | --- | --- |
+     | MissingJwtTokenCode | 1000 | 401 | |
+     | InvalidJwtTokenCode | 1001 | 401 | Expire or invalid jwtToken |
       
 ---
 #### SA3. Store Order List API
@@ -431,10 +430,10 @@ Get the orders according to the store, split the item with page
      ```
    
      Error Code Table for error situation:
-      | ErrorName | ErrorCode | HttpStatus | Description |
-      | ---  | --- | --- | --- |
-      | MissingJwtTokenCode | 1000 | 401 | |
-      | InvalidJwtTokenCode | 1001 | 401 | Expire or invalid jwtToken |
+     | ErrorName | ErrorCode | HttpStatus | Description |
+     | ---  | --- | --- | --- |
+     | MissingJwtTokenCode | 1000 | 401 | |
+     | InvalidJwtTokenCode | 1001 | 401 | Expire or invalid jwtToken |
 
 --- 
 ### Live API URLs
