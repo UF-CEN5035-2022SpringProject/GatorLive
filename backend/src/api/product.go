@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 	"strconv"
@@ -10,6 +11,7 @@ import (
 	"github.com/UF-CEN5035-2022SpringProject/GatorStore/db"
 	"github.com/UF-CEN5035-2022SpringProject/GatorStore/logger"
 	"github.com/UF-CEN5035-2022SpringProject/GatorStore/utils"
+	gorillaContext "github.com/gorilla/context"
 )
 
 type ProductCreateObject struct {
@@ -48,6 +50,19 @@ func ProductCreate(w http.ResponseWriter, r *http.Request) {
 		errorMsg := utils.SetErrorMsg("error occurs before ProductCreate")
 		resp, _ := RespJSON{int(utils.InvalidParamsCode), errorMsg}.SetResponse()
 		ReturnResponse(w, resp, http.StatusInternalServerError)
+		return
+	}
+
+	userData := gorillaContext.Get(r, "userData").(map[string]interface{})
+	storeObj := db.GetStoreObj(product.StoreId)
+	storeUserId := fmt.Sprintf("%v", storeObj["userId"])
+	JwtUserId := fmt.Sprintf("%v", userData["id"])
+
+	if storeUserId != JwtUserId {
+		logger.ErrorLogger.Printf("jwtToken and storeId not match %v != %v", JwtUserId, storeUserId)
+		errorMsg := utils.SetErrorMsg("jwtToken and storeId not match")
+		resp, _ := RespJSON{int(utils.InvalidParamsCode), errorMsg}.SetResponse()
+		ReturnResponse(w, resp, http.StatusForbidden)
 		return
 	}
 
