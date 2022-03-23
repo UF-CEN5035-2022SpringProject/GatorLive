@@ -709,5 +709,3 @@ The key will be **liveId**, and the value will be as below:
    | MissingAccessTokenCode | 9000 | |
    | InvalidAccessTokenCode | 9001 | |
    | InvalidGoogleCode | 9002 | |
-   
- 
