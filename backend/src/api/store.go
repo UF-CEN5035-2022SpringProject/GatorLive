@@ -4,10 +4,13 @@ import (
 	"encoding/json"
 	"io"
 	"net/http"
+	"strconv"
+	"time"
 
 	"github.com/UF-CEN5035-2022SpringProject/GatorStore/db"
 	"github.com/UF-CEN5035-2022SpringProject/GatorStore/logger"
 	"github.com/UF-CEN5035-2022SpringProject/GatorStore/utils"
+	gorillaContext "github.com/gorilla/context"
 )
 
 type storeCreateBody struct {
@@ -20,12 +23,14 @@ type StoreObject struct {
 	UserId     string `json:"userId"`
 	CreateTime string `json:"createTime"`
 	UpdateTime string `json:"updateTime"`
-	IsLive     string `json:"isLive"`
+	IsLive     bool   `json:"isLive"`
 	LiveId     string `json:"liveId"`
 }
 
 func StoreCreate(w http.ResponseWriter, r *http.Request) {
 	// get code or assesstoken from http.request
+	userData := gorillaContext.Get(r, "userData").(map[string]interface{})
+
 	b, err := io.ReadAll(r.Body)
 	logger.DebugLogger.Printf("StoreCreate request body %s", b)
 
@@ -47,18 +52,44 @@ func StoreCreate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if rq.Name == "" {
+		logger.ErrorLogger.Printf("Empty name to create store: %v", err)
+		errorMsg := utils.SetErrorMsg("Empty name to create store")
+		resp, _ := RespJSON{int(utils.InvalidParamsCode), errorMsg}.SetResponse()
+		ReturnResponse(w, resp, http.StatusBadRequest)
+		return
+	}
+
 	// create store object with name
 	newStoreCount := db.GetStoreNewCount()
-	// newStoreId := "GatorStore_" + strconv.Itoa(newStoreCount)
+	newStoreId := "GatorStore_" + strconv.Itoa(newStoreCount)
 
-	// storeData := &db.StoreObject{
-	// 	Id:   newStoreId,
-	// 	Name: rq.Name,
-	// 	// UserId:
-	// 	// CreateTime:  nowTime,
-	// 	// UpdateTime:  nowTime,
-	// }
+	nowTime := time.Now().UTC().Format(time.RFC3339)
+	storeObj := &StoreObject{
+		Id:         newStoreId,
+		Name:       rq.Name,
+		UserId:     userData["id"].(string),
+		CreateTime: nowTime,
+		UpdateTime: nowTime,
+		IsLive:     false,
+		LiveId:     "",
+	}
 
-	// db.AddStoreObj(newStoreId, "storeData")
-	db.UpdateUserCount(newStoreCount)
+	var convertMap map[string]interface{}
+	storeObjStr, _ := json.Marshal(storeObj)
+	json.Unmarshal(storeObjStr, &convertMap)
+	storeData := convertMap
+
+	db.AddStoreObj(newStoreId, storeData)
+	db.UpdateStoreCount(newStoreCount)
+
+	resp, err := RespJSON{0, storeData}.SetResponse()
+	if err != nil {
+		logger.ErrorLogger.Printf("Error on wrapping JSON resp, err: %v", err)
+		errorMsg := utils.SetErrorMsg("Error on wrapping JSON resp")
+		resp, _ := RespJSON{int(utils.InvalidAccessTokenCode), errorMsg}.SetResponse()
+		ReturnResponse(w, resp, http.StatusInternalServerError)
+		return
+	}
+	ReturnResponse(w, resp, http.StatusOK)
 }
