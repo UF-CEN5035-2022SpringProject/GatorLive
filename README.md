@@ -440,6 +440,59 @@ Golang and backend set up please check [backendend-readme.md](https://github.com
       | NO_JWTTOKEN | 1000 | 400 | |
       | INVALID_JWTTOKEN | 1001 | 401 | Expire or invalid jwtToken |
       | INVALID_ACCESSTOKEN | 9000 | 403 | Expire Google Access Token |
+
+---       
+#### SA4. Store Product List API
+Get the products according to the store, split the item with page
+ - Method: GET
+ - {routePath}: /store/{store id}/productList?page={page}
+   - page parameter decide which page requesting, if overflow, return the last page. If missing, return page 0.
+ 
+ - **Header**
+   | Name | Type | Description |
+   | --- | --- | --- |
+   | Authorization | string | Use for GatorStore Login |
+   
+- **Request Body Table**   
+    Empty request body
+    GET Example:
+    ```
+    {
+    }
+    ```
+- **Response**  
+    Success: 
+    ```
+    {
+      'storeId': "GatorStore_1",
+      'name': "GoGoGator",
+      'totalPage': 15,
+      'currentPage': 0,
+      'productList': [
+        {productObject},
+        {productObject},
+        ...
+      ]
+    }
+    ```
+
+    Error:
+     ```
+     {
+         "status": 1000,
+         "result": {
+            "errorName": "MissingJwtTokenCode"
+         }
+     }
+     ```
+   
+     Error Code Table for error situation:
+
+      | ErrorName | ErrorCode | HttpStatus | Description |
+      | ---  | --- | --- | --- |
+      | MissingJwtTokenCode | 1000 | 401 | |
+      | InvalidJwtTokenCode | 1001 | 401 | Expire or invalid jwtToken |
+      
 ---
 ### Product API URLs
 ---
@@ -585,7 +638,7 @@ The key will be **liveId**, and the value will be as below:
    | ErrorName | ErrorCode | Description |
    | ---  | --- | --- |
    | MissingJwtTokenCode | 1000 | | Empty jwtToken |
-   | InvalidAccessTokenCode | 1001 |  | Expire or invalid jwtToken |
+   | InvalidJwtTokenCode | 1001 |  | Expire or invalid jwtToken |
 
 - Error with Google
    | ErrorName | ErrorCode | Description |
