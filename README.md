@@ -445,7 +445,7 @@ Golang and backend set up please check [backendend-readme.md](https://github.com
 #### SA4. Store Product List API
 Get the products according to the store, split the item with page
  - Method: GET
- - {routePath}: /store/{store id}/productList?page={page}
+ - {routePath}: /store/{storeId}/productList?page={page}
    - page parameter decide which page requesting, if overflow, return the last page. If missing, return page 0.
  
  - **Header**
@@ -488,6 +488,56 @@ Get the products according to the store, split the item with page
    
      Error Code Table for error situation:
 
+      | ErrorName | ErrorCode | HttpStatus | Description |
+      | ---  | --- | --- | --- |
+      | MissingJwtTokenCode | 1000 | 401 | |
+      | InvalidJwtTokenCode | 1001 | 401 | Expire or invalid jwtToken |
+---
+#### SA5. Store Order List API
+Get the orders according to the store, split the item with page
+ - Method: GET
+ - {routePath}: /store/{storeId}/orderList?page={page}
+   - page parameter decide which page requesting, if overflow, return the last page. If missing, return page 0.
+ 
+ - **Header**
+   | Name | Type | Description |
+   | --- | --- | --- |
+   | Authorization | string | Use for GatorStore Login |
+   
+- **Request Body Table**   
+    Empty request body
+    GET Example:
+    ```
+    {
+    }
+    ```
+- **Response**  
+    Success: 
+    ```
+    {
+      'storeId': "GatorStore_1",
+      'name': "GoGoGator",
+      'totalPage': 15,
+      'currentPage': 0,
+      'orderList': [
+        {orderObject},
+        {orderObject},
+        ...
+      ]
+    }
+    ```
+
+    Error:
+     ```
+     {
+         "status": 1000,
+         "result": {
+            "errorName": "MissingJwtTokenCode"
+         }
+     }
+     ```
+   
+     Error Code Table for error situation:
       | ErrorName | ErrorCode | HttpStatus | Description |
       | ---  | --- | --- | --- |
       | MissingJwtTokenCode | 1000 | 401 | |
