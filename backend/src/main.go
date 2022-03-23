@@ -42,6 +42,8 @@ func main() {
 	authApis.HandleFunc("/store/{storeId}/livestream", api.CreateLivebroadcast).Methods("GET", "POST", "OPTIONS")
 	authApis.HandleFunc("/store/{storeId}/livestreamStatus", api.LivestreamStatus).Methods("GET", "PUT", "OPTIONS")
 
+	// Product
+	authApis.HandleFunc("/product/create", api.ProductCreate).Methods("POST", "OPTIONS")
 	// TEST API path
 	r.HandleFunc(testRoutePrefix+"/echo", test.EchoString).Methods("GET", "OPTIONS")
 	r.HandleFunc(testRoutePrefix+"/user/info", test.TestDBGetUserObj).Methods("GET", "OPTIONS")
