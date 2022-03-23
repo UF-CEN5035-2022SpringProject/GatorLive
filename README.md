@@ -113,7 +113,6 @@ Golang and backend set up please check [backendend-readme.md](https://github.com
 
 ### User API URLs
 ---
-
 #### UA1. User Login API
  - Method: POST
  - {routePath}: /user/login/
@@ -465,7 +464,6 @@ Get the products according to the store, split the item with page
     ```
     {
       'storeId': "GatorStore_1",
-      'name': "GoGoGator",
       'totalPage': 15,
       'currentPage': 0,
       'productList': [
@@ -516,7 +514,6 @@ Get the orders according to the store, split the item with page
     ```
     {
       'storeId': "GatorStore_1",
-      'name': "GoGoGator",
       'totalPage': 15,
       'currentPage': 0,
       'orderList': [
