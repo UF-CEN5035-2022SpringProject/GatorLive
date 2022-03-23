@@ -18,6 +18,7 @@ import (
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 
+	gorillaContext "github.com/gorilla/context"
 	g "google.golang.org/api/oauth2/v2"
 	youtube "google.golang.org/api/youtube/v3"
 )
@@ -223,11 +224,7 @@ func UserInfo(w http.ResponseWriter, r *http.Request) {
 	logger.DebugLogger.Println(r.Method)
 	vars := mux.Vars(r)
 	if r.Method == "GET" {
-		fmt.Fprintf(w, "Get %v user info", vars["userId"])
-		jwtToken := r.Header.Get("jwtToken")
-
-		userEmail := db.MapJwtToken(jwtToken)["email"]
-		userData := db.GetUserObj(userEmail.(string))
+		userData := gorillaContext.Get(r, "userData").(map[string]interface{})
 
 		if userData == nil {
 			logger.ErrorLogger.Printf("Invalid JWT, unable to get user")
