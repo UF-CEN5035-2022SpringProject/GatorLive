@@ -87,11 +87,17 @@
     cursor: pointer;
     padding: 5px;
     background-color: lightblue;
-    border-radius: 20px;
+    border-radius: 15px;
 }
 .selectStreamItem img {
     margin: 4px 0 3px;
     border-radius: 10px;
-    width: 130px;
-    height: 130px; 
+    width: 115px;
+    height: 115px; 
+}
+
+.featuredItemTitle {
+    font-family: Roboto;
+    color: white;
+    font-size: 18px;
 }

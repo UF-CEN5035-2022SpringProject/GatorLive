@@ -8,12 +8,14 @@ import {
 
 import StorePage from './pages/Store'
 import LandingPage from './pages/LandingPage'
+import LoginRedirect from './pages/LoginRedirect'
 
 ReactDOM.render(
   <BrowserRouter basename="/">
     <Routes>
       <Route path="/" element={<LandingPage/>} />
       <Route path="/store" element={<StorePage/>} />
+      <Route path="/login" element={<LoginRedirect/>} />
     </Routes>
   </BrowserRouter>,
   document.getElementById('root')

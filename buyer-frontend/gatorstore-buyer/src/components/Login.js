@@ -40,7 +40,7 @@ function Login() {
                     accessType="offline"
                     uxMode="redirect"
                     //isSignedIn={true}
-                    redirectUri="http://localhost/testing.html"
+                    redirectUri="http://localhost/"
                 /> : null}
 
             { showlogoutButton ?
