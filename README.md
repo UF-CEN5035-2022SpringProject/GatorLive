@@ -290,9 +290,156 @@ Golang and backend set up please check [backendend-readme.md](https://github.com
      | NO_JWTTOKEN | 1000 | 400 | |
      | INVALID_JWTTOKEN | 1001 | 401 | Expire or invalid jwtToken |
      | INVALID_ACCESSTOKEN | 9000 | 403 | Expire Google Access Token |
-     
+
 ---
-#### SA1. Store Livestream API
+#### SA1. Get Store Object API
+ - Method: GET
+ - {routePath}: /store/{storeId}
+
+ - **Header**
+   | Name | Type | Description |
+   | --- | --- | --- |
+   | Authorization | string | Use for GatorStore Login |
+ 
+ - **Response**  
+    Success: 
+    ```
+    {
+      'id': "GatorStore_1",
+      'name': "GoGoGator",
+      'userId': "11001",
+      'createTime': "2006-01-02T15:04:05Z07:00",
+      'updateTime': "2006-01-02T15:04:05Z07:00",
+      'isLive': True
+      'live': {liveObj} 
+    }
+    ```
+
+    Error:
+     ```
+     {
+         "status": 801,
+         "result": {
+            "errorName": "MissingParamsCode"
+         }
+     }
+     ```
+   
+     Error Code Table for error situation:
+     
+     | ErrorName | ErrorCode | HttpStatus | Description |
+     | ---  | --- | --- | --- |
+     | UnknownInternalErrCode | 800 | 500 | |
+     | MissingParamsCode | 801 | 400 | |
+     | InvalidParamsCode | 802 | 403 | |
+     | MissingJwtTokenCode | 1000 | 401 | |
+     | InvalidJwtTokenCode | 1001 | 401 | Expire or invalid jwtToken |
+   
+---       
+#### SA2. Store Product List API
+Get the products according to the store, split the item with page
+ - Method: GET
+ - {routePath}: /store/{storeId}/productList?page={page}
+   - page parameter decide which page requesting, if overflow, return the last page. If missing, return page 0.
+ 
+ - **Header**
+   | Name | Type | Description |
+   | --- | --- | --- |
+   | Authorization | string | Use for GatorStore Login |
+   
+- **Request Body Table**   
+    Empty request body
+    GET Example:
+    ```
+    {
+    }
+    ```
+- **Response**  
+    Success: 
+    ```
+    {
+      'storeId': "GatorStore_1",
+      'totalPage': 15,
+      'currentPage': 0,
+      'productList': [
+        {productObject},
+        {productObject},
+        ...
+      ]
+    }
+    ```
+
+    Error:
+     ```
+     {
+         "status": 1000,
+         "result": {
+            "errorName": "MissingJwtTokenCode"
+         }
+     }
+     ```
+   
+     Error Code Table for error situation:
+
+      | ErrorName | ErrorCode | HttpStatus | Description |
+      | ---  | --- | --- | --- |
+      | MissingJwtTokenCode | 1000 | 401 | |
+      | InvalidJwtTokenCode | 1001 | 401 | Expire or invalid jwtToken |
+      
+---
+#### SA3. Store Order List API
+Get the orders according to the store, split the item with page
+ - Method: GET
+ - {routePath}: /store/{storeId}/orderList?page={page}
+   - page parameter decide which page requesting, if overflow, return the last page. If missing, return page 0.
+ 
+ - **Header**
+   | Name | Type | Description |
+   | --- | --- | --- |
+   | Authorization | string | Use for GatorStore Login |
+   
+- **Request Body Table**   
+    Empty request body
+    GET Example:
+    ```
+    {
+    }
+    ```
+- **Response**  
+    Success: 
+    ```
+    {
+      'storeId': "GatorStore_1",
+      'totalPage': 15,
+      'currentPage': 0,
+      'orderList': [
+        {orderObject},
+        {orderObject},
+        ...
+      ]
+    }
+    ```
+
+    Error:
+     ```
+     {
+         "status": 1000,
+         "result": {
+            "errorName": "MissingJwtTokenCode"
+         }
+     }
+     ```
+   
+     Error Code Table for error situation:
+      | ErrorName | ErrorCode | HttpStatus | Description |
+      | ---  | --- | --- | --- |
+      | MissingJwtTokenCode | 1000 | 401 | |
+      | InvalidJwtTokenCode | 1001 | 401 | Expire or invalid jwtToken |
+
+--- 
+### Live API URLs
+---
+#### SLA0. Store Livestream API
  - Method: POST
  - {routePath}: /store/{store id}/livestream
  - **Header**
@@ -349,41 +496,8 @@ Golang and backend set up please check [backendend-readme.md](https://github.com
       | INVALID_JWTTOKEN | 1001 | 401 | Expire or invalid jwtToken |
       | INVALID_ACCESSTOKEN | 9000 | 403 | Expire Google Access Token |
       
-  - **Response**  
-    Success: 
-    ```
-    {
-      'id': "GatorStore_1",
-      'name': "GoGoGator",
-      'userId': "11001",
-      'createTime': "2006-01-02T15:04:05Z07:00",
-      'updateTime': "2006-01-02T15:04:05Z07:00",
-      'isLive': True // might change
-    }
-    ```
-
-    Error:
-     ```
-     {
-         "status": 800,
-         "result": {
-            "errorName": "MISS_PARAMS"
-         }
-     }
-     ```
-   
-     Error Code Table for error situation:
-
-      | ErrorName | ErrorCode | HttpStatus | Description |
-      | ---  | --- | --- | --- |
-      | MISS_PARAMS | 800 | 400 | |
-      | INVALID_PARAMS | 801 | 400 | |
-      | NO_JWTTOKEN | 1000 | 400 | |
-      | INVALID_JWTTOKEN | 1001 | 401 | Expire or invalid jwtToken |
-      | INVALID_ACCESSTOKEN | 9000 | 403 | Expire Google Access Token |
-      
 ---
-#### SA2. Store Livestream status API
+#### SLA1. Store Livestream status API
  - Method: GET/PUT
  - {routePath}: /store/{store id}/livestreamStatus
  - **Header**
@@ -439,106 +553,6 @@ Golang and backend set up please check [backendend-readme.md](https://github.com
       | NO_JWTTOKEN | 1000 | 400 | |
       | INVALID_JWTTOKEN | 1001 | 401 | Expire or invalid jwtToken |
       | INVALID_ACCESSTOKEN | 9000 | 403 | Expire Google Access Token |
-
----       
-#### SA4. Store Product List API
-Get the products according to the store, split the item with page
- - Method: GET
- - {routePath}: /store/{storeId}/productList?page={page}
-   - page parameter decide which page requesting, if overflow, return the last page. If missing, return page 0.
- 
- - **Header**
-   | Name | Type | Description |
-   | --- | --- | --- |
-   | Authorization | string | Use for GatorStore Login |
-   
-- **Request Body Table**   
-    Empty request body
-    GET Example:
-    ```
-    {
-    }
-    ```
-- **Response**  
-    Success: 
-    ```
-    {
-      'storeId': "GatorStore_1",
-      'totalPage': 15,
-      'currentPage': 0,
-      'productList': [
-        {productObject},
-        {productObject},
-        ...
-      ]
-    }
-    ```
-
-    Error:
-     ```
-     {
-         "status": 1000,
-         "result": {
-            "errorName": "MissingJwtTokenCode"
-         }
-     }
-     ```
-   
-     Error Code Table for error situation:
-
-      | ErrorName | ErrorCode | HttpStatus | Description |
-      | ---  | --- | --- | --- |
-      | MissingJwtTokenCode | 1000 | 401 | |
-      | InvalidJwtTokenCode | 1001 | 401 | Expire or invalid jwtToken |
----
-#### SA5. Store Order List API
-Get the orders according to the store, split the item with page
- - Method: GET
- - {routePath}: /store/{storeId}/orderList?page={page}
-   - page parameter decide which page requesting, if overflow, return the last page. If missing, return page 0.
- 
- - **Header**
-   | Name | Type | Description |
-   | --- | --- | --- |
-   | Authorization | string | Use for GatorStore Login |
-   
-- **Request Body Table**   
-    Empty request body
-    GET Example:
-    ```
-    {
-    }
-    ```
-- **Response**  
-    Success: 
-    ```
-    {
-      'storeId': "GatorStore_1",
-      'totalPage': 15,
-      'currentPage': 0,
-      'orderList': [
-        {orderObject},
-        {orderObject},
-        ...
-      ]
-    }
-    ```
-
-    Error:
-     ```
-     {
-         "status": 1000,
-         "result": {
-            "errorName": "MissingJwtTokenCode"
-         }
-     }
-     ```
-   
-     Error Code Table for error situation:
-      | ErrorName | ErrorCode | HttpStatus | Description |
-      | ---  | --- | --- | --- |
-      | MissingJwtTokenCode | 1000 | 401 | |
-      | InvalidJwtTokenCode | 1001 | 401 | Expire or invalid jwtToken |
       
 ---
 ### Product API URLs
@@ -620,7 +634,7 @@ The key will be **storeId**, and the value will be as below:
 | createTime |  | string | create datetime | 
 | updateTime |  | string | latest update datetime | 
 | isLive | | boolean | check if this store is on live |
-| liveId | | string | liveObj's ID to get live information, empty if isLive is false |
+| liveId | | liveObj | liveObj's ID to get live information, empty obj if isLive is false |
 
 JSON Example:
 ```
@@ -631,7 +645,7 @@ JSON Example:
   'createTime': "2006-01-02T15:04:05Z07:00",
   'updateTime': "2006-01-02T15:04:05Z07:00",
   'isLive': True
-  'liveId': "132001"
+  'live': {liveObj} 
 }
 ```
 ---
@@ -648,6 +662,7 @@ The key will be **liveId**, and the value will be as below:
 | createTime | | datetime | live create time |
 | updateTime | | datetime | live update time |
 | embedHTML | | string | use for web iframe ebmed |
+| embedChatRoom | | string | use for web iframe ebmed |
 
  ```
  {
@@ -656,9 +671,10 @@ The key will be **liveId**, and the value will be as below:
    'storeId': "122323"
    'streamKey': "1324-5678-8974-1230",
    'streamUrl': "some url",
-   'createTime': "2006-01-02T15:04:05Z07:00"
-   'updateTime': "2006-01-02T15:04:05Z07:00"
-   'embedHTML': "some iframe html"
+   'createTime': "2006-01-02T15:04:05Z07:00",
+   'updateTime': "2006-01-02T15:04:05Z07:00",
+   'embedHTML': "some iframe html",
+   'embedChatRoom': "chatroom iframe html"
  }
  ```
  
