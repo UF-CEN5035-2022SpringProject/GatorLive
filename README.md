@@ -311,7 +311,7 @@ Golang and backend set up please check [backendend-readme.md](https://github.com
       'createTime': "2006-01-02T15:04:05Z07:00",
       'updateTime': "2006-01-02T15:04:05Z07:00",
       'isLive': True
-      'live': {liveObj} 
+      'liveId': "live_133312"
     }
     ```
 
@@ -633,7 +633,7 @@ The key will be **storeId**, and the value will be as below:
 | createTime |  | string | create datetime | 
 | updateTime |  | string | latest update datetime | 
 | isLive | | boolean | check if this store is on live |
-| liveId | | liveObj | liveObj's ID to get live information, empty obj if isLive is false |
+| liveId | | string | liveObj's ID to get live information, empty string if isLive is false |
 
 JSON Example:
 ```
@@ -644,7 +644,7 @@ JSON Example:
   'createTime': "2006-01-02T15:04:05Z07:00",
   'updateTime': "2006-01-02T15:04:05Z07:00",
   'isLive': True
-  'live': {liveObj} 
+  'liveId': "" 
 }
 ```
 ---
