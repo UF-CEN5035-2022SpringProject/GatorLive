@@ -11,6 +11,7 @@ import (
 	"github.com/UF-CEN5035-2022SpringProject/GatorStore/logger"
 	"github.com/UF-CEN5035-2022SpringProject/GatorStore/utils"
 	gorillaContext "github.com/gorilla/context"
+	"github.com/gorilla/mux"
 )
 
 type storeCreateBody struct {
@@ -62,7 +63,7 @@ func StoreCreate(w http.ResponseWriter, r *http.Request) {
 
 	// create store object with name
 	newStoreCount := db.GetStoreNewCount()
-	newStoreId := "GatorStore_" + strconv.Itoa(newStoreCount)
+	newStoreId := "gatorstore-" + strconv.Itoa(newStoreCount)
 
 	nowTime := time.Now().UTC().Format(time.RFC3339)
 	storeObj := &StoreObject{
@@ -92,4 +93,41 @@ func StoreCreate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	ReturnResponse(w, resp, http.StatusOK)
+}
+
+func StoreInfo(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	if r.Method == "GET" {
+		storeId := vars["storeId"]
+		storeObj := db.GetStoreObj(storeId)
+
+		if storeObj == nil {
+			logger.ErrorLogger.Printf("invald request, empty store")
+			errorMsg := utils.SetErrorMsg("invald request, empty store")
+			resp, _ := RespJSON{int(utils.InvalidParamsCode), errorMsg}.SetResponse()
+			ReturnResponse(w, resp, http.StatusBadRequest)
+			return
+		}
+
+		userData := gorillaContext.Get(r, "userData").(map[string]interface{})
+		if storeObj["userId"] != userData["id"].(string) {
+			logger.ErrorLogger.Printf("invald request, invalid store")
+			errorMsg := utils.SetErrorMsg("invald request, invalid store")
+			resp, _ := RespJSON{int(utils.InvalidJwtTokenCode), errorMsg}.SetResponse()
+			ReturnResponse(w, resp, http.StatusForbidden)
+			return
+		}
+
+		resp, err := RespJSON{0, storeObj}.SetResponse()
+		if err != nil {
+			logger.ErrorLogger.Printf("Error on wrapping JSON resp, Error: %s", err)
+		}
+
+		ReturnResponse(w, resp, http.StatusOK)
+		return
+	}
+}
+
+func StoreProducts(w http.ResponseWriter, r *http.Request) {
+
 }

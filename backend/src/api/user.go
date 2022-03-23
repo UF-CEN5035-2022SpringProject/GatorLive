@@ -221,7 +221,6 @@ func Login(w http.ResponseWriter, r *http.Request) {
 func UserInfo(w http.ResponseWriter, r *http.Request) {
 	// Depend on the action
 	// 1. Get userInfo
-	logger.DebugLogger.Println(r.Method)
 	vars := mux.Vars(r)
 	if r.Method == "GET" {
 		userData := gorillaContext.Get(r, "userData").(map[string]interface{})
@@ -238,7 +237,7 @@ func UserInfo(w http.ResponseWriter, r *http.Request) {
 			logger.ErrorLogger.Printf("invald request")
 			errorMsg := utils.SetErrorMsg("invald request")
 			resp, _ := RespJSON{int(utils.InvalidJwtTokenCode), errorMsg}.SetResponse()
-			ReturnResponse(w, resp, http.StatusBadRequest)
+			ReturnResponse(w, resp, http.StatusForbidden)
 			return
 		}
 
