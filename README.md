@@ -359,7 +359,7 @@ Get the products according to the store, split the item with page
     ```
     {
       'storeId': "GatorStore_1",
-      'totalPage': 15,
+      'maxPage': 3, (start at 0)
       'currentPage': 0,
       'productList': [
         {productObject},
@@ -409,7 +409,7 @@ Get the orders according to the store, split the item with page
     ```
     {
       'storeId': "GatorStore_1",
-      'totalPage': 15,
+      'maxPage': 3, (start at 0)
       'currentPage': 0,
       'orderList': [
         {orderObject},
