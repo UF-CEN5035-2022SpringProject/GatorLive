@@ -28,8 +28,17 @@ Binary package be linked is in the path below:
 ```
 ~/Documents/go/GatorStore/backend/pkg
 ```
+# Dependencies
+---
+We have create a go.mod in the path below.
+```
+backend\src\github.com\UF-CEN5035-2022SpringProject\GatorStore
+```
+
+Please enter the path and enter ```go get``` to download every dependencies.
 
 # Run Go program
+---
 Differences between the three cmd below:
 [go run vs go build vs go install](https://levelup.gitconnected.com/go-run-vs-go-build-vs-go-install-c7c0fd135cf9)
 
@@ -58,18 +67,25 @@ Differences between the three cmd below:
     go install github.com/UF-CEN5035-2022SpringProject/GatorStore
   ```
 
-# Variables
----
-Variables have been ask to be nice and clean, we are able to add shadow variables, but not redeclare in the same statement.
+# Backend Logger 
+1. Import package in the code
+For example
+```
+import (
+	"github.com/UF-CEN5035-2022SpringProject/GatorStore/logger"
+)
+```
 
-- Always have to be use
-- Declare variables
-  ```
-  var i int = 2
-  ```
-  or to let the compiler decide for us, as an auto type in C++
-  ```
-  i := 2
-  ```
-- First letter **lower case** will package scope, first letter with upper case to export.
-- No private scope.
+2. Three different level Logger to call
+- InfoLogger
+- WarningLogger
+- ErrorLogger
+
+```
+logger.InfoLogger.Println(appName + " server is start at port: " + port)
+```
+
+3. Output
+```
+INFO: 2022/02/01 18:16:07 main.go:27: GatorStore server is start at port: 8080
+```

@@ -38,6 +38,8 @@ func main() {
 	authApis.HandleFunc("/user/store-list", test.EchoString)
 
 	// Store
+	authApis.HandleFunc("/store/create", api.StoreCreate).Methods("POST", "OPTIONS")
+	authApis.HandleFunc("/store/{storeId}", api.StoreInfo).Methods("GET", "PUT", "OPTIONS")
 	authApis.HandleFunc("/store/{storeId}/product-list", test.EchoString)
 	authApis.HandleFunc("/store/{storeId}/livestream", api.CreateLivebroadcast).Methods("GET", "POST", "OPTIONS")
 	authApis.HandleFunc("/store/{storeId}/livestreamStatus", api.LivestreamStatus).Methods("GET", "PUT", "OPTIONS")
