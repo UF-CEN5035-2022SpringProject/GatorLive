@@ -252,3 +252,9 @@ func UserInfo(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "Update %v user info", vars["userId"])
 	}
 }
+
+// func StoreList(w http.ResponseWriter, r *http.Request) {
+// 	vars := mux.Vars(r)
+// 	storeId := vars["storeId"]
+// 	db.GetStoreProducts(storeId)
+// }
