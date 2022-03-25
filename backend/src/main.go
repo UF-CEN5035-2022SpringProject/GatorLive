@@ -14,7 +14,7 @@ import (
 )
 
 var (
-	port    string = "8000"
+	port    string = "8080"
 	appName string = "GatorStore"
 	IsDev   bool   = true
 )
