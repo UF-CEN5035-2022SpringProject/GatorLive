@@ -1,8 +1,9 @@
 package db
 
 import (
-	"cloud.google.com/go/firestore"
+	firestore "cloud.google.com/go/firestore"
 	"github.com/UF-CEN5035-2022SpringProject/GatorStore/logger"
+	"google.golang.org/api/iterator"
 )
 
 /*** User functions ***/
@@ -49,4 +50,23 @@ func GetStoreObj(storeId string) map[string]interface{} {
 	value := dsnap.Data()
 	logger.DebugLogger.Printf("Document data: %#v\n", value)
 	return value
+}
+
+func GetStoreProducts(storeId string, page int) []map[string]interface{} {
+	logger.DebugLogger.Printf("GetStoreProducts from storeId: %s", storeId)
+	var productList []map[string]interface{}
+	// OrderBy("id", firestore.Asc)
+	iter := FireBaseClient.Collection(DbCollections["products"]).Where("StoreId", "==", storeId).Documents(DatabaseCtx)
+	for {
+		doc, err := iter.Next()
+		if err == iterator.Done {
+			break
+		}
+		if err != nil {
+			logger.WarningLogger.Printf("Error iterating. %s", storeId)
+		}
+		productList = append(productList, doc.Data())
+	}
+
+	return productList
 }

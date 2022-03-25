@@ -120,7 +120,10 @@ func StoreInfo(w http.ResponseWriter, r *http.Request) {
 
 		resp, err := RespJSON{0, storeObj}.SetResponse()
 		if err != nil {
-			logger.ErrorLogger.Printf("Error on wrapping JSON resp, Error: %s", err)
+			logger.ErrorLogger.Printf("Error on wrapping JSON resp, err: %v", err)
+			errorMsg := utils.SetErrorMsg("Error on wrapping JSON resp")
+			resp, _ := RespJSON{int(utils.InvalidAccessTokenCode), errorMsg}.SetResponse()
+			ReturnResponse(w, resp, http.StatusInternalServerError)
 		}
 
 		ReturnResponse(w, resp, http.StatusOK)
@@ -129,5 +132,50 @@ func StoreInfo(w http.ResponseWriter, r *http.Request) {
 }
 
 func StoreProducts(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	storeId := vars["storeId"]
 
+	page := r.URL.Query().Get("page")
+	if page == "" {
+		page = "0"
+	}
+
+	intPage, err := strconv.Atoi(page)
+	if err != nil {
+		logger.ErrorLogger.Printf("Error page type, err: %v", err)
+		errorMsg := utils.SetErrorMsg("Error type of page query")
+		resp, _ := RespJSON{int(utils.InvalidParamsCode), errorMsg}.SetResponse()
+		ReturnResponse(w, resp, http.StatusBadRequest)
+	}
+
+	productList := db.GetStoreProducts(storeId, intPage)
+
+	storeProductData := make(map[string]interface{})
+	storeProductData["storeId"] = storeId
+
+	productListSize := len(productList)
+	totalPage := (productListSize / utils.PageLimit)
+	if (productListSize % utils.PageLimit) != 0 {
+		totalPage += 1
+	}
+	maxPage := totalPage - 1
+	storeProductData["maxPage"] = maxPage
+
+	currectPage := intPage
+	if currectPage > maxPage {
+		currectPage = maxPage
+	}
+	storeProductData["currectPage"] = currectPage
+	// arrange the pagenate
+	storeProductData["productList"] = utils.Pagenator(productList, currectPage, productListSize)
+
+	resp, err := RespJSON{0, storeProductData}.SetResponse()
+	if err != nil {
+		logger.ErrorLogger.Printf("Error on wrapping JSON resp, err: %v", err)
+		errorMsg := utils.SetErrorMsg("Error on wrapping JSON resp")
+		resp, _ := RespJSON{int(utils.InvalidAccessTokenCode), errorMsg}.SetResponse()
+		ReturnResponse(w, resp, http.StatusInternalServerError)
+	}
+
+	ReturnResponse(w, resp, http.StatusOK)
 }
