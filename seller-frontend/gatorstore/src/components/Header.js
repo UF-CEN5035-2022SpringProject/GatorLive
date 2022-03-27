@@ -45,7 +45,7 @@ function SignedInDropdown(userData) {
   };
   const SignOut = () => {
     window.sessionStorage.clear();
-    window.location.href = "http://localhost:3000/landingpage";
+    window.location.href = "http://localhost:3000/";
   };
 
   return (<>
@@ -67,7 +67,7 @@ function SignedInDropdown(userData) {
       onClose={handleClose}
     >
       <div style={{padding: 10, color: 'blue'}}>{userData.email}</div>
-      <MenuItem component="a" href="/landingpage"><HomeIcon style={{marginRight: 20}}/> Home</MenuItem>
+      <MenuItem component="a" href="/"><HomeIcon style={{marginRight: 20}}/> Home</MenuItem>
       <MenuItem component="a" href="/store-list"><StorefrontIcon style={{marginRight: 20}}/> My Stores</MenuItem>
       <MenuItem component="a" href="/store-page"><FormatListBulletedIcon style={{marginRight: 20}}/> My Listings</MenuItem>
       <MenuItem component="a" href="/product-page"><PushPinIcon style={{marginRight: 20}}/> Pinned Listing</MenuItem>

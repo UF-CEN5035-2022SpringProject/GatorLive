@@ -205,7 +205,7 @@ function SellerStorePage() {
           SetEmbedHTML(response.result.embedHTML);
         } else {
           alert("ERROR: YouTube API did not respond with 'success' status code.");
-          window.location.href = "http://localhost:3000/landingpage";
+          window.location.href = "http://localhost:3000/";
         }
       })
       .catch((error) => {

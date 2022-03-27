@@ -15,13 +15,16 @@ import '../styles/storePage.css';
 import testStreamObject from '../test-data/streamObject.json';
 import sampleProducts from '../test-data/sampleProducts.json';
 import gatorPlush from '../images/gator-plush.png';
-
 import settings from '../settings'
+
+import { useParams } from 'react-router-dom';
 
 function SellerStorePage() {
   var storeObject = {id: "gatorstore-1", isLive: false}; // TEST: it's a local replica of the test streamObject.json (represents Database)
 
   const [liveInfoBarState, SetLiveInfoBarState] = useState('not-live');
+
+  const { storeID } = useParams(); // Get StoreID string from the url
   
   // On load: initial check to check if its live or not:
   useEffect(() => {
@@ -90,7 +93,7 @@ function SellerStorePage() {
         {liveInfoBarState === 'not-live' && (
           <Grid container spacing={0} justifyContent="center" alignItems="center" direction='row' style={{marginBottom: 20}}>
             <Grid item md={4} container>
-              <h1>The Yiming Store</h1>
+              <h1>{storeID}</h1>
             </Grid>
             <Grid item md={4} justifyContent="flex-end" style={{color: "grey"}} container>
                 ...is taking a break
@@ -149,7 +152,51 @@ function SellerStorePage() {
 
   const [productArray, SetProductArray] = useState([]);
 
+  const [currProductPage, ChangeProductPage] = useState(0);
+  var maxProductPage = 1; // default
+
   function ProductList() {
+    // Calls on GetPage() to get a new product page upon the user scrolling down.
+    function ScrollDown() {
+      // Only request more products if current page number is below max:
+      if (currProductPage <= maxProductPage) {
+        ChangeProductPage(currProductPage + 1);
+        GetPage(currProductPage);
+      }
+    }
+
+    function GetPage(pageNum) {
+      // Get JWT Token for POST request header:
+      var jwtToken = window.sessionStorage.getItem("user-jwtToken");
+
+      TODO:
+      /* Call API to get product list:
+      const requestOptions = {
+        method: 'GET',
+        headers: {
+          'Authorization': jwtToken
+        },
+        body: {}
+      };
+      fetch(settings.apiHostURL + 'store/' + storeID + '/productList?page=' + pageNum, requestOptions)
+        .then(response => response.json())
+        .then(response => {
+          if (response.status === 0) {
+            // if page requested isn't more than max page: Add products of this new page to "productArray"
+            TODO
+            // Set max page number so that we know it from the first load:
+            maxProductPage = response.result.maxPage;
+          }
+          else {
+            alert("ERROR: Product Page API did not respond with 'success' status code.");
+            window.location.href = "http://localhost:3001/";
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+        });*/
+    }
+    
     return(
       <div>
         <Grid container spacing={2}>
