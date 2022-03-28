@@ -1,6 +1,8 @@
 package db
 
 import (
+	"time"
+
 	"cloud.google.com/go/firestore"
 	"github.com/UF-CEN5035-2022SpringProject/GatorStore/logger"
 )
@@ -59,4 +61,44 @@ func GetProductObj(productId string) map[string]interface{} {
 	value := dsnap.Data()
 	logger.DebugLogger.Printf("Document data: %#v\n", value)
 	return value
+}
+func GetProductObj2(productId string) (ProductObject, error) {
+	dsnap, err := FireBaseClient.Collection(DbCollections["products"]).Doc(productId).Get(DatabaseCtx)
+	var p ProductObject
+	if err != nil {
+		logger.WarningLogger.Printf("Cannot find product by productId. %s", productId)
+		return p, err
+	}
+	err = dsnap.DataTo(&p)
+	if err != nil {
+		logger.WarningLogger.Printf("Cannot find product by productId. %s", productId)
+		return p, err
+	}
+	logger.DebugLogger.Printf("Document data: %#v\n", p)
+	return p, nil
+}
+func UpdateTimeChange(productId string) error {
+	nowTime := time.Now().UTC().Format(time.RFC3339)
+	_, err := FireBaseClient.Collection(DbCollections["products"]).Doc(productId).Update(DatabaseCtx, []firestore.Update{
+		{
+			Path:  "updateTime",
+			Value: nowTime,
+		},
+	})
+	if err != nil {
+		logger.WarningLogger.Printf("Error updating value on field updateTime. %s", err)
+	}
+	return err
+}
+func UpdateProductObj(productId string, fieldStr string, fieldValue interface{}) error {
+	_, err := FireBaseClient.Collection(DbCollections["products"]).Doc(productId).Update(DatabaseCtx, []firestore.Update{
+		{
+			Path:  fieldStr,
+			Value: fieldValue,
+		},
+	})
+	if err != nil {
+		logger.WarningLogger.Printf("Error updating value on field %s. %s", fieldStr, err)
+	}
+	return UpdateTimeChange(productId)
 }
