@@ -170,7 +170,7 @@ func ProductPurchase(w http.ResponseWriter, r *http.Request) {
 	productId := vars["productId"]
 	productObj, err := db.GetProductObj2(productId)
 
-	if err != nil {
+	if err != nil || productObj.IsDeleted {
 		logger.ErrorLogger.Printf("Unable to get product, id: %v", productId)
 		errorMsg := utils.SetErrorMsg("Unable to get product")
 		resp, _ := RespJSON{int(utils.UnableToGetDbObj), errorMsg}.SetResponse()
