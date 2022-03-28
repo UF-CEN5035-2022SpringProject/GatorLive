@@ -27,6 +27,15 @@ type ProductPurchaseReqObject struct {
 	Quantity int `json:"quantity"`
 }
 
+// omitempty > optional field
+type ProductUpdateObject struct {
+	Name        string `json:"name,omitempty"`
+	Price       *int   `json:"price,omitempty"`
+	Description string `json:"description,omitempty"`
+	Quantity    *int   `json:"quantity,omitempty"`
+	Picture     string `json:"picture,omitempty"`
+}
+
 func checkJwtTokenAccess(userData map[string]interface{}, productId string) bool {
 	productObj, err := db.GetProductObj2(productId)
 
@@ -142,6 +151,62 @@ func ProductGet(w http.ResponseWriter, r *http.Request) {
 
 func ProductUpdate(w http.ResponseWriter, r *http.Request) {
 
+	userData := gorillaContext.Get(r, "userData").(map[string]interface{})
+	vars := mux.Vars(r)
+	productId := vars["productId"]
+	if !checkJwtTokenAccess(userData, productId) {
+		errorMsg := utils.SetErrorMsg("jwtToken and storeId not match")
+		resp, _ := RespJSON{int(utils.InvalidParamsCode), errorMsg}.SetResponse()
+		ReturnResponse(w, resp, http.StatusForbidden)
+		return
+	}
+
+	b, err := io.ReadAll(r.Body)
+
+	if err != nil {
+		logger.ErrorLogger.Printf("Unable to read ProductCreate request body, err: %v", err)
+		errorMsg := utils.SetErrorMsg("error on ProductCreate")
+		resp, _ := RespJSON{int(utils.InvalidParamsCode), errorMsg}.SetResponse()
+		ReturnResponse(w, resp, http.StatusInternalServerError)
+		return
+	}
+
+	var updateObj ProductUpdateObject
+	err = json.Unmarshal(b, &updateObj)
+
+	if err != nil {
+		logger.ErrorLogger.Printf("Unable to decode ProductUpdate request body, err: %v", err)
+		errorMsg := utils.SetErrorMsg("error occurs before ProductUpdate")
+		resp, _ := RespJSON{int(utils.InvalidParamsCode), errorMsg}.SetResponse()
+		ReturnResponse(w, resp, http.StatusInternalServerError)
+		return
+	}
+
+	// compare with changing updateObj to map[string]interface{}
+	// this implementation is easier.
+	// map version will need to handle more problems, such as cast interface{} to int*
+	if len(updateObj.Description) > 0 {
+		db.UpdateProductObj(productId, "description", updateObj.Description)
+	}
+	if len(updateObj.Name) > 0 {
+		db.UpdateProductObj(productId, "name", updateObj.Name)
+	}
+	if len(updateObj.Picture) > 0 {
+		db.UpdateProductObj(productId, "picture", updateObj.Picture)
+	}
+	if updateObj.Price != nil {
+		db.UpdateProductObj(productId, "price", *updateObj.Price)
+	}
+	if updateObj.Quantity != nil {
+		db.UpdateProductObj(productId, "quantity", *updateObj.Quantity)
+	}
+
+	newProductObj := db.GetProductObj(productId)
+	resp, err := RespJSON{0, newProductObj}.SetResponse()
+	if err != nil {
+		logger.ErrorLogger.Printf("Error on wrapping JSON resp, Error: %s", err)
+	}
+	ReturnResponse(w, resp, http.StatusOK)
 }
 func ProductPurchase(w http.ResponseWriter, r *http.Request) {
 
