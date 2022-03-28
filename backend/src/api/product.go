@@ -12,6 +12,7 @@ import (
 	"github.com/UF-CEN5035-2022SpringProject/GatorStore/logger"
 	"github.com/UF-CEN5035-2022SpringProject/GatorStore/utils"
 	gorillaContext "github.com/gorilla/context"
+	"github.com/gorilla/mux"
 )
 
 type ProductCreateObject struct {
@@ -98,4 +99,45 @@ func ProductCreate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	ReturnResponse(w, resp, http.StatusOK)
+}
+func ProductGet(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	productId := vars["productId"]
+	productObj := db.GetProductObj(productId)
+
+	if productObj == nil {
+		logger.ErrorLogger.Printf("Unable to get product, id: %v", productId)
+		errorMsg := utils.SetErrorMsg("Unable to get product")
+		resp, _ := RespJSON{int(utils.UnableToGetDbObj), errorMsg}.SetResponse()
+		ReturnResponse(w, resp, http.StatusNotFound)
+		return
+	}
+
+	resp, err := RespJSON{0, productObj}.SetResponse()
+	if err != nil {
+		logger.ErrorLogger.Printf("Error on wrapping JSON resp, Error: %s", err)
+	}
+	ReturnResponse(w, resp, http.StatusOK)
+}
+
+func ProductPut(w http.ResponseWriter, r *http.Request) {
+
+}
+func ProductPost(w http.ResponseWriter, r *http.Request) {
+
+}
+
+func ProductDelete(w http.ResponseWriter, r *http.Request) {
+
+}
+func ProductRESTFUL(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodGet {
+		ProductGet(w, r)
+	} else if r.Method == http.MethodPut {
+		ProductPut(w, r)
+	} else if r.Method == http.MethodPost {
+		ProductPost(w, r)
+	} else if r.Method == http.MethodDelete {
+		ProductDelete(w, r)
+	}
 }
