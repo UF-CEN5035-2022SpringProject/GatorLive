@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"math"
 	"net/http"
 	"strconv"
 	"time"
@@ -16,12 +17,12 @@ import (
 )
 
 type ProductCreateObject struct {
-	Name        string `json:"name"`
-	Price       int    `json:"price"`
-	Description string `json:"description"`
-	Quantity    int    `json:"quantity"`
-	Picture     string `json:"picture"`
-	StoreId     string `json:"StoreId"`
+	Name        string  `json:"name"`
+	Price       float64 `json:"price"`
+	Description string  `json:"description"`
+	Quantity    int     `json:"quantity"`
+	Picture     string  `json:"picture"`
+	StoreId     string  `json:"StoreId"`
 }
 type ProductPurchaseReqObject struct {
 	Quantity int `json:"quantity"`
@@ -29,11 +30,11 @@ type ProductPurchaseReqObject struct {
 
 // omitempty > optional field
 type ProductUpdateObject struct {
-	Name        string `json:"name,omitempty"`
-	Price       *int   `json:"price,omitempty"`
-	Description string `json:"description,omitempty"`
-	Quantity    *int   `json:"quantity,omitempty"`
-	Picture     string `json:"picture,omitempty"`
+	Name        string   `json:"name,omitempty"`
+	Price       *float64 `json:"price,omitempty"`
+	Description string   `json:"description,omitempty"`
+	Quantity    *int     `json:"quantity,omitempty"`
+	Picture     string   `json:"picture,omitempty"`
 }
 
 func checkJwtTokenAccess(userData map[string]interface{}, productId string) bool {
@@ -102,7 +103,7 @@ func ProductCreate(w http.ResponseWriter, r *http.Request) {
 	productObj := &db.ProductObject{
 		Id:          newProductId,
 		Name:        product.Name,
-		Price:       product.Price,
+		Price:       math.Round(product.Price*100) / 100,
 		Description: product.Description,
 		Quantity:    product.Quantity,
 		Picture:     product.Picture,
@@ -195,7 +196,7 @@ func ProductUpdate(w http.ResponseWriter, r *http.Request) {
 		db.UpdateProductObj(productId, "picture", updateObj.Picture)
 	}
 	if updateObj.Price != nil {
-		db.UpdateProductObj(productId, "price", *updateObj.Price)
+		db.UpdateProductObj(productId, "price", math.Round((*updateObj.Price)*100)/100)
 	}
 	if updateObj.Quantity != nil {
 		db.UpdateProductObj(productId, "quantity", *updateObj.Quantity)
@@ -252,8 +253,8 @@ func ProductPurchase(w http.ResponseWriter, r *http.Request) {
 	}
 
 	db.UpdateProductObj(productId, "quantity", productObj.Quantity-purchase.Quantity)
-	subtotal := productObj.Price * purchase.Quantity
-
+	subtotal := productObj.Price * float64(purchase.Quantity)
+	subtotal = math.Round(subtotal*100) / 100
 	result := make(map[string]interface{})
 	result["name"] = productObj.Name
 	result["id"] = productObj.Id

@@ -8,16 +8,16 @@ import (
 )
 
 type ProductObject struct {
-	Id          string `json:"id"`
-	Name        string `json:"name"`
-	Price       int    `json:"price"`
-	Description string `json:"description"`
-	Quantity    int    `json:"quantity"`
-	Picture     string `json:"picture"`
-	StoreId     string `json:"StoreId"`
-	CreateTime  string `json:"createTime"`
-	UpdateTime  string `json:"updateTime"`
-	IsDeleted   bool   `json:"isDeleted"`
+	Id          string  `json:"id"`
+	Name        string  `json:"name"`
+	Price       float64 `json:"price"`
+	Description string  `json:"description"`
+	Quantity    int     `json:"quantity"`
+	Picture     string  `json:"picture"`
+	StoreId     string  `json:"StoreId"`
+	CreateTime  string  `json:"createTime"`
+	UpdateTime  string  `json:"updateTime"`
+	IsDeleted   bool    `json:"isDeleted"`
 }
 
 func GetProductNewCount() int {
