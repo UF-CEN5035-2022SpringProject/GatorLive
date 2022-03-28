@@ -27,6 +27,23 @@ type ProductPurchaseReqObject struct {
 	Quantity int `json:"quantity"`
 }
 
+func checkJwtTokenAccess(userData map[string]interface{}, productId string) bool {
+	productObj, err := db.GetProductObj2(productId)
+
+	if err != nil {
+		logger.ErrorLogger.Printf("Unable to get product, id: %v", productId)
+		return false
+	}
+	storeObj := db.GetStoreObj(productObj.StoreId)
+	storeUserId := fmt.Sprintf("%v", storeObj["userId"])
+	JwtUserId := fmt.Sprintf("%v", userData["id"])
+
+	if storeUserId != JwtUserId {
+		logger.ErrorLogger.Printf("jwtToken and storeId not match %v != %v", JwtUserId, storeUserId)
+		return false
+	}
+	return true
+}
 func ProductCreate(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		logger.ErrorLogger.Printf("ProductCreate with wrong method: %v", r.Method)
@@ -182,6 +199,20 @@ func ProductPurchase(w http.ResponseWriter, r *http.Request) {
 }
 
 func ProductDelete(w http.ResponseWriter, r *http.Request) {
+	userData := gorillaContext.Get(r, "userData").(map[string]interface{})
+	vars := mux.Vars(r)
+	productId := vars["productId"]
+	if !checkJwtTokenAccess(userData, productId) {
+		errorMsg := utils.SetErrorMsg("jwtToken and storeId not match")
+		resp, _ := RespJSON{int(utils.InvalidParamsCode), errorMsg}.SetResponse()
+		ReturnResponse(w, resp, http.StatusForbidden)
+		return
+	}
+	db.UpdateProductObj(productId, "isDeleted", true)
+	product := db.GetProductObj(productId)
+
+	resp, _ := RespJSON{0, product}.SetResponse()
+	ReturnResponse(w, resp, http.StatusOK)
 
 }
 func ProductRESTFUL(w http.ResponseWriter, r *http.Request) {
