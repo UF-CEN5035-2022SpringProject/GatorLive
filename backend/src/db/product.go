@@ -8,9 +8,9 @@ import (
 type ProductObject struct {
 	Id          string `json:"id"`
 	Name        string `json:"name"`
-	Price       string `json:"price"`
+	Price       int    `json:"price"`
 	Description string `json:"description"`
-	Quantity    string `json:"quantity"`
+	Quantity    int    `json:"quantity"`
 	Picture     string `json:"picture"`
 	StoreId     string `json:"StoreId"`
 	CreateTime  string `json:"createTime"`
