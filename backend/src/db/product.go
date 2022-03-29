@@ -14,7 +14,7 @@ type ProductObject struct {
 	Description string  `json:"description"`
 	Quantity    int     `json:"quantity"`
 	Picture     string  `json:"picture"`
-	StoreId     string  `json:"StoreId"`
+	StoreId     string  `json:"storeId"`
 	CreateTime  string  `json:"createTime"`
 	UpdateTime  string  `json:"updateTime"`
 	IsDeleted   bool    `json:"isDeleted"`
