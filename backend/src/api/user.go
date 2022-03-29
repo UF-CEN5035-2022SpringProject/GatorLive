@@ -253,8 +253,67 @@ func UserInfo(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// func StoreList(w http.ResponseWriter, r *http.Request) {
-// 	vars := mux.Vars(r)
-// 	storeId := vars["storeId"]
-// 	db.GetStoreProducts(storeId)
-// }
+func UserStoreList(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	userId := vars["userId"]
+
+	userData := gorillaContext.Get(r, "userData").(map[string]interface{})
+	if userId != userData["id"].(string) {
+		logger.ErrorLogger.Printf("invald request, permission denied")
+		errorMsg := utils.SetErrorMsg("invald request, permission denied")
+		resp, _ := RespJSON{int(utils.InvalidJwtTokenCode), errorMsg}.SetResponse()
+		ReturnResponse(w, resp, http.StatusForbidden)
+		return
+	}
+
+	page := r.URL.Query().Get("page")
+	if page == "" {
+		page = "0"
+	}
+
+	intPage, err := strconv.Atoi(page)
+	if err != nil {
+		logger.ErrorLogger.Printf("Error page type, err: %v", err)
+		errorMsg := utils.SetErrorMsg("Error type of page query")
+		resp, _ := RespJSON{int(utils.InvalidParamsCode), errorMsg}.SetResponse()
+		ReturnResponse(w, resp, http.StatusBadRequest)
+	}
+
+	storeList := db.GetUserStore(userId, intPage)
+
+	storeListData := make(map[string]interface{})
+	storeListData["userId"] = userId
+
+	storeListSize := len(storeList)
+	storeListData["maxPage"] = 0
+	storeListData["currectPage"] = 0
+	storeListData["storeList"] = storeList
+
+	logger.DebugLogger.Printf("storeListSize: %d", storeListSize)
+	if storeListSize != 0 {
+		totalPage := (storeListSize / utils.PageLimit)
+		if (storeListSize % utils.PageLimit) != 0 {
+			totalPage += 1
+		}
+		maxPage := totalPage - 1
+		storeListData["maxPage"] = maxPage
+
+		currectPage := intPage
+		if currectPage > maxPage {
+			currectPage = maxPage
+		}
+		storeListData["currectPage"] = currectPage
+		// arrange the pagenate
+		storeListData["storeList"] = utils.Pagenator(storeList, currectPage, storeListSize)
+	}
+
+	resp, err := RespJSON{0, storeListData}.SetResponse()
+	if err != nil {
+		logger.ErrorLogger.Printf("Error on wrapping JSON resp, err: %v", err)
+		errorMsg := utils.SetErrorMsg("Error on wrapping JSON resp")
+		resp, _ := RespJSON{int(utils.InvalidAccessTokenCode), errorMsg}.SetResponse()
+		ReturnResponse(w, resp, http.StatusInternalServerError)
+	}
+
+	ReturnResponse(w, resp, http.StatusOK)
+}

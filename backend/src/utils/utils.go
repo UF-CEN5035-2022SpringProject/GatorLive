@@ -31,6 +31,9 @@ func CreateJwtToken(userId string, userEmail string, nowTime string) string {
 }
 
 func Pagenator(targetSlice []map[string]interface{}, currectPage int, sliceSize int) []map[string]interface{} {
+	if sliceSize == 0 {
+		return targetSlice
+	}
 	low := currectPage * PageLimit
 	high := (currectPage + 1) * PageLimit
 	if high > sliceSize {

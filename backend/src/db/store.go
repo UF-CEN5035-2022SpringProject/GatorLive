@@ -56,17 +56,36 @@ func GetStoreProducts(storeId string, page int) []map[string]interface{} {
 	logger.DebugLogger.Printf("GetStoreProducts from storeId: %s", storeId)
 	var productList []map[string]interface{}
 	// OrderBy("id", firestore.Asc)
-	iter := FireBaseClient.Collection(DbCollections["products"]).Where("StoreId", "==", storeId).Documents(DatabaseCtx)
+	iter := FireBaseClient.Collection(DbCollections["products"]).Where("storeId", "==", storeId).Documents(DatabaseCtx)
 	for {
 		doc, err := iter.Next()
 		if err == iterator.Done {
 			break
 		}
 		if err != nil {
-			logger.WarningLogger.Printf("Error iterating. %s", storeId)
+			logger.WarningLogger.Printf("GetStoreProducts Error iterating. %s", storeId)
 		}
 		productList = append(productList, doc.Data())
 	}
 
 	return productList
+}
+
+func GetUserStore(userId string, page int) []map[string]interface{} {
+	logger.DebugLogger.Printf("GetUserStore from userId: %s", userId)
+	var storeList []map[string]interface{}
+	// OrderBy("id", firestore.Asc)
+	iter := FireBaseClient.Collection(DbCollections["stores"]).Where("userId", "==", userId).Documents(DatabaseCtx)
+	for {
+		doc, err := iter.Next()
+		if err == iterator.Done {
+			break
+		}
+		if err != nil {
+			logger.WarningLogger.Printf("GetUserStore Error iterating. %s", userId)
+		}
+		storeList = append(storeList, doc.Data())
+	}
+
+	return storeList
 }

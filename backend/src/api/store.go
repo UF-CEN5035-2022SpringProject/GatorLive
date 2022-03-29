@@ -135,6 +135,17 @@ func StoreProducts(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	storeId := vars["storeId"]
 
+	// check if request is valid to access store product list
+	storeObj := db.GetStoreObj(storeId)
+	userData := gorillaContext.Get(r, "userData").(map[string]interface{})
+	if storeObj["userId"] != userData["id"].(string) {
+		logger.ErrorLogger.Printf("invald request, permission denied")
+		errorMsg := utils.SetErrorMsg("invald request, permission denied")
+		resp, _ := RespJSON{int(utils.InvalidJwtTokenCode), errorMsg}.SetResponse()
+		ReturnResponse(w, resp, http.StatusForbidden)
+		return
+	}
+
 	page := r.URL.Query().Get("page")
 	if page == "" {
 		page = "0"
@@ -154,20 +165,27 @@ func StoreProducts(w http.ResponseWriter, r *http.Request) {
 	storeProductData["storeId"] = storeId
 
 	productListSize := len(productList)
-	totalPage := (productListSize / utils.PageLimit)
-	if (productListSize % utils.PageLimit) != 0 {
-		totalPage += 1
-	}
-	maxPage := totalPage - 1
-	storeProductData["maxPage"] = maxPage
+	storeProductData["maxPage"] = 0
+	storeProductData["currectPage"] = 0
+	storeProductData["productList"] = productList
 
-	currectPage := intPage
-	if currectPage > maxPage {
-		currectPage = maxPage
+	logger.DebugLogger.Printf("storeListSize: %d", productListSize)
+	if productListSize != 0 {
+		totalPage := (productListSize / utils.PageLimit)
+		if (productListSize % utils.PageLimit) != 0 {
+			totalPage += 1
+		}
+		maxPage := totalPage - 1
+		storeProductData["maxPage"] = maxPage
+
+		currectPage := intPage
+		if currectPage > maxPage {
+			currectPage = maxPage
+		}
+		storeProductData["currectPage"] = currectPage
+		// arrange the pagenate
+		storeProductData["productList"] = utils.Pagenator(productList, currectPage, productListSize)
 	}
-	storeProductData["currectPage"] = currectPage
-	// arrange the pagenate
-	storeProductData["productList"] = utils.Pagenator(productList, currectPage, productListSize)
 
 	resp, err := RespJSON{0, storeProductData}.SetResponse()
 	if err != nil {
