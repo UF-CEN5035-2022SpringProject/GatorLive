@@ -18,6 +18,7 @@ var DbCollections = map[string]string{
 	"users":       "users",
 	"stores":      "stores",
 	"products":    "products",
+	"orders":      "orders",
 	"settings":    "settings",
 	"jwtTokenMap": "jwtTokenMap",
 	"lives":       "lives",
