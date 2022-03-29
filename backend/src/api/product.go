@@ -25,7 +25,8 @@ type ProductCreateObject struct {
 	StoreId     string  `json:"StoreId"`
 }
 type ProductPurchaseReqObject struct {
-	Quantity int `json:"quantity"`
+	Quantity int    `json:"quantity"`
+	LiveId   string `json:"liveId,omitempty"`
 }
 
 // omitempty > optional field
@@ -98,7 +99,7 @@ func ProductCreate(w http.ResponseWriter, r *http.Request) {
 	}
 
 	newProductCount := db.GetProductNewCount()
-	newProductId := "Product-" + strconv.Itoa(newProductCount)
+	newProductId := "product-" + strconv.Itoa(newProductCount)
 	nowTime := time.Now().UTC().Format(time.RFC3339)
 	productObj := &db.ProductObject{
 		Id:          newProductId,
@@ -232,6 +233,10 @@ func ProductPurchase(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if len(purchase.LiveId) <= 0 {
+		purchase.LiveId = ""
+	}
+
 	vars := mux.Vars(r)
 	productId := vars["productId"]
 	productObj, err := db.GetProductObj2(productId)
@@ -253,8 +258,35 @@ func ProductPurchase(w http.ResponseWriter, r *http.Request) {
 	}
 
 	db.UpdateProductObj(productId, "quantity", productObj.Quantity-purchase.Quantity)
+
+	userData := gorillaContext.Get(r, "userData").(map[string]interface{})
+	userId := fmt.Sprintf("%v", userData["id"])
+
 	subtotal := productObj.Price * float64(purchase.Quantity)
 	subtotal = math.Round(subtotal*100) / 100
+	// create order object
+	newOrderCount := db.GetOrderNewCount()
+	newOrderId := "order-" + strconv.Itoa(newOrderCount)
+	nowTime := time.Now().UTC().Format(time.RFC3339)
+	newOrder := &db.OrderObject{
+		Id:         newOrderId,
+		CreateTime: nowTime,
+		LiveId:     purchase.LiveId,
+		ProductId:  productId,
+		Quantity:   purchase.Quantity,
+		Subtotal:   subtotal,
+		UserId:     userId,
+	}
+
+	var convertMap map[string]interface{}
+	userObjStr, _ := json.Marshal(newOrder)
+	// fmt.Printf("%v\n", userObjStr)
+	json.Unmarshal(userObjStr, &convertMap)
+	// fmt.Printf("%v\n", convertMap)
+
+	db.AddOrderObj(newOrderId, convertMap)
+	db.UpdateOrderCount(newOrderCount)
+
 	result := make(map[string]interface{})
 	result["name"] = productObj.Name
 	result["id"] = productObj.Id
