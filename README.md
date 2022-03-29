@@ -147,7 +147,7 @@ Golang and backend set up please check [backendend-readme.md](https://github.com
               'name': "YiMing Chang",
               'email': "yimingchang@ufl.edu",
               'jwtToken': "gatorStore_qeqweiop122133"
-              'accessToken': "GatorStore_10302323"
+              'accessToken': "GatorStore_10302323" (remove?)
               'createTime': "2006-01-02T15:04:05Z07:00"
               'updateTime': "2006-01-02T15:04:05Z07:00"
         }
