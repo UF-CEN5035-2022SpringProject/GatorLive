@@ -176,51 +176,93 @@ Golang and backend set up please check [backendend-readme.md](https://github.com
   
 ---
 #### UA2. Get User Info 
----
-#### UA3. User Store List
----
-- Method: Get
- - {routePath}: /user/store-list
+Get user info
+ - Method: GET
+ - {routePath}: /user/{userId}/info
+
  - **Header**
    | Name | Type | Description |
    | --- | --- | --- |
-   | time | datetime | request time |
-   | Authorization | string | jwtToken |
-     
+   | Authorization | string | Use for GatorStore Login |
+ 
  - **Response**  
     Success: 
     ```
     {
-        "status": 0,
-        "result": {
-              "store-list": [
-                {
-                  'id': "GatorStore_1",
-                  'name': "GoGoGator",
-                  'userId': "11001",
-                  'createTime': "2006-01-02T15:04:05Z07:00",
-                  'updateTime': "2006-01-02T15:04:05Z07:00",
-                  'isLive': True
-                },
-                {
-                  'id': "GatorStore_1",
-                  'name': "IamTheHero",
-                  'userId': "11001",
-                  'createTime': "2006-01-02T15:04:05Z07:00",
-                  'updateTime': "2006-01-02T15:04:05Z07:00",
-                  'isLive': True
-                },
-              ]
-        }
+      "status": 0,
+      "result": {
+          "accessToken": "dfsdfsdf",
+          "createTime": "2022-02-22T02:25:01Z",
+          "email": "yimingstar5566@gmail.com",
+          "id": "11002",
+          "jwtToken": "gst.R2F0b3JTdG9yZV95aW1pbmdzd",
+          "name": "Yi-Ming Chang",
+          "updateTime": "2022-02-22T02:25:01Z"
+      }
     }
     ```
 
     Error:
      ```
      {
-         "status": 800,
+         "status": 801,
          "result": {
-            "errorName": "MISS_PARAMS"
+            "errorName": "MissingParamsCode"
+         }
+     }
+     ```
+   
+     Error Code Table for error situation:
+     
+     | ErrorName | ErrorCode | HttpStatus | Description |
+     | ---  | --- | --- | --- |
+     | UnknownInternalErrCode | 800 | 500 | |
+     | MissingParamsCode | 801 | 400 | |
+     | InvalidParamsCode | 802 | 403 | |
+     | MissingJwtTokenCode | 1000 | 401 | |
+     | InvalidJwtTokenCode | 1001 | 401 | Expire or invalid jwtToken |
+
+---
+#### UA3. User Store List
+Get the users store list, split the item with page
+ - Method: GET
+ - {routePath}: /user/{userId}/store-list?page={page}
+   - page parameter decide which page requesting, if overflow, return the last page. If missing, return page 0.
+ 
+ - **Header**
+   | Name | Type | Description |
+   | --- | --- | --- |
+   | Authorization | string | Use for GatorStore Login |
+   
+- **Request Body Table**   
+    Empty request body
+    GET Example:
+    ```
+    {
+    }
+    ```
+- **Response** 
+    If storeList is empty, the value will be null 
+    Success: 
+    ```
+    {
+      'userId': "11002",
+      'maxPage': 3, (start at 0)
+      'currentPage': 0,
+      'storeList': [
+        {storeObject},
+        {storeObject},
+        ...
+      ]
+    }
+    ```
+
+    Error:
+     ```
+     {
+         "status": 1000,
+         "result": {
+            "errorName": "MissingJwtTokenCode"
          }
      }
      ```
@@ -229,12 +271,8 @@ Golang and backend set up please check [backendend-readme.md](https://github.com
 
       | ErrorName | ErrorCode | HttpStatus | Description |
       | ---  | --- | --- | --- |
-      | MISS_PARAMS | 800 | 400 | |
-      | INVALID_PARAMS | 801 | 400 | |
-      | NO_JWTTOKEN | 1000 | 401 | empty jwtToken |
-      | INVALID_JWTTOKEN | 1001 | 401 | Expire or invalid jwtToken |
-      | INVALID_ACCESSTOKEN | 9000 | 403 | Expire Google Access Token |
-
+      | MissingJwtTokenCode | 1000 | 401 | |
+      | InvalidJwtTokenCode | 1001 | 401 | Expire or invalid jwtToken |
 
 ### Store API URLs
 ---
@@ -339,8 +377,8 @@ Golang and backend set up please check [backendend-readme.md](https://github.com
 #### SA2. Store Product List API
 Get the products according to the store, split the item with page
  - Method: GET
- - {routePath}: /store/{storeId}/productList?page={page}
-   - page parameter decide which page requesting, if overflow, return the last page. If missing, return page 0.
+ - {routePath}: /store/{storeId}/product-list?page={page}
+    - page parameter decide which page requesting, if overflow, return the last page. If missing, return page 0.
  
  - **Header**
    | Name | Type | Description |
@@ -355,6 +393,7 @@ Get the products according to the store, split the item with page
     }
     ```
 - **Response**  
+    If productList is empty, the value will be null
     Success: 
     ```
     {
@@ -389,7 +428,7 @@ Get the products according to the store, split the item with page
 #### SA3. Store Order List API
 Get the orders according to the store, split the item with page
  - Method: GET
- - {routePath}: /store/{storeId}/orderList?page={page}
+ - {routePath}: /store/{storeId}/order-list?page={page}
    - page parameter decide which page requesting, if overflow, return the last page. If missing, return page 0.
  
  - **Header**
