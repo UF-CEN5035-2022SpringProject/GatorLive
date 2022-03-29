@@ -234,8 +234,8 @@ func UserInfo(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if userData["id"] != vars["userId"] {
-			logger.ErrorLogger.Printf("invald request")
-			errorMsg := utils.SetErrorMsg("invald request")
+			logger.ErrorLogger.Printf("invald request, permission denied")
+			errorMsg := utils.SetErrorMsg("invald request, permission denied")
 			resp, _ := RespJSON{int(utils.InvalidJwtTokenCode), errorMsg}.SetResponse()
 			ReturnResponse(w, resp, http.StatusForbidden)
 			return
