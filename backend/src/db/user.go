@@ -130,8 +130,8 @@ func GetStoreObjbyUserId(userId string) map[string]interface{} {
 	return value
 }
 
-func UpdateStoreObj(userId string, fieldStr string, fieldValue interface{}) error {
-	_, err := FireBaseClient.Collection(DbCollections["stores"]).Doc(userId).Update(DatabaseCtx, []firestore.Update{
+func UpdateStoreObj(storeId string, fieldStr string, fieldValue interface{}) error {
+	_, err := FireBaseClient.Collection(DbCollections["stores"]).Doc(storeId).Update(DatabaseCtx, []firestore.Update{
 		{
 			Path:  fieldStr,
 			Value: fieldValue,

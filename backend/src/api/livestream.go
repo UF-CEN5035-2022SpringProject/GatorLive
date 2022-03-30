@@ -18,6 +18,7 @@ import (
 	"github.com/UF-CEN5035-2022SpringProject/GatorStore/utils"
 
 	// "github.com/UF-CEN5035-2022SpringProject/GatorStore/logger"
+	gorillaContext "github.com/gorilla/context"
 	"github.com/gorilla/mux"
 	"golang.org/x/oauth2"
 
@@ -219,55 +220,72 @@ func CreateLivebroadcast(w http.ResponseWriter, r *http.Request) {
 	resp, _ := RespJSON{0, liveObj}.SetResponse()
 	ReturnResponse(w, resp, http.StatusOK)
 }
-func LivestreamStatus(w http.ResponseWriter, r *http.Request) {
+
+func LiveStreamInfo(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	storeId := vars["storeId"]
-	jwtToken := r.Header.Get("Authorization")
 
-	// TODO verify jwtToken existence
-	emailObj := db.MapJwtToken(jwtToken)
-	if emailObj == nil {
-		logger.ErrorLogger.Printf("Invalid JwtToken")
-		errorMsg := utils.SetErrorMsg("Invalid JwtToken")
-		resp, _ := RespJSON{int(utils.InvalidJwtTokenCode), errorMsg}.SetResponse()
-		ReturnResponse(w, resp, http.StatusUnauthorized)
-	}
-	email := fmt.Sprintf("%v", emailObj["Email"])
-	userProfile := db.GetUserObj(email)
-	userId := fmt.Sprintf("%v", userProfile["id"])
-	// update store object
-	if r.Method == "PUT" {
-		// TODO
-		if verify(jwtToken, storeId) == "" {
-			return
-		}
-		b, err := io.ReadAll(r.Body)
-		if err != nil {
-			logger.ErrorLogger.Printf("Unable to read livestream status req: %v", err)
-			errorMsg := utils.SetErrorMsg("Unable to read livestream status req")
-			resp, _ := RespJSON{int(utils.InvalidParamsCode), errorMsg}.SetResponse()
-			ReturnResponse(w, resp, http.StatusBadRequest)
-		}
-		var status Status
-		err = json.Unmarshal(b, &status)
-		if err != nil {
-			logger.ErrorLogger.Printf("Unable to decode livestream status req: %v", err)
-			errorMsg := utils.SetErrorMsg("Unable to decode livestream status req")
-			resp, _ := RespJSON{int(utils.InvalidParamsCode), errorMsg}.SetResponse()
-			ReturnResponse(w, resp, http.StatusBadRequest)
-		}
-		db.UpdateStoreObj(userId, "isLive", status.IsLive)
-	}
-	// return store object
-
-	storeObj := db.GetStoreObjbyUserId(userId)
+	storeObj := db.GetStoreObj(storeId)
 	if storeObj == nil {
-		logger.ErrorLogger.Printf("Unable to get storeObj by userId %s", userId)
-		errorMsg := utils.SetErrorMsg("Unable to get storeObj by userId")
+		logger.ErrorLogger.Printf("invald request, unable to get store")
+		errorMsg := utils.SetErrorMsg("invald request, unable to get store")
+		resp, _ := RespJSON{int(utils.InvalidParamsCode), errorMsg}.SetResponse()
+		ReturnResponse(w, resp, http.StatusBadRequest)
+		return
+	}
+
+	resp, err := RespJSON{0, storeObj}.SetResponse()
+	if err != nil {
+		logger.ErrorLogger.Printf("Error on wrapping JSON resp, Error: %s", err)
+	}
+	ReturnResponse(w, resp, http.StatusOK)
+	return
+}
+
+func UpdateIsLive(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	storeId := vars["storeId"]
+
+	userData := gorillaContext.Get(r, "userData").(map[string]interface{})
+
+	storeObj := db.GetStoreObj(storeId)
+	if storeObj == nil {
+		logger.ErrorLogger.Printf("invald request, unable to get store")
+		errorMsg := utils.SetErrorMsg("invald request, unable to get store")
+		resp, _ := RespJSON{int(utils.InvalidParamsCode), errorMsg}.SetResponse()
+		ReturnResponse(w, resp, http.StatusBadRequest)
+		return
+	}
+
+	userId := userData["id"].(string)
+	if storeObj["userId"] != userId {
+		logger.ErrorLogger.Printf("invald request, permission denied")
+		errorMsg := utils.SetErrorMsg("invald request, permission denied")
+		resp, _ := RespJSON{int(utils.InvalidJwtTokenCode), errorMsg}.SetResponse()
+		ReturnResponse(w, resp, http.StatusForbidden)
+		return
+	}
+
+	// update store object
+	b, err := io.ReadAll(r.Body)
+	if err != nil {
+		logger.ErrorLogger.Printf("Unable to read livestream status req: %v", err)
+		errorMsg := utils.SetErrorMsg("Unable to read livestream status req")
 		resp, _ := RespJSON{int(utils.InvalidParamsCode), errorMsg}.SetResponse()
 		ReturnResponse(w, resp, http.StatusBadRequest)
 	}
+	var status Status
+	err = json.Unmarshal(b, &status)
+	if err != nil {
+		logger.ErrorLogger.Printf("Unable to decode livestream status req: %v", err)
+		errorMsg := utils.SetErrorMsg("Unable to decode livestream status req")
+		resp, _ := RespJSON{int(utils.InvalidParamsCode), errorMsg}.SetResponse()
+		ReturnResponse(w, resp, http.StatusBadRequest)
+	}
+	db.UpdateStoreObj(storeId, "isLive", status.IsLive)
 
+	// get updated store object
+	storeObj = db.GetStoreObj(storeId)
 	resp, err := RespJSON{0, storeObj}.SetResponse()
 	if err != nil {
 		logger.ErrorLogger.Printf("Error on wrapping JSON resp, Error: %s", err)
