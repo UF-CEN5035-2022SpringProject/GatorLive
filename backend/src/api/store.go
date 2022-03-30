@@ -109,15 +109,6 @@ func StoreInfo(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		// userData := gorillaContext.Get(r, "userData").(map[string]interface{})
-		// if storeObj["userId"] != userData["id"].(string) {
-		// 	logger.ErrorLogger.Printf("invald request, invalid store")
-		// 	errorMsg := utils.SetErrorMsg("invald request, invalid store")
-		// 	resp, _ := RespJSON{int(utils.InvalidJwtTokenCode), errorMsg}.SetResponse()
-		// 	ReturnResponse(w, resp, http.StatusForbidden)
-		// 	return
-		// }
-
 		resp, err := RespJSON{0, storeObj}.SetResponse()
 		if err != nil {
 			logger.ErrorLogger.Printf("Error on wrapping JSON resp, err: %v", err)

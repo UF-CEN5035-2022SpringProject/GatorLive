@@ -285,6 +285,7 @@ func UpdateIsLive(w http.ResponseWriter, r *http.Request) {
 		resp, _ := RespJSON{int(utils.InvalidParamsCode), errorMsg}.SetResponse()
 		ReturnResponse(w, resp, http.StatusBadRequest)
 	}
+
 	var status Status
 	err = json.Unmarshal(b, &status)
 	if err != nil {
@@ -292,7 +293,9 @@ func UpdateIsLive(w http.ResponseWriter, r *http.Request) {
 		errorMsg := utils.SetErrorMsg("Unable to decode livestream status req")
 		resp, _ := RespJSON{int(utils.InvalidParamsCode), errorMsg}.SetResponse()
 		ReturnResponse(w, resp, http.StatusBadRequest)
+		return
 	}
+
 	db.UpdateStoreObj(storeId, "isLive", status.IsLive)
 
 	// get updated store object
