@@ -44,8 +44,9 @@ func UpdateProductCount(newProductCount int) error {
 	}
 	return err
 }
-func AddProductObj(productId string, userData map[string]interface{}) error {
-	_, err := FireBaseClient.Collection(DbCollections["products"]).Doc(productId).Set(DatabaseCtx, userData)
+
+func AddProductObj(productId string, productData map[string]interface{}) error {
+	_, err := FireBaseClient.Collection(DbCollections["products"]).Doc(productId).Set(DatabaseCtx, productData)
 	if err != nil {
 		logger.WarningLogger.Printf("Error adding value. %s", err)
 	}
@@ -62,6 +63,7 @@ func GetProductObj(productId string) map[string]interface{} {
 	logger.DebugLogger.Printf("Document data: %#v\n", value)
 	return value
 }
+
 func GetProductObj2(productId string) (ProductObject, error) {
 	dsnap, err := FireBaseClient.Collection(DbCollections["products"]).Doc(productId).Get(DatabaseCtx)
 	var p ProductObject
@@ -77,6 +79,7 @@ func GetProductObj2(productId string) (ProductObject, error) {
 	logger.DebugLogger.Printf("Document data: %#v\n", p)
 	return p, nil
 }
+
 func UpdateTimeChange(productId string) error {
 	nowTime := time.Now().UTC().Format(time.RFC3339)
 	_, err := FireBaseClient.Collection(DbCollections["products"]).Doc(productId).Update(DatabaseCtx, []firestore.Update{
@@ -90,6 +93,7 @@ func UpdateTimeChange(productId string) error {
 	}
 	return err
 }
+
 func UpdateProductObj(productId string, fieldStr string, fieldValue interface{}) error {
 	_, err := FireBaseClient.Collection(DbCollections["products"]).Doc(productId).Update(DatabaseCtx, []firestore.Update{
 		{
