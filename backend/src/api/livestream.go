@@ -284,7 +284,6 @@ func GetLiveStream(w http.ResponseWriter, r *http.Request) {
 	}
 	if detail == "true" {
 		productIdList := liveObj["productList"].([]interface{})
-
 		productObjList := make([]map[string]interface{}, len(productIdList))
 		for index := 0; index < len(productIdList); index++ {
 			productObjList[index] = db.GetProductObj(productIdList[index].(string))

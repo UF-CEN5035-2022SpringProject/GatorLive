@@ -112,15 +112,6 @@ func StoreInfo(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		// userData := gorillaContext.Get(r, "userData").(map[string]interface{})
-		// if storeObj["userId"] != userData["id"].(string) {
-		// 	logger.ErrorLogger.Printf("invald request, invalid store")
-		// 	errorMsg := utils.SetErrorMsg("invald request, invalid store")
-		// 	resp, _ := RespJSON{int(utils.InvalidJwtTokenCode), errorMsg}.SetResponse()
-		// 	ReturnResponse(w, resp, http.StatusForbidden)
-		// 	return
-		// }
-
 		resp, err := RespJSON{0, storeObj}.SetResponse()
 		if err != nil {
 			logger.ErrorLogger.Printf("Error on wrapping JSON resp, err: %v", err)
@@ -145,15 +136,6 @@ func StoreProducts(w http.ResponseWriter, r *http.Request) {
 		errorMsg := utils.SetErrorMsg("invald request, unable to get store")
 		resp, _ := RespJSON{int(utils.InvalidParamsCode), errorMsg}.SetResponse()
 		ReturnResponse(w, resp, http.StatusBadRequest)
-		return
-	}
-
-	userData := gorillaContext.Get(r, "userData").(map[string]interface{})
-	if storeObj["userId"] != userData["id"].(string) {
-		logger.ErrorLogger.Printf("invald request, permission denied")
-		errorMsg := utils.SetErrorMsg("invald request, permission denied")
-		resp, _ := RespJSON{int(utils.InvalidJwtTokenCode), errorMsg}.SetResponse()
-		ReturnResponse(w, resp, http.StatusForbidden)
 		return
 	}
 
@@ -313,6 +295,7 @@ func UpdateIsLive(w http.ResponseWriter, r *http.Request) {
 		errorMsg := utils.SetErrorMsg("Unable to read livestream status req")
 		resp, _ := RespJSON{int(utils.InvalidParamsCode), errorMsg}.SetResponse()
 		ReturnResponse(w, resp, http.StatusBadRequest)
+		return
 	}
 	var status Status
 	err = json.Unmarshal(b, &status)
@@ -321,6 +304,7 @@ func UpdateIsLive(w http.ResponseWriter, r *http.Request) {
 		errorMsg := utils.SetErrorMsg("Unable to decode livestream status req")
 		resp, _ := RespJSON{int(utils.InvalidParamsCode), errorMsg}.SetResponse()
 		ReturnResponse(w, resp, http.StatusBadRequest)
+		return
 	}
 	db.UpdateStoreObj(storeId, "isLive", status.IsLive)
 
