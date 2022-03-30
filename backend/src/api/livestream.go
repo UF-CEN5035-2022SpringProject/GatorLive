@@ -28,7 +28,8 @@ import (
 )
 
 type Title struct {
-	Title string `json:"title"`
+	Title         string   `json:"title"`
+	ProductIdList []string `json:"productIdList"`
 }
 type Status struct {
 	IsLive bool `json:"isLive"`
@@ -211,12 +212,22 @@ func CreateLivebroadcast(w http.ResponseWriter, r *http.Request) {
 	liveObj["createTime"] = createTime.UTC().Format(time.RFC3339)
 	liveObj["updateTime"] = createTime.UTC().Format(time.RFC3339)
 	liveObj["embedHTML"] = newLive.ContentDetails.MonitorStream.EmbedHtml
+	liveObj["productList"] = title.ProductIdList
+	liveObj["storeId"] = storeId
 
 	if db.GetLiveObj(newLive.Id) == nil {
 		db.AddLiveObj(newLive.Id, liveObj)
 	} else {
 		// TODO: Update Live Obj
 	}
+
+	productObjList := make([]map[string]interface{}, len(title.ProductIdList))
+	for index := 0; index < len(title.ProductIdList); index++ {
+		productObjList[index] = db.GetProductObj(title.ProductIdList[index])
+	}
+
+	liveObj["productList"] = productObjList
+
 	resp, _ := RespJSON{0, liveObj}.SetResponse()
 	ReturnResponse(w, resp, http.StatusOK)
 }
