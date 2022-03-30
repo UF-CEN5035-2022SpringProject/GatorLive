@@ -26,8 +26,8 @@ func InitLogger() {
 		file, _ = utils.CreateFile(dirPath, fileName)
 	}
 
-	DebugLogger = log.New(file, "DEBUG: ", log.Ldate|log.Ltime|log.Lshortfile)
-	InfoLogger = log.New(file, "INFO: ", log.Ldate|log.Ltime|log.Lshortfile)
-	WarningLogger = log.New(file, "WARNING: ", log.Ldate|log.Ltime|log.Lshortfile)
-	ErrorLogger = log.New(file, "ERROR: ", log.Ldate|log.Ltime|log.Lshortfile)
+	DebugLogger = log.New(file, "DEBUG: ", log.Ldate|log.Ltime|log.Llongfile)
+	InfoLogger = log.New(file, "INFO: ", log.Ldate|log.Ltime|log.Llongfile)
+	WarningLogger = log.New(file, "WARNING: ", log.Ldate|log.Ltime|log.Llongfile)
+	ErrorLogger = log.New(file, "ERROR: ", log.Ldate|log.Ltime|log.Llongfile)
 }

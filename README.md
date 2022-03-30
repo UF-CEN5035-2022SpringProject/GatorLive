@@ -2,10 +2,9 @@
 ---
 ## Project Members
 Canvas Group Link - https://ufl.instructure.com/groups/419331/users   
-[Yi-Ming Chang](yimingchang@ufl.edu)  
-[Hung-You Chou](hchou@ufl.edu)  
-[Vivaan Goomer](vivaangoomer@ufl.edu)  
-[Sebastian Llerena](llerenabarruetos@ufl.edu)  
+[Yi-Ming Chang](mailto:yimingchang@ufl.edu)  
+[Hung-You Chou](mailto:hchou@ufl.edu)  
+[Sebastian Llerena](mailto:llerenabarruetos@ufl.edu)  
 
 ## Introduction
 For course CEN5035, our group are building a AmazonLive Clone.
@@ -26,7 +25,7 @@ https://www.youtube.com/watch?v=YS4e4q9oBaU
  
 ---
 
-## Github Rules
+## Github Branching Rules
 actions:
 - feature
 - test
@@ -65,7 +64,16 @@ Golang and backend set up please check [backendend-readme.md](https://github.com
 
 ## API Document 
 **BACKEND API:** 
- ```http://localhost:8080/{routePath}```
+
+ ```http://localhost:8080/{env}/{routePath}```
+ - Production {env} = api
+   ```
+   http://localhost:8080/api/user/login
+   ```
+ - Test {env} = test/api
+   ```
+   http://localhost:8080/test/api/user/login
+   ```
 
 **Header**  
   | Name | Type | Description |
@@ -109,28 +117,26 @@ Golang and backend set up please check [backendend-readme.md](https://github.com
 #### UA1. User Login API
  - Method: POST
  - {routePath}: /user/login/
+ - **Header**
+   | Name | Type | Description |
+   | --- | --- | --- |
+   | time | datetime | request time |
+   | Authorization | string | (optional) jwtToken |
+   
  - **Request Body Table**
    | Name | Type | Description |
    | ---  | --- | --- |
    | code | string | Oauth2 code for requesting Google API |
-   | jwtToken | string | Use for GatorStore Login |
 
     Example:
     1. Without user jwtToken in web page session, login by Oauth2
      ```
      {
          'code': 'qejklsadiup1io135',
-         'jwtToken': ''
      }
      ```
 
-    2. Using user jwtToken login directly
-     ```
-     {
-         'code': '',
-         'jwtToken': 'gatorStore_qeqweiop122133'
-     }
-     ```
+    2. Using user jwtToken login directly, put the token in the header as "Authorization"
      
  - **Response**  
     Success: 
@@ -141,8 +147,132 @@ Golang and backend set up please check [backendend-readme.md](https://github.com
               'id': "113024",
               'name': "YiMing Chang",
               'email': "yimingchang@ufl.edu",
-              'jwtToken': "gatorStore_qeqweiop122133",
-              'accessToken': "xjjkoipoqwe1445"
+              'jwtToken': "gatorStore_qeqweiop122133"
+              'accessToken': "GatorStore_10302323"
+              'createTime': "2006-01-02T15:04:05Z07:00"
+              'updateTime': "2006-01-02T15:04:05Z07:00"
+        }
+    }
+    ```
+
+    Error:
+     ```
+     {
+         "status": 800,
+         "result": {
+            "errorName": "MISS_PARAMS"
+         }
+     }
+     ```
+   
+     Error Code Table for error situation:
+
+      | ErrorName | ErrorCode | HttpStatus | Description |
+      | ---  | --- | --- | --- |
+      | MISS_PARAMS | 800 | 400 | |
+      | INVALID_PARAMS | 801 | 400 | |
+      | NO_JWTTOKEN | 1000 | 401 | Missing JwtToken |
+      | INVALID_JWTTOKEN | 1001 | 401 | Expire or invalid jwtToken |
+      | INVALID_ACCESSTOKEN | 9000 | 403 | Expire Google Access Token |
+  
+---
+#### UA2. Get User Info 
+---
+#### UA3. User Store List
+---
+- Method: Get
+ - {routePath}: /user/store-list
+ - **Header**
+   | Name | Type | Description |
+   | --- | --- | --- |
+   | time | datetime | request time |
+   | Authorization | string | jwtToken |
+     
+ - **Response**  
+    Success: 
+    ```
+    {
+        "status": 0,
+        "result": {
+              "store-list": [
+                {
+                  'id': "GatorStore_1",
+                  'name': "GoGoGator",
+                  'userId': "11001",
+                  'createTime': "2006-01-02T15:04:05Z07:00",
+                  'updateTime': "2006-01-02T15:04:05Z07:00",
+                  'isLive': True
+                },
+                {
+                  'id': "GatorStore_1",
+                  'name': "IamTheHero",
+                  'userId': "11001",
+                  'createTime': "2006-01-02T15:04:05Z07:00",
+                  'updateTime': "2006-01-02T15:04:05Z07:00",
+                  'isLive': True
+                },
+              ]
+        }
+    }
+    ```
+
+    Error:
+     ```
+     {
+         "status": 800,
+         "result": {
+            "errorName": "MISS_PARAMS"
+         }
+     }
+     ```
+   
+     Error Code Table for error situation:
+
+      | ErrorName | ErrorCode | HttpStatus | Description |
+      | ---  | --- | --- | --- |
+      | MISS_PARAMS | 800 | 400 | |
+      | INVALID_PARAMS | 801 | 400 | |
+      | NO_JWTTOKEN | 1000 | 401 | empty jwtToken |
+      | INVALID_JWTTOKEN | 1001 | 401 | Expire or invalid jwtToken |
+      | INVALID_ACCESSTOKEN | 9000 | 403 | Expire Google Access Token |
+
+
+### Store API URLs
+---
+#### SA1. Store Livestream API
+ - Method: POST
+ - {routePath}: /store/{store id}/livestream
+ - **Header**
+   | Name | Type | Description |
+   | --- | --- | --- |
+   | Authorization | string | Use for GatorStore Login |
+   
+ - **Request Body Table**
+   | Name | Type | Description |
+   | ---  | --- | --- |
+   | title | string | Use for naming the new livestream |
+   
+    Example:
+    1. Using user jwtToken login directly
+     ```
+     {
+         'title': '123'
+     }
+     ```
+     
+ - **Response**  
+    Success: 
+    ```
+    {
+        "status": 0,
+        "result": {
+              'id': "113024", // livestream id
+              'title': "YiMing Chang", // livestream title
+              'streamKey': "1324-5678-8974-1230",
+              'streamUrl': "some url",
+              'createTime': "2006-01-02T15:04:05Z07:00"
+              'updateTime': "2006-01-02T15:04:05Z07:00"
+              'embedHTML': "some iframe html"
         }
     }
     ```
@@ -166,19 +296,71 @@ Golang and backend set up please check [backendend-readme.md](https://github.com
       | NO_JWTTOKEN | 1000 | 400 | |
       | INVALID_JWTTOKEN | 1001 | 401 | Expire or invalid jwtToken |
       | INVALID_ACCESSTOKEN | 9000 | 403 | Expire Google Access Token |
+      
+#### SA2. Store Livestream status API
+ - Method: GET/PUT
+ - {routePath}: /store/{store id}/livestreamStatus
+ - **Header**
+   | Name | Type | Description |
+   | --- | --- | --- |
+   | Authorization | string | Use for GatorStore Login |
+   
+ - **Request Body Table**
+   | Name | Type | Description |
+   | ---  | --- | --- |
+   | status | boolean | streamStatus |
+   
+    PUT Example:
+     ```
+     {
+         'isLive': true
+     }
+     ```
+    GET Example:
+    ```
+    {
+    }
+    ```
+ - **Response**  
+    Success: 
+    ```
+    {
+      'id': "GatorStore_1",
+      'name': "GoGoGator",
+      'userId': "11001",
+      'createTime': "2006-01-02T15:04:05Z07:00",
+      'updateTime': "2006-01-02T15:04:05Z07:00",
+      'isLive': True // might change
+    }
+    ```
+
+    Error:
+     ```
+     {
+         "status": 800,
+         "result": {
+            "errorName": "MISS_PARAMS"
+         }
+     }
+     ```
+   
+     Error Code Table for error situation:
+
+      | ErrorName | ErrorCode | HttpStatus | Description |
+      | ---  | --- | --- | --- |
+      | MISS_PARAMS | 800 | 400 | |
+      | INVALID_PARAMS | 801 | 400 | |
+      | NO_JWTTOKEN | 1000 | 400 | |
+      | INVALID_JWTTOKEN | 1001 | 401 | Expire or invalid jwtToken |
+      | INVALID_ACCESSTOKEN | 9000 | 403 | Expire Google Access Token |
   
----
-#### UA2. User Info Update
----
-#### UA3. User Store List
----
-
-
-### Store API URLs
 ### Product API URLs
+---
 
-
+### Test API URLs
+---
 ## Ojbect Document
+---
 Object Table Columns 
 
 | Name | Description |
@@ -188,18 +370,43 @@ Object Table Columns
 | Type | variable type or method return type |
 | Description | descibe the attribute purpose |
 
+---
+#### JWT Object
+This object will be use for respresenting the user in server, every user has an unique JWT token for requesting API.
+Use it as Authentication in the middleware of the server (before the request passby).
+If the token object does not match to the request, return httpStatus 401 or 403.
 
+The key will be ***jwtToken***, and the value will be as below:
+| Var/Method | Key/Optional | Type | Description |
+| ---  | --- | --- | --- |
+| jwtToken | k | string | unique jwt authorization key in GatorStore|
+| email | | string | unique identifier |
+| createTime |  | string | create datetime | 
+
+JSON Example:
+```
+{
+  'email': "yimingchang@ufl.edu",
+  'jwtToken': "gst.R2F0b3JTdG9yZV95aW1pbmdzdGFyNTU2NkBnbWFpbC5jb20xMTAwMg==_MjAyMi0wMi0yMlQwMjoyNTowMVo=",
+  'createTime': "2006-01-02T15:04:05Z07:00"
+}
+```
+
+---
 #### User Object
 If user has already register, an **uniqueId** will be assigned to user.  
 Or else we'll use **email** as a identifier.
 
+The key will be **email**, and the value will be as below:
 | Var/Method | Key/Optional | Type | Description |
 | ---  | --- | --- | --- |
-| `id` | K | string | userId - unique identifier |
+| id | K | string | userId - unique identifier |
 | name |   | string | Receive by google api |
-| `email` | K | string | unique identifier |
-| jwtToken | O | string | unique jwt authorization key in GatorStore |
-| accessToken | O | string | google accesstoken, use for api calling |
+| email | K | string | unique identifier |
+| jwtToken |  | string | unique jwt authorization key in GatorStore |
+| accessToken |  | string | youtube access token | 
+| createTime |  | string | create datetime | 
+| updateTime |  | string | latest update datetime | 
 
 JSON Example:
 ```
@@ -207,22 +414,97 @@ JSON Example:
   'id': "113024",
   'name': "YiMing Chang",
   'email': "yimingchang@ufl.edu",
-  'jwtToken': "gatorStore_qeqweiop122133",
-  'accessToken': "xjjkoipoqwe1445"
+  'jwtToken': "gst.R2F0b3JTdG9yZV95aW1pbmdzdGFyNTU2NkBnbWFpbC5jb20xMTAwMg==_MjAyMi0wMi0yMlQwMjoyNTowMVo=",
+  'accessToken': "GatorStore_10302323",
+  'createTime': "2006-01-02T15:04:05Z07:00"
+  'updateTime': "2006-01-02T15:04:05Z07:00"
 }
 ```
+---
+#### Store Object
+Each Store will have uniqueId, and belong to one user who created it.
 
+The key will be **storeId**, and the value will be as below:
+| Var/Method | Key/Optional | Type | Description |
+| ---  | --- | --- | --- |
+| id | K | string | storeId - unique identifier |
+| name |   | string | storeName |
+| userId | | string | unique creator |
+| createTime |  | string | create datetime | 
+| updateTime |  | string | latest update datetime | 
+| isLive | | boolean | check if this store is on live |
+| liveId | | string | liveObj's ID to get live information, empty if isLive is false |
+
+JSON Example:
+```
+{
+  'id': "GatorStore_1",
+  'name': "GoGoGator",
+  'userId': "11001",
+  'createTime': "2006-01-02T15:04:05Z07:00",
+  'updateTime': "2006-01-02T15:04:05Z07:00",
+  'isLive': True
+  'liveId': "132001"
+}
+```
+---
+
+#### Live Object 
+The key will be **liveId**, and the value will be as below:
+| Var/Method | Key/Optional | Type | Description |
+| ---  | --- | --- | --- |
+| id | K | string | live - unique identifier for liveObj |
+| storeId | K | string | store creating this live |
+| title |   | string | storeName |
+| streamKey |  | string | create datetime | 
+| streamUrl |  | string | latest update datetime | 
+| createTime | | datetime | live create time |
+| updateTime | | datetime | live update time |
+| embedHTML | | string | use for web iframe ebmed |
+
+ ```
+ {
+   'id': "113024", // livestream id
+   'title': "YiMing Chang", // livestream title
+   'storeId': "122323"
+   'streamKey': "1324-5678-8974-1230",
+   'streamUrl': "some url",
+   'createTime': "2006-01-02T15:04:05Z07:00"
+   'updateTime': "2006-01-02T15:04:05Z07:00"
+   'embedHTML': "some iframe html"
+ }
+ ```
+ 
+---
 ### Global ErrorCode  
 - General Errors such as missing params or invalid params will be under 1000
 - Google Errors error code will be starting with 9xxx
 - GatorStore Errors will be in range 1000 ~ 8xxx
 
-- Table
-   | ErrorName | ErrorCode | HttpStatus | Description |
-   | ---  | --- | --- | --- |
-   | MISS_PARAMS | 800 | 400 | |
-   | INVALID_PARAMS | 801 | 400 | |
-   | NO_JWTTOKEN | 1000 | 400 | |
-   | INVALID_JWTTOKEN | 1001 | 401 | Expire or invalid jwtToken |
-   | INVALID_ACCESSTOKEN | 9000 | 403 | Expire Google Access Token |
+- Server Request Errors
+   | ErrorName | ErrorCode | Description |
+   | ---  | --- | --- |
+   | UnknownInternalErrCode | 800 |  |
+   | MissingParamsCode | 801 |  | 
+   | InvalidParamsCode | 802 |  | 
+   
+- DB errors
+   | ErrorName | ErrorCode | Description |
+   | ---  | --- | --- |
+   | UnknownDbErrCode | 900 | |
+   | UnableToGetDbObj | 901 | |
+ 
+- JWT errors
+   | ErrorName | ErrorCode | Description |
+   | ---  | --- | --- |
+   | MissingJwtTokenCode | 1000 | | Empty jwtToken |
+   | InvalidAccessTokenCode | 1001 |  | Expire or invalid jwtToken |
+
+- Error with Google
+   | ErrorName | ErrorCode | Description |
+   | ---  | --- | --- |
+   | MissingAccessTokenCode | 9000 | |
+   | InvalidAccessTokenCode | 9001 | |
+   | InvalidGoogleCode | 9002 | |
+   
  

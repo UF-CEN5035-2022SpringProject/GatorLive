@@ -29,3 +29,15 @@ func CreateJwtToken(userId string, userEmail string, nowTime string) string {
 	newJwtToken := "gst." + b64.StdEncoding.EncodeToString([]byte(JwtPrefix+userEmail+userId)) + "_" + b64.StdEncoding.EncodeToString([]byte(nowTime))
 	return newJwtToken
 }
+
+func Pagenator(targetSlice []map[string]interface{}, currectPage int, sliceSize int) []map[string]interface{} {
+	if sliceSize == 0 {
+		return targetSlice
+	}
+	low := currectPage * PageLimit
+	high := (currectPage + 1) * PageLimit
+	if high > sliceSize {
+		high = sliceSize
+	}
+	return targetSlice[low:high]
+}
