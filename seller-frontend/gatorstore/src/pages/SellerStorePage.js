@@ -331,7 +331,9 @@ function SellerStorePage() {
       .then(response => {
         if (response.status === 0) {
           SetStreamObject({key: response.result.streamKey, url: response.result.streamUrl});
-          SetEmbedHTML(response.result.embedHTML);
+          
+          var embedStreamHTML = '<iframe width="560" height="315" src="https://www.youtube.com/embed/' + response.result.liveId + '"' +  ' frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>'
+          SetEmbedHTML(embedStreamHTML);
         } else {
           alert("ERROR: YouTube API did not respond with 'success' status code.");
           window.location.href = "http://localhost:3000/";
@@ -505,6 +507,7 @@ function SellerStorePage() {
                 return(
                   <Grid item xs={12} sm={4}>
                     <Productcard 
+                      productId={product.id}
                       title= {product.name} 
                       subtitle={product.price}
                       imageUrl="https://media.wired.com/photos/5f23168c558da0380aa8e37f/master/pass/Gear-Google-Pixel-4A-front-and-back-angle-SOURCE-Google.jpg"
