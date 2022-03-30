@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from 'react';
+import { Link } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import '../styles/sellerStoreList.css';
@@ -28,7 +29,7 @@ function StoreEntry(storeInfo) {
         </div>
       </div>
       <div style={{ flex: 1}} className="flexCenter">
-        <Button startIcon={<EditIcon />} variant="contained" color="primary" sx={{ marginBottom: 1 }}>Visit</Button>
+        <Button component={Link} to={'/store/' + storeInfo.storeId} startIcon={<EditIcon />} variant="contained" color="primary" sx={{ marginBottom: 1 }}>Visit</Button>
         <Button startIcon={<DeleteIcon />} variant="contained" color="secondary">Delete</Button>
       </div>
     </div>
