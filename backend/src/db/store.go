@@ -53,7 +53,6 @@ func GetStoreObj(storeId string) map[string]interface{} {
 }
 
 func GetStoreProducts(storeId string, page int) []map[string]interface{} {
-	logger.DebugLogger.Printf("GetStoreProducts from storeId: %s", storeId)
 	var productList []map[string]interface{}
 	// OrderBy("id", firestore.Asc)
 	iter := FireBaseClient.Collection(DbCollections["products"]).Where("storeId", "==", storeId).Documents(DatabaseCtx)
@@ -71,8 +70,24 @@ func GetStoreProducts(storeId string, page int) []map[string]interface{} {
 	return productList
 }
 
+func GetStoreOrders(storeId string, page int) []map[string]interface{} {
+	var orderList []map[string]interface{}
+	// OrderBy("id", firestore.Asc)
+	iter := FireBaseClient.Collection(DbCollections["orders"]).Where("storeId", "==", storeId).Documents(DatabaseCtx)
+	for {
+		doc, err := iter.Next()
+		if err == iterator.Done {
+			break
+		}
+		if err != nil {
+			logger.WarningLogger.Printf("GetStoreProducts Error iterating. %s", storeId)
+		}
+		orderList = append(orderList, doc.Data())
+	}
+	return orderList
+}
+
 func GetUserStore(userId string, page int) []map[string]interface{} {
-	logger.DebugLogger.Printf("GetUserStore from userId: %s", userId)
 	var storeList []map[string]interface{}
 	// OrderBy("id", firestore.Asc)
 	iter := FireBaseClient.Collection(DbCollections["stores"]).Where("userId", "==", userId).Documents(DatabaseCtx)
@@ -82,7 +97,25 @@ func GetUserStore(userId string, page int) []map[string]interface{} {
 			break
 		}
 		if err != nil {
-			logger.WarningLogger.Printf("GetUserStore Error iterating. %s", userId)
+			logger.WarningLogger.Printf("Error iterating. %s", userId)
+		}
+		storeList = append(storeList, doc.Data())
+	}
+
+	return storeList
+}
+
+func GetUserOrders(userId string, page int) []map[string]interface{} {
+	var storeList []map[string]interface{}
+	// OrderBy("id", firestore.Asc)
+	iter := FireBaseClient.Collection(DbCollections["orders"]).Where("userId", "==", userId).Documents(DatabaseCtx)
+	for {
+		doc, err := iter.Next()
+		if err == iterator.Done {
+			break
+		}
+		if err != nil {
+			logger.WarningLogger.Printf("Error iterating. %s", userId)
 		}
 		storeList = append(storeList, doc.Data())
 	}

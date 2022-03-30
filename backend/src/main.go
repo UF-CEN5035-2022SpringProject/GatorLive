@@ -35,12 +35,16 @@ func main() {
 	authApis := r.PathPrefix(prodRoutePrefix).Subrouter()
 	// USER path
 	authApis.HandleFunc("/user/{userId}/info", api.UserInfo).Methods("GET", "PUT", "OPTIONS")
-	authApis.HandleFunc("/user/{userId}/store-list", api.UserStoreList)
+	authApis.HandleFunc("/user/{userId}/store-list", api.UserStoreList).Methods("GET", "OPTIONS")
+	authApis.HandleFunc("/user/{userId}/order-list", api.UserOrderList).Methods("GET", "OPTIONS")
 
 	// Store
 	authApis.HandleFunc("/store/create", api.StoreCreate).Methods("POST", "OPTIONS")
 	authApis.HandleFunc("/store/{storeId}", api.StoreInfo).Methods("GET", "PUT", "OPTIONS")
-	authApis.HandleFunc("/store/{storeId}/product-list", api.StoreProducts)
+	authApis.HandleFunc("/store/{storeId}/product-list", api.StoreProducts).Methods("GET", "OPTIONS")
+	authApis.HandleFunc("/store/{storeId}/order-list", api.StoreOrders).Methods("GET", "OPTIONS")
+	// authApis.HandleFunc("/store/{storeId}/live-list", api.).Methods("GET", "OPTIONS")
+
 	authApis.HandleFunc("/store/{storeId}/livestream", api.CreateLivebroadcast).Methods("GET", "POST", "OPTIONS")
 	authApis.HandleFunc("/store/{storeId}/livestreamStatus", api.LivestreamStatus).Methods("GET", "PUT", "OPTIONS")
 

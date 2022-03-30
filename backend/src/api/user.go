@@ -317,3 +317,67 @@ func UserStoreList(w http.ResponseWriter, r *http.Request) {
 
 	ReturnResponse(w, resp, http.StatusOK)
 }
+
+func UserOrderList(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	userId := vars["userId"]
+
+	userData := gorillaContext.Get(r, "userData").(map[string]interface{})
+	if userId != userData["id"].(string) {
+		logger.ErrorLogger.Printf("invald request, permission denied")
+		errorMsg := utils.SetErrorMsg("invald request, permission denied")
+		resp, _ := RespJSON{int(utils.InvalidJwtTokenCode), errorMsg}.SetResponse()
+		ReturnResponse(w, resp, http.StatusForbidden)
+		return
+	}
+
+	page := r.URL.Query().Get("page")
+	if page == "" {
+		page = "0"
+	}
+
+	intPage, err := strconv.Atoi(page)
+	if err != nil {
+		logger.ErrorLogger.Printf("Error page type, err: %v", err)
+		errorMsg := utils.SetErrorMsg("Error type of page query")
+		resp, _ := RespJSON{int(utils.InvalidParamsCode), errorMsg}.SetResponse()
+		ReturnResponse(w, resp, http.StatusBadRequest)
+	}
+
+	orderList := db.GetUserOrders(userId, intPage)
+
+	orderListData := make(map[string]interface{})
+	orderListData["userId"] = userId
+
+	orderListSize := len(orderList)
+	orderListData["maxPage"] = 0
+	orderListData["currectPage"] = 0
+	orderListData["orderList"] = orderList
+
+	if orderListSize != 0 {
+		totalPage := (orderListSize / utils.PageLimit)
+		if (orderListSize % utils.PageLimit) != 0 {
+			totalPage += 1
+		}
+		maxPage := totalPage - 1
+		orderListData["maxPage"] = maxPage
+
+		currectPage := intPage
+		if currectPage > maxPage {
+			currectPage = maxPage
+		}
+		orderListData["currectPage"] = currectPage
+		// arrange the pagenate
+		orderListData["orderList"] = utils.Pagenator(orderList, currectPage, orderListSize)
+	}
+
+	resp, err := RespJSON{0, orderListData}.SetResponse()
+	if err != nil {
+		logger.ErrorLogger.Printf("Error on wrapping JSON resp, err: %v", err)
+		errorMsg := utils.SetErrorMsg("Error on wrapping JSON resp")
+		resp, _ := RespJSON{int(utils.InvalidAccessTokenCode), errorMsg}.SetResponse()
+		ReturnResponse(w, resp, http.StatusInternalServerError)
+	}
+
+	ReturnResponse(w, resp, http.StatusOK)
+}
