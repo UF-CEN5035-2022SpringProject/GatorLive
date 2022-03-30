@@ -209,6 +209,7 @@ func CreateLivebroadcast(w http.ResponseWriter, r *http.Request) {
 	liveObj["updateTime"] = createTime.UTC().Format(time.RFC3339)
 	liveObj["embedHTML"] = newLive.ContentDetails.MonitorStream.EmbedHtml
 	liveObj["productList"] = title.ProductIdList
+	liveObj["storeId"] = storeId
 
 	if db.GetLiveObj(newLive.Id) == nil {
 		db.AddLiveObj(newLive.Id, liveObj)
