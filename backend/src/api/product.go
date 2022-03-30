@@ -22,7 +22,7 @@ type ProductCreateObject struct {
 	Description string  `json:"description"`
 	Quantity    int     `json:"quantity"`
 	Picture     string  `json:"picture"`
-	StoreId     string  `json:"StoreId"`
+	StoreId     string  `json:"storeId"`
 }
 type ProductPurchaseReqObject struct {
 	Quantity int    `json:"quantity"`
@@ -55,6 +55,7 @@ func checkJwtTokenAccess(userData map[string]interface{}, productId string) bool
 	}
 	return true
 }
+
 func ProductCreate(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		logger.ErrorLogger.Printf("ProductCreate with wrong method: %v", r.Method)
@@ -115,8 +116,8 @@ func ProductCreate(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var convertMap map[string]interface{}
-	userObjStr, _ := json.Marshal(productObj)
-	json.Unmarshal(userObjStr, &convertMap)
+	productObjStr, _ := json.Marshal(productObj)
+	json.Unmarshal(productObjStr, &convertMap)
 
 	db.AddProductObj(newProductId, convertMap)
 	db.UpdateProductCount(newProductCount)
@@ -131,6 +132,7 @@ func ProductCreate(w http.ResponseWriter, r *http.Request) {
 	}
 	ReturnResponse(w, resp, http.StatusOK)
 }
+
 func ProductGet(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	productId := vars["productId"]
@@ -210,6 +212,7 @@ func ProductUpdate(w http.ResponseWriter, r *http.Request) {
 	}
 	ReturnResponse(w, resp, http.StatusOK)
 }
+
 func ProductPurchase(w http.ResponseWriter, r *http.Request) {
 
 	b, err := io.ReadAll(r.Body)
@@ -276,23 +279,20 @@ func ProductPurchase(w http.ResponseWriter, r *http.Request) {
 		Quantity:   purchase.Quantity,
 		Subtotal:   subtotal,
 		UserId:     userId,
+		StoreId:    productObj.StoreId,
 	}
 
 	var convertMap map[string]interface{}
-	userObjStr, _ := json.Marshal(newOrder)
+	orderObjStr, _ := json.Marshal(newOrder)
 	// fmt.Printf("%v\n", userObjStr)
-	json.Unmarshal(userObjStr, &convertMap)
+	json.Unmarshal(orderObjStr, &convertMap)
 	// fmt.Printf("%v\n", convertMap)
+	orderData := convertMap
 
 	db.AddOrderObj(newOrderId, convertMap)
 	db.UpdateOrderCount(newOrderCount)
 
-	result := make(map[string]interface{})
-	result["name"] = productObj.Name
-	result["id"] = productObj.Id
-	result["subtotal"] = subtotal
-	result["quantity"] = purchase.Quantity
-	resp, _ := RespJSON{0, result}.SetResponse()
+	resp, _ := RespJSON{0, orderData}.SetResponse()
 	ReturnResponse(w, resp, http.StatusOK)
 }
 
@@ -311,8 +311,8 @@ func ProductDelete(w http.ResponseWriter, r *http.Request) {
 
 	resp, _ := RespJSON{0, product}.SetResponse()
 	ReturnResponse(w, resp, http.StatusOK)
-
 }
+
 func ProductRESTFUL(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodGet {
 		ProductGet(w, r)

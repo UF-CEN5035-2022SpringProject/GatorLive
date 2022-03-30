@@ -12,6 +12,7 @@ type OrderObject struct {
 	LiveId     string  `json:"liveId"`
 	Quantity   int     `json:"quantity"`
 	ProductId  string  `json:"productId"`
+	StoreId    string  `json:"storeId"`
 	CreateTime string  `json:"createTime"`
 }
 
@@ -39,8 +40,8 @@ func UpdateOrderCount(newOrderCount int) error {
 	}
 	return err
 }
-func AddOrderObj(orderId string, userData map[string]interface{}) error {
-	_, err := FireBaseClient.Collection(DbCollections["orders"]).Doc(orderId).Set(DatabaseCtx, userData)
+func AddOrderObj(orderId string, data map[string]interface{}) error {
+	_, err := FireBaseClient.Collection(DbCollections["orders"]).Doc(orderId).Set(DatabaseCtx, data)
 	if err != nil {
 		logger.WarningLogger.Printf("Error adding value. %s", err)
 	}
