@@ -82,9 +82,7 @@ func bind(service *youtube.Service, live *youtube.LiveBroadcast, stream *youtube
 	}
 	return nil
 }
-func verify(jwtToken string, storeid string) string {
-	return "1"
-}
+
 func GetEmail(jwtToken string) map[string]interface{} {
 	dsnap, err := db.FireBaseClient.Collection("jwtTokenMap").Doc(jwtToken).Get(db.DatabaseCtx)
 	if err != nil {
@@ -101,8 +99,24 @@ func CreateLivebroadcast(w http.ResponseWriter, r *http.Request) {
 	storeId := vars["storeId"]
 	jwtToken := r.Header.Get("Authorization")
 
-	// TODO verify
-	if verify(jwtToken, storeId) == "" {
+	// verify
+	userData := gorillaContext.Get(r, "userData").(map[string]interface{})
+
+	storeObj := db.GetStoreObj(storeId)
+	if storeObj == nil {
+		logger.ErrorLogger.Printf("invald request, unable to get store")
+		errorMsg := utils.SetErrorMsg("invald request, unable to get store")
+		resp, _ := RespJSON{int(utils.InvalidParamsCode), errorMsg}.SetResponse()
+		ReturnResponse(w, resp, http.StatusBadRequest)
+		return
+	}
+
+	userId := userData["id"].(string)
+	if storeObj["userId"] != userId {
+		logger.ErrorLogger.Printf("invald request, permission denied")
+		errorMsg := utils.SetErrorMsg("invald request, permission denied")
+		resp, _ := RespJSON{int(utils.InvalidJwtTokenCode), errorMsg}.SetResponse()
+		ReturnResponse(w, resp, http.StatusForbidden)
 		return
 	}
 
