@@ -38,7 +38,6 @@ func CrossAllowMiddleware(next http.Handler) http.Handler {
 
 func AuthMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// TODO: Add authentication
 		token := r.Header.Get("Authorization")
 		logger.DebugLogger.Printf("Authorization header token %s\n", token)
 

@@ -46,7 +46,8 @@ func main() {
 	// authApis.HandleFunc("/store/{storeId}/live-list", api.).Methods("GET", "OPTIONS")
 
 	authApis.HandleFunc("/store/{storeId}/livestream", api.CreateLivebroadcast).Methods("GET", "POST", "OPTIONS")
-	authApis.HandleFunc("/store/{storeId}/livestreamStatus", api.LivestreamStatus).Methods("GET", "PUT", "OPTIONS")
+	r.HandleFunc(prodRoutePrefix+"/store/{storeId}/livestream/info", api.LiveStreamInfo).Methods("GET", "OPTIONS")
+	authApis.HandleFunc("/store/{storeId}/livestream/end", api.UpdateIsLive).Methods("PUT", "OPTIONS")
 
 	// Product
 	authApis.HandleFunc("/product/create", api.ProductCreate).Methods("POST", "OPTIONS")
@@ -69,7 +70,6 @@ func main() {
 		r.Use(api.CrossAllowMiddleware)
 		r.Use(mux.CORSMethodMiddleware(r))
 	}
-	// testAuthApis.Use(api.AuthMiddleware)
 	authApis.Use(api.AuthMiddleware)
 	r.Use(api.HeaderMiddleware)
 

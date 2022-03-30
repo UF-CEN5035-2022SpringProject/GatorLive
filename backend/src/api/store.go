@@ -137,6 +137,14 @@ func StoreProducts(w http.ResponseWriter, r *http.Request) {
 
 	// check if request is valid to access store product list
 	storeObj := db.GetStoreObj(storeId)
+	if storeObj == nil {
+		logger.ErrorLogger.Printf("invald request, unable to get store")
+		errorMsg := utils.SetErrorMsg("invald request, unable to get store")
+		resp, _ := RespJSON{int(utils.InvalidParamsCode), errorMsg}.SetResponse()
+		ReturnResponse(w, resp, http.StatusBadRequest)
+		return
+	}
+
 	userData := gorillaContext.Get(r, "userData").(map[string]interface{})
 	if storeObj["userId"] != userData["id"].(string) {
 		logger.ErrorLogger.Printf("invald request, permission denied")
@@ -204,6 +212,14 @@ func StoreOrders(w http.ResponseWriter, r *http.Request) {
 
 	// check if request is valid to access store product list
 	storeObj := db.GetStoreObj(storeId)
+	if storeObj == nil {
+		logger.ErrorLogger.Printf("invald request, unable to get store")
+		errorMsg := utils.SetErrorMsg("invald request, unable to get store")
+		resp, _ := RespJSON{int(utils.InvalidParamsCode), errorMsg}.SetResponse()
+		ReturnResponse(w, resp, http.StatusBadRequest)
+		return
+	}
+
 	userData := gorillaContext.Get(r, "userData").(map[string]interface{})
 	if storeObj["userId"] != userData["id"].(string) {
 		logger.ErrorLogger.Printf("invald request, permission denied")
