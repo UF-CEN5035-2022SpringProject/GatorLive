@@ -31,8 +31,9 @@ type Title struct {
 	Title         string   `json:"title"`
 	ProductIdList []string `json:"productIdList"`
 }
-type Status struct {
-	IsLive bool `json:"isLive"`
+
+type LiveId struct {
+	LiveId string `json:"liveId"`
 }
 
 // func token(accessToken string) (*oauth2.Token, error) {
@@ -246,75 +247,48 @@ func CreateLivebroadcast(w http.ResponseWriter, r *http.Request) {
 	ReturnResponse(w, resp, http.StatusOK)
 }
 
-func LiveStreamInfo(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	storeId := vars["storeId"]
-
-	storeObj := db.GetStoreObj(storeId)
-	if storeObj == nil {
-		logger.ErrorLogger.Printf("invald request, unable to get store")
-		errorMsg := utils.SetErrorMsg("invald request, unable to get store")
-		resp, _ := RespJSON{int(utils.InvalidParamsCode), errorMsg}.SetResponse()
-		ReturnResponse(w, resp, http.StatusBadRequest)
-		return
-	}
-
-	resp, err := RespJSON{0, storeObj}.SetResponse()
-	if err != nil {
-		logger.ErrorLogger.Printf("Error on wrapping JSON resp, Error: %s", err)
-	}
-	ReturnResponse(w, resp, http.StatusOK)
-	return
-}
-
-func UpdateIsLive(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	storeId := vars["storeId"]
-
-	userData := gorillaContext.Get(r, "userData").(map[string]interface{})
-
-	storeObj := db.GetStoreObj(storeId)
-	if storeObj == nil {
-		logger.ErrorLogger.Printf("invald request, unable to get store")
-		errorMsg := utils.SetErrorMsg("invald request, unable to get store")
-		resp, _ := RespJSON{int(utils.InvalidParamsCode), errorMsg}.SetResponse()
-		ReturnResponse(w, resp, http.StatusBadRequest)
-		return
-	}
-
-	userId := userData["id"].(string)
-	if storeObj["userId"] != userId {
-		logger.ErrorLogger.Printf("invald request, permission denied")
-		errorMsg := utils.SetErrorMsg("invald request, permission denied")
-		resp, _ := RespJSON{int(utils.InvalidJwtTokenCode), errorMsg}.SetResponse()
-		ReturnResponse(w, resp, http.StatusForbidden)
-		return
-	}
-
-	// update store object
+func GetLiveStream(w http.ResponseWriter, r *http.Request) {
 	b, err := io.ReadAll(r.Body)
 	if err != nil {
-		logger.ErrorLogger.Printf("Unable to read livestream status req: %v", err)
-		errorMsg := utils.SetErrorMsg("Unable to read livestream status req")
+		logger.ErrorLogger.Printf("Unable to read getlivestream req: %v", err)
+		errorMsg := utils.SetErrorMsg("Unable to read getlivestream req")
 		resp, _ := RespJSON{int(utils.InvalidParamsCode), errorMsg}.SetResponse()
 		ReturnResponse(w, resp, http.StatusBadRequest)
+		return
 	}
-	var status Status
-	err = json.Unmarshal(b, &status)
-	if err != nil {
-		logger.ErrorLogger.Printf("Unable to decode livestream status req: %v", err)
-		errorMsg := utils.SetErrorMsg("Unable to decode livestream status req")
-		resp, _ := RespJSON{int(utils.InvalidParamsCode), errorMsg}.SetResponse()
-		ReturnResponse(w, resp, http.StatusBadRequest)
-	}
-	db.UpdateStoreObj(storeId, "isLive", status.IsLive)
 
-	// get updated store object
-	storeObj = db.GetStoreObj(storeId)
-	resp, err := RespJSON{0, storeObj}.SetResponse()
+	var liveId LiveId
+	err = json.Unmarshal(b, &liveId)
+
 	if err != nil {
-		logger.ErrorLogger.Printf("Error on wrapping JSON resp, Error: %s", err)
+		logger.ErrorLogger.Printf("Unable to decode getlivestream req: %v", err)
+		errorMsg := utils.SetErrorMsg("Unable to decode getlivestream req")
+		resp, _ := RespJSON{int(utils.InvalidParamsCode), errorMsg}.SetResponse()
+		ReturnResponse(w, resp, http.StatusBadRequest)
+		return
 	}
+
+	liveObj := db.GetLiveObj(liveId.LiveId)
+
+	if liveObj == nil {
+		logger.ErrorLogger.Printf("invald request, unable to get livestream")
+		errorMsg := utils.SetErrorMsg("invald request, unable to get livestream")
+		resp, _ := RespJSON{int(utils.InvalidParamsCode), errorMsg}.SetResponse()
+		ReturnResponse(w, resp, http.StatusBadRequest)
+		return
+	}
+
+	productIdList := liveObj["productList"].([]interface{})
+
+	productObjList := make([]map[string]interface{}, len(productIdList))
+	for index := 0; index < len(productIdList); index++ {
+		productObjList[index] = db.GetProductObj(productIdList[index].(string))
+	}
+
+	liveObj["productList"] = productObjList
+	liveObj["streamKey"] = ""
+	liveObj["streamUrl"] = ""
+	resp, _ := RespJSON{0, liveObj}.SetResponse()
 	ReturnResponse(w, resp, http.StatusOK)
-	return
+
 }

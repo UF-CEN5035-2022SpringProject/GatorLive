@@ -27,6 +27,9 @@ type StoreObject struct {
 	IsLive     bool   `json:"isLive"`
 	LiveId     string `json:"liveId"`
 }
+type Status struct {
+	IsLive bool `json:"isLive"`
+}
 
 func StoreCreate(w http.ResponseWriter, r *http.Request) {
 	// get code or assesstoken from http.request
@@ -278,4 +281,55 @@ func StoreOrders(w http.ResponseWriter, r *http.Request) {
 	}
 
 	ReturnResponse(w, resp, http.StatusOK)
+}
+func UpdateIsLive(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	storeId := vars["storeId"]
+
+	userData := gorillaContext.Get(r, "userData").(map[string]interface{})
+
+	storeObj := db.GetStoreObj(storeId)
+	if storeObj == nil {
+		logger.ErrorLogger.Printf("invald request, unable to get store")
+		errorMsg := utils.SetErrorMsg("invald request, unable to get store")
+		resp, _ := RespJSON{int(utils.InvalidParamsCode), errorMsg}.SetResponse()
+		ReturnResponse(w, resp, http.StatusBadRequest)
+		return
+	}
+
+	userId := userData["id"].(string)
+	if storeObj["userId"] != userId {
+		logger.ErrorLogger.Printf("invald request, permission denied")
+		errorMsg := utils.SetErrorMsg("invald request, permission denied")
+		resp, _ := RespJSON{int(utils.InvalidJwtTokenCode), errorMsg}.SetResponse()
+		ReturnResponse(w, resp, http.StatusForbidden)
+		return
+	}
+
+	// update store object
+	b, err := io.ReadAll(r.Body)
+	if err != nil {
+		logger.ErrorLogger.Printf("Unable to read livestream status req: %v", err)
+		errorMsg := utils.SetErrorMsg("Unable to read livestream status req")
+		resp, _ := RespJSON{int(utils.InvalidParamsCode), errorMsg}.SetResponse()
+		ReturnResponse(w, resp, http.StatusBadRequest)
+	}
+	var status Status
+	err = json.Unmarshal(b, &status)
+	if err != nil {
+		logger.ErrorLogger.Printf("Unable to decode livestream status req: %v", err)
+		errorMsg := utils.SetErrorMsg("Unable to decode livestream status req")
+		resp, _ := RespJSON{int(utils.InvalidParamsCode), errorMsg}.SetResponse()
+		ReturnResponse(w, resp, http.StatusBadRequest)
+	}
+	db.UpdateStoreObj(storeId, "isLive", status.IsLive)
+
+	// get updated store object
+	storeObj = db.GetStoreObj(storeId)
+	resp, err := RespJSON{0, storeObj}.SetResponse()
+	if err != nil {
+		logger.ErrorLogger.Printf("Error on wrapping JSON resp, Error: %s", err)
+	}
+	ReturnResponse(w, resp, http.StatusOK)
+	return
 }
