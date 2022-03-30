@@ -104,7 +104,7 @@ function SellerStoreList() {
   }
 
   function CreateNewStore(name) {
-    /* Get JWT Token for POST request header:
+    // Get JWT Token for POST request header:
     var jwtToken = window.sessionStorage.getItem("user-jwtToken");
 
     // Call API:
@@ -126,22 +126,18 @@ function SellerStoreList() {
       .catch((error) => {
         console.error(error);
         //alert("ERROR: Back-end is not online or did not respond.");
-      });*/
+      });
   }
 
-  const [storeArray, SetStoreArray] = useState([
-    {
-      name: "Yiming Store 2.0",
-      id: "gatorstore-2",
-      createTime: "2022-03-29T02:32:31Z",
-    }
-  ]);
+  const [storeArray, SetStoreArray] = useState([]);
 
   const [currStorePage, ChangeStorePage] = useState(0);
   var maxPage = 1; // default
 
   function StoreList() {
-    GetPage(0);
+    useEffect(() => {
+      GetPage(0);
+    });
 
     // Calls on GetPage() to get a new product page upon the user scrolling down.
     function ScrollDown() {
@@ -166,7 +162,7 @@ function SellerStoreList() {
         .then(response => response.json())
         .then(response => {
           if (response.status === 0) {
-            if (pageNum <= response.result.maxPage) {
+            if (pageNum <= response.result.maxPage && response.result.storeList != null) {
               SetStoreArray(storeArray.concat(response.result.storeList));
             }
 
