@@ -134,10 +134,42 @@ function SellerStoreList() {
   const [currStorePage, ChangeStorePage] = useState(0);
   var maxPage = 1; // default
 
+  useEffect(() => {
+    GetPage(0);
+  }, []);
+
+  function GetPage(pageNum) {
+    var jwtToken = window.sessionStorage.getItem("user-jwtToken");
+    var userId = window.sessionStorage.getItem("user-id");
+    // Call API to get store list:
+    const requestOptions = {
+      method: 'GET',
+      headers: {
+        'Authorization': jwtToken
+      }
+    };
+    fetch(settings.apiHostURL + 'user/' + userId + '/store-list?page=' + pageNum, requestOptions)
+      .then(response => response.json())
+      .then(response => {
+        if (response.status === 0) {
+          if (pageNum <= response.result.maxPage && response.result.storeList != null) {
+            SetStoreArray(storeArray.concat(response.result.storeList));
+          }
+
+          // Set max page number so that this fetch isn't even called if it is an invalid page number
+          maxPage = response.result.maxPage;
+        } else {
+          console.log("ERROR: Get Store list API did not respond with 'success' status code.");
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+        //alert("ERROR: Back-end is not online or did not respond.");
+      });
+  }
+
   function StoreList() {
-    useEffect(() => {
-      GetPage(0);
-    });
+
 
     // Calls on GetPage() to get a new product page upon the user scrolling down.
     function ScrollDown() {
@@ -146,36 +178,6 @@ function SellerStoreList() {
         ChangeStorePage(currStorePage + 1);
         GetPage(currStorePage);
       }
-    }
-
-    function GetPage(pageNum) {
-      var jwtToken = window.sessionStorage.getItem("user-jwtToken");
-      var userId = window.sessionStorage.getItem("user-id");
-      // Call API to get store list:
-      const requestOptions = {
-        method: 'GET',
-        headers: {
-          'Authorization': jwtToken
-        }
-      };
-      fetch(settings.apiHostURL + 'user/' + userId + '/store-list?page=' + pageNum, requestOptions)
-        .then(response => response.json())
-        .then(response => {
-          if (response.status === 0) {
-            if (pageNum <= response.result.maxPage && response.result.storeList != null) {
-              SetStoreArray(storeArray.concat(response.result.storeList));
-            }
-
-            // Set max page number so that this fetch isn't even called if it is an invalid page number
-            maxPage = response.result.maxPage;
-          } else {
-            console.log("ERROR: Get Store list API did not respond with 'success' status code.");
-          }
-        })
-        .catch((error) => {
-          console.error(error);
-          //alert("ERROR: Back-end is not online or did not respond.");
-        });
     }
 
     return (
