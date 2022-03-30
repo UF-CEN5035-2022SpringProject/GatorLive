@@ -29,6 +29,7 @@ function SellerStorePage() {
   const [storeName, SetStoreName] = useState("Store!"); // to replace after the first fetch of the store object
 
   const { storeID } = useParams(); // Get StoreID string from the url
+  const [liveId, SetLiveId] = useState();
   
   // On load: initial check to check if its live or not:
   useEffect(() => {
@@ -58,10 +59,9 @@ function SellerStorePage() {
 
     // call API - TODO: When Yiming finishes this API. Store the embedHTML in variable storeObject
     const requestOptions = {
-      method: 'GET',
-      headers: {'Authorization': jwtToken}
+      method: 'GET'
     };
-    fetch(settings.apiHostURL + 'store/' + storeID + '/livestream/info?detail=' + detail, requestOptions)
+    fetch(settings.apiHostURL + 'store/' + storeID + '/info', requestOptions) // SA1
         .then(response => response.json())
         .then(response => {
           if (response.status === 0) {
@@ -75,9 +75,10 @@ function SellerStorePage() {
               var embedChatRoomHTML = '<iframe width="494" height="315" src="https://www.youtube.com/live_chat?v=' + response.result.liveId + '&embed_domain=localhost" frameborder="0"></iframe>';
               SetEmbedChatHTML(embedChatRoomHTML);
 
+              SetLiveId(response.result.liveId);
+
               if (detail === true) {
-                // Add live products to some hook array:
-                SetLiveProductArray(response.result.productList);
+                GetLivestreamStatus(); // SLA1
               }
             } else {
               SetLiveInfoBarState('not-live');
@@ -90,6 +91,28 @@ function SellerStorePage() {
         .catch((error) => {
             console.error(error);
         });
+  }
+
+  function GetLivestreamStatus() {
+    // call API - TODO: When Yiming finishes this API. Store the embedHTML in variable storeObject
+    const requestOptions = {
+      method: 'GET',
+      header: {},
+      body: JSON.stringify({liveId: liveId})
+    };
+    fetch(settings.apiHostURL + 'live/status?detail=true', requestOptions) // SA1
+      .then(response => response.json())
+      .then(response => {
+        if (response.status === 0) {
+          // Add live products to some hook array:
+          SetLiveProductArray(response.result);
+        } else {
+          alert("ERROR: YouTube API did not respond with 'success' status code 0.");
+        }
+      })
+      .catch((error) => {
+          console.error(error);
+      });
   }
 
   // Hook for overlay
@@ -151,7 +174,7 @@ function SellerStorePage() {
               
               <List selected={0} class="selectStreamItemList">
                 {
-                  sampleProducts.map(function (product) {
+                  productArray.map(function (product) {
                     return (
                       <ListItem selected="false" justify="between" class="selectStreamItem" onClick={
                         (e) => {
@@ -159,12 +182,12 @@ function SellerStorePage() {
                             e.currentTarget.style.boxShadow = "none";
                             e.currentTarget.style.backgroundColor = "lightblue";
 
-                            setProductSelected(productsSelected.filter(item => item !== product.name));
+                            setProductSelected(productsSelected.filter(item => item !== product.id));
                           } else { // being selected
                             e.currentTarget.style.boxShadow = "inset 0px 0px 0px 2px navy";
                             e.currentTarget.style.backgroundColor = "pink";
 
-                            setProductSelected([...productsSelected, product.name]);
+                            setProductSelected([...productsSelected, product.id]);
                           }
                         }
                         // Note: e.currentTarget manipulates parent's style (ListItem). e.target manipulates children element's style only.
