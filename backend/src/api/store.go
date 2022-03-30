@@ -145,15 +145,6 @@ func StoreProducts(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userData := gorillaContext.Get(r, "userData").(map[string]interface{})
-	if storeObj["userId"] != userData["id"].(string) {
-		logger.ErrorLogger.Printf("invald request, permission denied")
-		errorMsg := utils.SetErrorMsg("invald request, permission denied")
-		resp, _ := RespJSON{int(utils.InvalidJwtTokenCode), errorMsg}.SetResponse()
-		ReturnResponse(w, resp, http.StatusForbidden)
-		return
-	}
-
 	page := r.URL.Query().Get("page")
 	if page == "" {
 		page = "0"

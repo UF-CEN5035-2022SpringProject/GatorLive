@@ -41,7 +41,7 @@ func main() {
 	// Store
 	authApis.HandleFunc("/store/create", api.StoreCreate).Methods("POST", "OPTIONS")
 	authApis.HandleFunc("/store/{storeId}", api.StoreInfo).Methods("GET", "PUT", "OPTIONS")
-	authApis.HandleFunc("/store/{storeId}/product-list", api.StoreProducts).Methods("GET", "OPTIONS")
+	r.HandleFunc(prodRoutePrefix+"/store/{storeId}/product-list", api.StoreProducts).Methods("GET", "OPTIONS")
 	authApis.HandleFunc("/store/{storeId}/order-list", api.StoreOrders).Methods("GET", "OPTIONS")
 	// authApis.HandleFunc("/store/{storeId}/live-list", api.).Methods("GET", "OPTIONS")
 
