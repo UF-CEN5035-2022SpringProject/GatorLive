@@ -70,11 +70,12 @@ function SellerStorePage() {
               SetEmbedHTML(embedStreamHTML);
               var embedChatRoomHTML = '<iframe width="494" height="315" src="https://www.youtube.com/live_chat?v=' + response.result.liveId + '&embed_domain=localhost" frameborder="0"></iframe>';
               SetEmbedChatHTML(embedChatRoomHTML);
+              console.log("Getting store obj... : " + response.result.liveId)
 
               SetLiveId(response.result.liveId);
 
 //              if (detail === true) {
-              GetLivestreamStatus(); // LA1
+              GetLivestreamStatus(response.result.liveId); // LA1
               //}
             } else {
               SetLiveInfoBarState('not-live');
@@ -89,14 +90,13 @@ function SellerStorePage() {
         });
   }
 
-  function GetLivestreamStatus() {
+  function GetLivestreamStatus(liveIdNum) {
     // call API
     const requestOptions = {
       method: 'GET',
-      header: {},
-      body: JSON.stringify({liveId: liveId})
+      header: {}
     };
-    fetch(settings.apiHostURL + 'live/status?detail=true', requestOptions) // SA1
+    fetch(settings.apiHostURL + 'live/status?detail=true&liveId=' + liveIdNum, requestOptions) // SA1
       .then(response => response.json())
       .then(response => {
         if (response.status === 0) {
@@ -170,7 +170,7 @@ function SellerStorePage() {
               
               <List selected={0} class="selectStreamItemList">
                 {
-                  productArray.map(function (product) {
+                  productArray && productArray.length > 0 && (productArray.map(function (product) {
                     return (
                       <ListItem selected="false" justify="between" class="selectStreamItem" onClick={
                         (e) => {
@@ -194,7 +194,7 @@ function SellerStorePage() {
                       </ListItem>
                     );
                   })
-                }
+                )}
               </List>
     
               <div style={{textAlign: "center"}}>
@@ -426,7 +426,6 @@ function SellerStorePage() {
                 <div class="featuredItemTitle" style={{color: "white"}}>Featured Items</div>
                 <List selected={0} class="selectStreamItemList">
                 {liveProductArray.map(function (product) {
-                  // TODO - make sure featured items ACTUALLY DISPLAY:
                   return (
                       <ListItem selected="false" justify="between" class="selectStreamItem" style={{backgroundColor: "rgb(226, 197, 164)"}} onClick={
                         (e) => {
