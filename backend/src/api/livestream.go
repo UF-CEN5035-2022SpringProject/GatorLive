@@ -278,14 +278,23 @@ func GetLiveStream(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	productIdList := liveObj["productList"].([]interface{})
-
-	productObjList := make([]map[string]interface{}, len(productIdList))
-	for index := 0; index < len(productIdList); index++ {
-		productObjList[index] = db.GetProductObj(productIdList[index].(string))
+	detail := r.URL.Query().Get("detail")
+	if detail == "" {
+		detail = "true"
 	}
+	if detail == "true" {
+		productIdList := liveObj["productList"].([]interface{})
 
-	liveObj["productList"] = productObjList
+		productObjList := make([]map[string]interface{}, len(productIdList))
+		for index := 0; index < len(productIdList); index++ {
+			productObjList[index] = db.GetProductObj(productIdList[index].(string))
+		}
+
+		liveObj["productList"] = productObjList
+
+	} else {
+		liveObj["productList"] = nil
+	}
 	liveObj["streamKey"] = ""
 	liveObj["streamUrl"] = ""
 	resp, _ := RespJSON{0, liveObj}.SetResponse()
