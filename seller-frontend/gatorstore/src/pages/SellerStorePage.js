@@ -482,6 +482,7 @@ function SellerStorePage() {
                 return(
                   <Grid item xs={12} sm={4}>
                     <Productcard 
+                      productId={product.id}
                       title= {product.name} 
                       subtitle={product.price}
                       imageUrl="https://media.wired.com/photos/5f23168c558da0380aa8e37f/master/pass/Gear-Google-Pixel-4A-front-and-back-angle-SOURCE-Google.jpg"
