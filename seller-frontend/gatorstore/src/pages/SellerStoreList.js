@@ -22,13 +22,13 @@ function StoreEntry(storeInfo) {
       <div style={{ flex: 3 }}>
         <h1 className="StoreEntryTitle">{storeInfo.name} <OpenInNewIcon /></h1>
         <div className="StoreEntryDetailRow">
-          <p>{storeInfo.activeListings} Active Listings</p>
+          <p><b>Birthday:</b> {storeInfo.createDate}</p>
           <p>|</p>
-          <p>{storeInfo.unfinishedOrders} Unfinished Orders</p>
+          <p><b>ID:</b> {storeInfo.storeId}</p>
         </div>
       </div>
       <div style={{ flex: 1}} className="flexCenter">
-        <Button startIcon={<EditIcon />} variant="contained" color="primary" sx={{ marginBottom: 1 }}>Edit</Button>
+        <Button startIcon={<EditIcon />} variant="contained" color="primary" sx={{ marginBottom: 1 }}>Visit</Button>
         <Button startIcon={<DeleteIcon />} variant="contained" color="secondary">Delete</Button>
       </div>
     </div>
@@ -78,7 +78,7 @@ function SellerStoreList() {
                       document.getElementById("NameField").style.border = "red solid 2px";
                       document.getElementById("NameField").placeholder = "A store name is required";
                     }
-                  }} size="large">Continue</Button>
+                  }} size="large">Create</Button>
                 </div>
             
             </div>
@@ -120,7 +120,7 @@ function SellerStoreList() {
       .then(response => {
         if (response.status !== 0) {
           alert("ERROR: Create Store API did not respond with 'success' status code.");
-          window.location.href = "http://localhost:3000/";
+         // window.location.href = "http://localhost:3000/";
         }
       })
       .catch((error) => {
@@ -129,6 +129,79 @@ function SellerStoreList() {
       });*/
   }
 
+  const [storeArray, SetStoreArray] = useState([
+    {
+      name: "Yiming Store 2.0",
+      id: "gatorstore-2",
+      createTime: "2022-03-29T02:32:31Z",
+    }
+  ]);
+
+  const [currStorePage, ChangeStorePage] = useState(0);
+  var maxPage = 1; // default
+
+  function StoreList() {
+    GetPage(0);
+
+    // Calls on GetPage() to get a new product page upon the user scrolling down.
+    function ScrollDown() {
+      // Only request more products if current page number is below max:
+      if (currStorePage <= maxPage) {
+        ChangeStorePage(currStorePage + 1);
+        GetPage(currStorePage);
+      }
+    }
+
+    function GetPage(pageNum) {
+      var jwtToken = window.sessionStorage.getItem("user-jwtToken");
+      var userId = window.sessionStorage.getItem("user-id");
+      // Call API to get store list:
+      const requestOptions = {
+        method: 'GET',
+        headers: {
+          'Authorization': jwtToken
+        }
+      };
+      fetch(settings.apiHostURL + 'user/' + userId + '/store-list?page=' + pageNum, requestOptions)
+        .then(response => response.json())
+        .then(response => {
+          if (response.status === 0) {
+            if (pageNum <= response.result.maxPage) {
+              SetStoreArray(storeArray.concat(response.result.storeList));
+            }
+
+            // Set max page number so that this fetch isn't even called if it is an invalid page number
+            maxPage = response.result.maxPage;
+          } else {
+            console.log("ERROR: Get Store list API did not respond with 'success' status code.");
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+          //alert("ERROR: Back-end is not online or did not respond.");
+        });
+    }
+
+    return (
+      <div class="store-list-container" onScroll={(e) => {
+        if (e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight) {
+          ScrollDown();
+        }
+      }}>
+        <div className="storeListContainer">
+          {storeArray && storeArray.length > 0 && ( storeArray.map(function (store) {
+                return(
+                  <StoreEntry initials={store.name.substring(0, 3)} name={store.name} createDate={store.createTime.substring(0,10)} storeId={store.id}/>
+                );
+              })
+          )}
+          {storeArray.length == 0 && (
+            <div>- You have no stores. Why not make some? -</div>
+          )}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="RootFlexContainer">
@@ -143,12 +216,8 @@ function SellerStoreList() {
             ChangeCurrentOverlay("createNewStore");
           }}>New Store</Button>
         </div>
-        <div className="storeListContainer">
-          <StoreEntry initials="YS" name="Yiming Store" activeListings={3} unfinishedOrders={2}/>
-          <StoreEntry initials="UF" name="UF Shop" activeListings={1} unfinishedOrders={4}/>
-          <StoreEntry initials="TS" name="Test Store" activeListings={0} unfinishedOrders={1}/>
-          
-        </div>
+       
+        <StoreList />
       </div>
       <Footer />
     </div>

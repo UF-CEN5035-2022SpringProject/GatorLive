@@ -1,6 +1,6 @@
 .storeListSubHeader {
     display: flex;
-    width: 80%;
+    width: 70%;
     padding: 20px 5px 20px;
 }
 .storeListSubHeader h1 {
@@ -8,7 +8,8 @@
 }
 
 .storeListContainer {
-    width: 80%;
+    width: 70%;
+    margin: auto;
     padding: 10px 5px 10px;
 }
 .StoreEntry {
@@ -76,3 +77,12 @@
     border-radius: 5px;
     width: 100%;
 }
+
+.store-list-container {
+    overflow-y: scroll;
+    overflow-x: hidden;
+    width: 100%;
+}
+.store-list-container::-webkit-scrollbar {
+    display: none;
+  }

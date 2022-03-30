@@ -101,3 +101,11 @@
     color: white;
     font-size: 18px;
 }
+
+.product-container {
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+.product-container::-webkit-scrollbar {
+    display: none;
+  }

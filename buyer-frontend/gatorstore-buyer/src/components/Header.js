@@ -44,7 +44,7 @@ function SignedInDropdown(userData) {
   };
   const SignOut = () => {
     window.sessionStorage.clear();
-    window.location.href = "http://localhost:3000/landingpage";
+    window.location.href = "http://localhost:3000/";
   };
 
   return (<>

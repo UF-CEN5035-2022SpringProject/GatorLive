@@ -16,9 +16,9 @@ ReactDOM.render(
   <BrowserRouter basename="/">
     <Routes>
       <Route path="/store-list" element={<SellerStoreList/>} />
-      <Route path="/product-page" element={<ProductPage/>} />
+      <Route path="/product/:productID" element={<ProductPage/>} />
       <Route path="/" element={<LandingPage/>} />
-      <Route path="/store-page" element={<SellerStorePage/>} />
+      <Route path="/store/:storeID" element={<SellerStorePage/>} />
       <Route path="/login" element={<LoginRedirect/>} />
     </Routes>
   </BrowserRouter>,
