@@ -167,19 +167,17 @@ function SellerStoreList() {
         //alert("ERROR: Back-end is not online or did not respond.");
       });
   }
+  
+  // Calls on GetPage() to get a new product page upon the user scrolling down.
+  function ScrollDown() {
+    // Only request more products if current page number is below max:
+    if (currStorePage <= maxPage) {
+      ChangeStorePage(currStorePage + 1);
+      GetPage(currStorePage);
+    }
+  }
 
   function StoreList() {
-
-
-    // Calls on GetPage() to get a new product page upon the user scrolling down.
-    function ScrollDown() {
-      // Only request more products if current page number is below max:
-      if (currStorePage <= maxPage) {
-        ChangeStorePage(currStorePage + 1);
-        GetPage(currStorePage);
-      }
-    }
-
     return (
       <div class="store-list-container" onScroll={(e) => {
         if (e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight) {

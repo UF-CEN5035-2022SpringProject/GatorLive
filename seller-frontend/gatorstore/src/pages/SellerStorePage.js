@@ -61,7 +61,7 @@ function SellerStorePage() {
       method: 'GET',
       headers: {'Authorization': jwtToken}
     };
-    fetch(settings.apiHostURL + 'store/' + storeID + '/livestreamStatus?detail=' + detail, requestOptions)
+    fetch(settings.apiHostURL + 'store/' + storeID + '/livestream/info?detail=' + detail, requestOptions)
         .then(response => response.json())
         .then(response => {
           if (response.status === 0) {
@@ -225,7 +225,7 @@ function SellerStorePage() {
               <p>Title</p>
               <TextField id="prodTitleField" variant="outlined" color="primary" placeholder="Product Title" size="small" onChange={e => {SetProdTitle(e.target.value);}} style={{width: "100%", marginBottom: 15}}/>
               <p>Price</p>
-              <TextField id="prodPriceField" variant="outlined" color="primary" placeholder="Product Price" size="small" onChange={e => {SetProdPrice(e.target.value);}} style={{width: "100%", marginBottom: 15}}/>
+              <TextField id="prodPriceField" type="number" variant="outlined" color="primary" placeholder="Product Price" size="small" onChange={e => {SetProdPrice(e.target.value);}} style={{width: "100%", marginBottom: 15}}/>
               <p>Description</p>
               <TextField id="prodDescriptionField" variant="outlined" color="primary" placeholder="Product Description" size="small" onChange={e => {SetProdDescription(e.target.value);}} style={{width: "100%", marginBottom: 15}}/>
               <div style={{display: "flex", flexDirection: "row", justifyContent: "center"}}>
@@ -256,7 +256,7 @@ function SellerStorePage() {
 
                   if (prodTitle != "" && prodPrice != "" && prodDescription != "") {
                     // Call Create Product API with this info:
-                    CreateNewProduct(prodTitle, prodPrice, prodDescription, 1, "No Picture");
+                    CreateNewProduct(prodTitle, parseFloat(prodPrice), prodDescription, 1, "No Picture");
                   }
                 }} size="large">Create Product</Button>
               </div>
@@ -275,7 +275,7 @@ function SellerStorePage() {
       headers: {'Authorization': jwtToken},
       body: JSON.stringify({ name: prodTitle, price: prodPrice, description: prodDescription, quantity: prodQuantity, picture: prodPic, storeId: storeID}) 
     };
-    fetch(settings.apiHostURL + 'product/create/', requestOptions)
+    fetch(settings.apiHostURL + 'product/create', requestOptions)
         .then(response => response.json())
         .then(response => {
           if (response.status === 0) {
@@ -419,63 +419,58 @@ function SellerStorePage() {
     );
   }
 
-  const [productArray, SetProductArray] = useState([
-    {
-      name: "Product",
-      price: "$3.50",
-      description: "This is a very nice product to buy for a special occassion. DM me for offers!"
-    }
-  ]);
+  const [productArray, SetProductArray] = useState([]);
 
   const [currProductPage, ChangeProductPage] = useState(0);
   var maxProductPage = 1; // default
 
-  function ProductList() {
-    GetPage(0); // get first page automatically
+  useEffect(() => {
+    GetPage(0);
+  }, []);
 
-    // Calls on GetPage() to get a new product page upon the user scrolling down.
-    function ScrollDown() {
-      // Only request more products if current page number is below max:
-      if (currProductPage <= maxProductPage) {
-        ChangeProductPage(currProductPage + 1);
-        GetPage(currProductPage);
-      }
+  // Calls on GetPage() to get a new product page upon the user scrolling down.
+  function ScrollDown() {
+    // Only request more products if current page number is below max:
+    if (currProductPage <= maxProductPage) {
+      ChangeProductPage(currProductPage + 1);
+      GetPage(currProductPage);
     }
+  }
 
-    function GetPage(pageNum) {
-      // Get JWT Token for POST request header:
-      var jwtToken = window.sessionStorage.getItem("user-jwtToken");
-      
-      // Call API to get product list:
-      const requestOptions = {
-        method: 'GET',
-        headers: {
-          'Authorization': jwtToken
-        },
-        body: {}
-      };
-      fetch(settings.apiHostURL + 'store/' + storeID + '/product-list?page=' + pageNum, requestOptions)
-        .then(response => response.json())
-        .then(response => {
-          if (response.status === 0) {
-            // if page requested isn't more than max page: Add products of this new page to "productArray"
-            if (pageNum <= response.result.maxPage) {
-              SetProductArray(productArray.concat(response.result.productList));
-            }
-
-            // Set max page number so that this fetch isn't even called if it is an invalid page number
-            maxProductPage = response.result.maxPage;
-          }
-          else {
-            alert("ERROR: Product Page API did not respond with 'success' status code.");
-            window.location.href = "http://localhost:3001/";
-          }
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    }
+  function GetPage(pageNum) {
+    // Get JWT Token for POST request header:
+    var jwtToken = window.sessionStorage.getItem("user-jwtToken");
     
+    // Call API to get product list:
+    const requestOptions = {
+      method: 'GET',
+      headers: {
+        'Authorization': jwtToken
+      }
+    };
+    fetch(settings.apiHostURL + 'store/' + storeID + '/product-list?page=' + pageNum, requestOptions)
+      .then(response => response.json())
+      .then(response => {
+        if (response.status === 0) {
+          // if page requested isn't more than max page: Add products of this new page to "productArray"
+          if (pageNum <= response.result.maxPage && response.result.productList != null) {
+            SetProductArray(productArray.concat(response.result.productList));
+          }
+
+          // Set max page number so that this fetch isn't even called if it is an invalid page number
+          maxProductPage = response.result.maxPage;
+        }
+        else {
+          console.log("ERROR: Product Page API did not respond with 'success' status code.");
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+  
+
+  function ProductList() {
     return(
       <div class="product-container" onScroll={(e) => {
         if (e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight) {
