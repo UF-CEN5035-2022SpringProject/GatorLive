@@ -47,11 +47,7 @@ function SellerStorePage() {
   }, [])
 
   // Live Product List Hook array:
-  const [liveProductArray, SetLiveProductArray] = useState([{
-    name: "Test Live Product",
-    price: "$3.50",
-    description: "Buy it!"
-  }]);
+  const [liveProductArray, SetLiveProductArray] = useState([]);
 
   // Checks the status of this store's object in the store API:
   function CheckStoreObject(detail) {
@@ -77,9 +73,9 @@ function SellerStorePage() {
 
               SetLiveId(response.result.liveId);
 
-              if (detail === true) {
-                GetLivestreamStatus(); // SLA1
-              }
+//              if (detail === true) {
+              GetLivestreamStatus(); // LA1
+              //}
             } else {
               SetLiveInfoBarState('not-live');
             }
@@ -94,7 +90,7 @@ function SellerStorePage() {
   }
 
   function GetLivestreamStatus() {
-    // call API - TODO: When Yiming finishes this API. Store the embedHTML in variable storeObject
+    // call API
     const requestOptions = {
       method: 'GET',
       header: {},
@@ -233,7 +229,8 @@ function SellerStorePage() {
               <div style={{textAlign: "center"}}>
                 <Button variant="contained" color="primary" onClick={() => { 
                   ChangeCurrentOverlay("none");
-                  SetLiveInfoBarState('live');
+
+                  APISetLiveStatusOnStore(true);
                 }} size="large">Go Live</Button>
               </div>
             </div>
@@ -336,7 +333,6 @@ function SellerStorePage() {
           SetEmbedHTML(embedStreamHTML);
         } else {
           alert("ERROR: YouTube API did not respond with 'success' status code.");
-          window.location.href = "http://localhost:3000/";
         }
       })
       .catch((error) => {
@@ -348,13 +344,37 @@ function SellerStorePage() {
                   // Which is done via the above 'fetch'. Then the function below is called and it checks that 'isLive' field in the Database
   }
 
+  // SLA1
+  function APISetLiveStatusOnStore(status) {
+    var jwtToken = window.sessionStorage.getItem("user-jwtToken");
+
+    const requestOptions = {
+      method: 'PUT',
+      headers: {
+        'Authorization': jwtToken
+      }, 
+      body: JSON.stringify({ isLive: status }) 
+    };
+    fetch(settings.apiHostURL + 'store/'+ storeID +'/livestream/update', requestOptions)
+      .then(response => response.json())
+      .then(response => {
+        if (response.status === 0) {
+          console.log("Successfully changed isLive on Store Object (on Backend) via SLA1")
+        } else {
+          console.log("ERROR: SLA1 API did not respond with 'success' status code.");
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+
   const [embedHTML, SetEmbedHTML] = useState('');
   const [embedChatHTML, SetEmbedChatHTML] = useState('');
 
   function EndLivestream() {
-    SetLiveInfoBarState("not-live");
-
-    // some fetch API request telling them that it is no longer live.
+    // SLA1 to make isLive false
+    APISetLiveStatusOnStore(false);
   }
 
   function LiveInfoBar() {
@@ -403,9 +423,10 @@ function SellerStorePage() {
 
             <Grid container spacing={0} justifyContent="center" alignItems="center" direction='row' style={{marginBottom: 20}}>
               <Grid item md={8} container direction='column' justifyContent='flex-start' style={{backgroundColor: "#202020", padding: "10px 15px 0px"}}>
-                <div class="featuredItemTitle">Featured Items</div>
+                <div class="featuredItemTitle" style={{color: "white"}}>Featured Items</div>
                 <List selected={0} class="selectStreamItemList">
                 {liveProductArray.map(function (product) {
+                  // TODO - make sure featured items ACTUALLY DISPLAY:
                   return (
                       <ListItem selected="false" justify="between" class="selectStreamItem" style={{backgroundColor: "rgb(226, 197, 164)"}} onClick={
                         (e) => {
