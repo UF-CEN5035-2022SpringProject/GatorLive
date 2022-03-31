@@ -243,32 +243,19 @@ func CreateLivebroadcast(w http.ResponseWriter, r *http.Request) {
 
 	liveObj["productList"] = productObjList
 
+	// update liveId in store
+	db.UpdateStoreObj(storeId, "liveId", liveObj["id"])
+
 	resp, _ := RespJSON{0, liveObj}.SetResponse()
 	ReturnResponse(w, resp, http.StatusOK)
 }
 
 func GetLiveStream(w http.ResponseWriter, r *http.Request) {
-	b, err := io.ReadAll(r.Body)
-	if err != nil {
-		logger.ErrorLogger.Printf("Unable to read getlivestream req: %v", err)
-		errorMsg := utils.SetErrorMsg("Unable to read getlivestream req")
-		resp, _ := RespJSON{int(utils.InvalidParamsCode), errorMsg}.SetResponse()
-		ReturnResponse(w, resp, http.StatusBadRequest)
-		return
-	}
 
-	var liveId LiveId
-	err = json.Unmarshal(b, &liveId)
+	detail := r.URL.Query().Get("detail")
+	liveId := r.URL.Query().Get("liveId")
 
-	if err != nil {
-		logger.ErrorLogger.Printf("Unable to decode getlivestream req: %v", err)
-		errorMsg := utils.SetErrorMsg("Unable to decode getlivestream req")
-		resp, _ := RespJSON{int(utils.InvalidParamsCode), errorMsg}.SetResponse()
-		ReturnResponse(w, resp, http.StatusBadRequest)
-		return
-	}
-
-	liveObj := db.GetLiveObj(liveId.LiveId)
+	liveObj := db.GetLiveObj(liveId)
 
 	if liveObj == nil {
 		logger.ErrorLogger.Printf("invald request, unable to get livestream")
@@ -278,7 +265,6 @@ func GetLiveStream(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	detail := r.URL.Query().Get("detail")
 	if detail == "" {
 		detail = "true"
 	}

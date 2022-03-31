@@ -122,3 +122,16 @@ func GetUserOrders(userId string, page int) []map[string]interface{} {
 
 	return storeList
 }
+
+func UpdateStoreObj(storeId string, fieldStr string, fieldValue interface{}) error {
+	_, err := FireBaseClient.Collection(DbCollections["stores"]).Doc(storeId).Update(DatabaseCtx, []firestore.Update{
+		{
+			Path:  fieldStr,
+			Value: fieldValue,
+		},
+	})
+	if err != nil {
+		logger.WarningLogger.Printf("Error updating value on field %s. %s", fieldStr, err)
+	}
+	return err
+}
