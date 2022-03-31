@@ -271,6 +271,15 @@ func ProductPurchase(w http.ResponseWriter, r *http.Request) {
 	newOrderCount := db.GetOrderNewCount()
 	newOrderId := "order-" + strconv.Itoa(newOrderCount)
 	nowTime := time.Now().UTC().Format(time.RFC3339)
+
+	liveObj := db.GetLiveObj(purchase.LiveId)
+
+	if liveObj == nil{
+		purchase.LiveId = ""
+	} else if liveObj["storeId"].(string) != productObj.StoreId{
+		purchase.LiveId = ""
+	}
+
 	newOrder := &db.OrderObject{
 		Id:         newOrderId,
 		CreateTime: nowTime,
