@@ -181,6 +181,12 @@ func CreateLivebroadcast(w http.ResponseWriter, r *http.Request) {
 	endTime := startTime.Add((time.Hour * 24))
 
 	newLive := &youtube.LiveBroadcast{
+		ContentDetails: &youtube.LiveBroadcastContentDetails{
+			EnableAutoStart:    true,
+			EnableAutoStop:     true,
+			LatencyPreference:  "ultraLow",
+			ClosedCaptionsType: "closedCaptionsDisabled",
+		},
 		Snippet: &youtube.LiveBroadcastSnippet{
 			Title:              storeId + "-" + title.Title,
 			ScheduledStartTime: startTime.UTC().Format(time.RFC3339),
