@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from 'react';
+import {Link} from 'react-router-dom'
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import Button from '@mui/material/Button';
@@ -31,6 +32,10 @@ function SellerStorePage() {
   const { storeID } = useParams(); // Get StoreID string from the url
   const [liveId, SetLiveId] = useState();
   
+  const [embedHTML, SetEmbedHTML] = useState('');
+  const [embedChatHTML, SetEmbedChatHTML] = useState('');
+  var embedStreamHTML = null;
+  var embedChatRoomHTML = null; 
   // On load: initial check to check if its live or not:
   useEffect(() => {
     CheckStoreObject(true); 
@@ -47,6 +52,7 @@ function SellerStorePage() {
   }, [])
 
   // Live Product List Hook array:
+  const [ProductArrFlag, SetProductFlag] = useState(false); // avoid duplications
   const [liveProductArray, SetLiveProductArray] = useState([]);
 
   // Checks the status of this store's object in the store API:
@@ -64,19 +70,23 @@ function SellerStorePage() {
             SetStoreName(response.result.name); // get name of store
 
             if (response.result.isLive === true) {
+              console.log("Check Live ID: " + response.result.liveId)
               SetLiveInfoBarState('live');
-
-              var embedStreamHTML = '<iframe width="490" height="315" src="https://www.youtube.com/embed/' + response.result.liveId + '" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>'
-              SetEmbedHTML(embedStreamHTML);
-              var embedChatRoomHTML = '<iframe width="494" height="315" src="https://www.youtube.com/live_chat?v=' + response.result.liveId + '&embed_domain=localhost" frameborder="0"></iframe>';
-              SetEmbedChatHTML(embedChatRoomHTML);
-              console.log("Getting store obj... : " + response.result.liveId)
-
-              SetLiveId(response.result.liveId);
-
-//              if (detail === true) {
+              SetLiveId(response.result.liveId)
+              if(embedHTML === '') {
+                var inputEmbedStreamHTML = '<iframe width="490" height="315" src="https://www.youtube.com/embed/' + response.result.liveId + '" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>'
+                SetEmbedHTML(inputEmbedStreamHTML);
+              }
+              if(embedChatHTML === '') {
+                var inputEmbedChatHTML = '<iframe width="494" height="315" src="https://www.youtube.com/live_chat?v=' + response.result.liveId + '&embed_domain=localhost" frameborder="0"></iframe>';
+                SetEmbedChatHTML(inputEmbedChatHTML);
+              }
               GetLivestreamStatus(response.result.liveId); // LA1
-              //}
+
+              // SetLiveId(response.result.liveId);
+              // if (detail === true) {
+              //   GetLivestreamStatus(response.result.liveId); // LA1
+              // }
             } else {
               SetLiveInfoBarState('not-live');
             }
@@ -101,7 +111,13 @@ function SellerStorePage() {
       .then(response => {
         if (response.status === 0) {
           // Add live products to some hook array:
-          SetLiveProductArray(response.result);
+          if(!ProductArrFlag) {
+            console.log('Render Product List');
+            if(response.result.productList != null) {
+              SetLiveProductArray(response.result.productList);
+            }
+          }
+          SetProductFlag(true);
         } else {
           alert("ERROR: YouTube API did not respond with 'success' status code 0.");
         }
@@ -369,9 +385,6 @@ function SellerStorePage() {
       });
   }
 
-  const [embedHTML, SetEmbedHTML] = useState('');
-  const [embedChatHTML, SetEmbedChatHTML] = useState('');
-
   function EndLivestream() {
     // SLA1 to make isLive false
     APISetLiveStatusOnStore(false);
@@ -420,23 +433,20 @@ function SellerStorePage() {
                 <div dangerouslySetInnerHTML={{ __html: embedChatHTML }} />
               </Grid>
             </Grid>
-
+            
             <Grid container spacing={0} justifyContent="center" alignItems="center" direction='row' style={{marginBottom: 20}}>
               <Grid item md={8} container direction='column' justifyContent='flex-start' style={{backgroundColor: "#202020", padding: "10px 15px 0px"}}>
                 <div class="featuredItemTitle" style={{color: "white"}}>Featured Items</div>
-                <List selected={0} class="selectStreamItemList">
-                {liveProductArray.map(function (product) {
-                  return (
-                      <ListItem selected="false" justify="between" class="selectStreamItem" style={{backgroundColor: "rgb(226, 197, 164)"}} onClick={
-                        (e) => {
-                          
-                        }
-                        // Note: e.currentTarget manipulates parent's style (ListItem). e.target manipulates children element's style only.
-                      }>
-                        <div>{product.name}</div>
-                        <img src={gatorPlush} />
-                        <p>${product.price}</p>
-                      </ListItem>
+                {console.log(liveProductArray.length)}
+                <List name="LiveProductList" selected={0} class="selectStreamItemList">
+                  {liveId && liveProductArray.length > 0 && liveProductArray.map(function (product) {
+                    console.log("test Arr");
+                    return (
+                        <ListItem component={Link} to={`/product/${product.id}?liveId=${liveId}`} selected="false" justify="between" class="selectStreamItem" style={{backgroundColor: "rgb(226, 197, 164)"}}>
+                          <div>{product.name}</div>
+                          <img src={gatorPlush} />
+                          <p>${product.price}</p>
+                        </ListItem>
                       );
                     })
                   }
