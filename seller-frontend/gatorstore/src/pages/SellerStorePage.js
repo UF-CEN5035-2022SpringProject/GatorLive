@@ -435,7 +435,13 @@ function SellerStorePage() {
               <Grid item md={8} container direction='column' justifyContent='flex-start' style={{backgroundColor: "#202020", padding: "10px 15px 0px"}}>
                 <div class="featuredItemTitle" style={{color: "white"}}>Featured Items</div>
                 {console.log(liveProductArray.length)}
-                {liveProductArray.length > 0 && liveProductArray.map(product => console.log(product))}
+                {liveProductArray.length > 0 && liveProductArray.map(product => 
+                  <div style={{color: "white"}}>
+                    <div>{product.name}</div>
+                    <img src={gatorPlush} />
+                    <p>${product.price}</p>
+                  </div>)
+                }
                 {/* <List name="LiveProductList" selected={0} class="selectStreamItemList">
                   {console.log(liveProductArray) && liveProductArray.length > 0 && liveProductArray.map(function (product) {
                     console.log("test Arr");
