@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from 'react';
+import {Link} from 'react-router-dom'
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import Button from '@mui/material/Button';
@@ -71,6 +72,7 @@ function SellerStorePage() {
             if (response.result.isLive === true) {
               console.log("Check Live ID: " + response.result.liveId)
               SetLiveInfoBarState('live');
+              SetLiveId(response.result.liveId)
               if(embedHTML === '') {
                 var inputEmbedStreamHTML = '<iframe width="490" height="315" src="https://www.youtube.com/embed/' + response.result.liveId + '" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>'
                 SetEmbedHTML(inputEmbedStreamHTML);
@@ -80,6 +82,7 @@ function SellerStorePage() {
                 SetEmbedChatHTML(inputEmbedChatHTML);
               }
               GetLivestreamStatus(response.result.liveId); // LA1
+
               // SetLiveId(response.result.liveId);
               // if (detail === true) {
               //   GetLivestreamStatus(response.result.liveId); // LA1
@@ -110,11 +113,11 @@ function SellerStorePage() {
           // Add live products to some hook array:
           if(!ProductArrFlag) {
             console.log('Render Product List');
-            SetProductFlag(true);
             if(response.result.productList != null) {
               SetLiveProductArray(response.result.productList);
             }
           }
+          SetProductFlag(true);
         } else {
           alert("ERROR: YouTube API did not respond with 'success' status code 0.");
         }
@@ -436,10 +439,10 @@ function SellerStorePage() {
                 <div class="featuredItemTitle" style={{color: "white"}}>Featured Items</div>
                 {console.log(liveProductArray.length)}
                 <List name="LiveProductList" selected={0} class="selectStreamItemList">
-                  {liveProductArray.length > 0 && liveProductArray.map(function (product) {
+                  {liveId && liveProductArray.length > 0 && liveProductArray.map(function (product) {
                     console.log("test Arr");
                     return (
-                        <ListItem selected="false" justify="between" class="selectStreamItem" style={{backgroundColor: "rgb(226, 197, 164)"}}>
+                        <ListItem component={Link} to={`/product/${product.id}?liveId=${liveId}`} selected="false" justify="between" class="selectStreamItem" style={{backgroundColor: "rgb(226, 197, 164)"}}>
                           <div>{product.name}</div>
                           <img src={gatorPlush} />
                           <p>${product.price}</p>
