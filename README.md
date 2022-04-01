@@ -244,7 +244,9 @@ Get the users store list, split the item with page
     }
     ```
 - **Response** 
+
     If storeList is empty, the value will be null 
+    
     Success: 
     ```
     {
@@ -1040,6 +1042,35 @@ The key will be **liveId**, and the value will be as below:
        'isDeleted':false
    }
    ```
+---  
+# Order Object
+ 
+Each Order will have unique and belong to one user who purchases the object.
+
+The key will be **orderId**, and the value will be as below:
+| Var/Method | Key/Optional | Type | Description |
+| ---  | --- | --- | --- |
+| id | K | string | orderId- unique identifier |
+| userId | | string | unique buyerId|
+| createTime |  | string | create datetime | 
+| productId | | string | products ID |
+| liveId | | string | liveObj's ID, if buyers click from the live product list, else it will be an empty string |
+| subTotal | | float64 | total payment |
+| quantity | | int | | 
+
+JSON Example:
+```
+{
+   "id": orderId
+   "productId": purchase product
+   "createTime": ""
+   "liveId": "weqwe" (empty if not from live product list)
+   "subTotal": 4000
+   "quantity": 10,
+   "userId": buyerId,
+   "storeId": storeId 
+}
+```
 ---
 ### Global ErrorCode  
 - General Errors such as missing params or invalid params will be under 1000
