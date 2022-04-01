@@ -4,20 +4,23 @@ import Footer from '../components/Footer';
 import '../styles/sellerProductPage.css';
 
 import gatorMug from '../images/gator.jpg';
-import EditIcon from '@mui/icons-material/Edit';
-import MoveUpIcon from '@mui/icons-material/MoveUp';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import Button from '@mui/material/Button';
 import TextField from "@mui/material/TextField";
 import Avatar from '@mui/material/Avatar';
 import DeleteIcon from '@mui/icons-material/Delete';
+import SentimentDissatisfiedIcon from '@mui/icons-material/SentimentDissatisfied';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 
 import settings from '../settings'
 import '../styles/sellerStorePage.css';
 import { useParams, Link } from 'react-router-dom';
 import { useNavigate } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 
 export default function ProductPage() {
     const navigate = useNavigate(); // to redirect using navigate()
+    const [searchParams, setSearchParams] = useSearchParams(); // to get url parameter "?liveId=someLiveId" if it came from a livestream
 
     const [productInfo, SetProductInfo] = useState(null);
     // On load: get product info:
@@ -26,6 +29,7 @@ export default function ProductPage() {
     }, [])
     
     const { productID } = useParams(); // Get ProductID string from the url
+    
     function getProductInfo() {
         console.log('Get Product ID:' + productID);
         const requestOptions = {
@@ -174,9 +178,90 @@ export default function ProductPage() {
                         </div>
                     </div>
                 )}
+
+                {currentOverlay === 'confirmPurchase' && (
+                    <div class="go-live-overlay" >
+                        <div class="transparentBG"/>
+                            <div class="stream-link-container" style={{top: "35vh"}}>
+                            
+                            <div style={{textAlign: "center", paddingTop: "4px"}}>
+                                <h2 style={{fontWeight: "normal", paddingBottom: "17px"}}>You have successfully purchased "{productInfo.name}"!</h2>
+                                <Button variant="contained" color="primary" onClick={() => {
+                                    ChangeCurrentOverlay("none");
+                                }} size="large" style={{marginRight: "0"}}>Okay</Button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {currentOverlay === 'pleaseSignIn' && (
+                    <div class="go-live-overlay" >
+                        <div class="transparentBG"/>
+                            <div class="stream-link-container" style={{top: "35vh"}}>
+                            
+                            <div style={{textAlign: "center", paddingTop: "4px"}}>
+                                <h2 style={{fontWeight: "normal", paddingBottom: "17px"}}>Please sign-in to purchase a product.</h2>
+                                <Button variant="contained" color="primary" onClick={() => {
+                                    ChangeCurrentOverlay("none");
+                                }} size="large" style={{marginRight: "0"}}>Okay</Button>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
         );
     }    
+
+    function PurchaseProduct(quantity) {
+        var jwtToken = window.sessionStorage.getItem("user-jwtToken");
+        if (jwtToken === null || jwtToken === "") {
+            ChangeCurrentOverlay("pleaseSignIn");
+            return;
+        }
+        
+        // Include LiveId on body of POST IF it is present in the url:
+        if (searchParams.get("liveId") === null || searchParams.get("liveId") === "") { // liveId is not set
+            const requestOptions = {
+                method: 'POST',
+                headers: {'Authorization': jwtToken},
+                body: JSON.stringify({quantity: quantity})
+            };
+            fetch(settings.apiHostURL + `product/${productID}`, requestOptions)
+            .then(response => response.json())
+            .then(response => {
+                if (response.status === 0) {
+                    ChangeCurrentOverlay("confirmPurchase"); // display purchase confirmation
+                    getProductInfo(); // re-get product info to see if it is now out of stock
+                }
+                else {
+                    console.log("ERROR: Purchase product API did not respond with 'success' status code 0.");
+                }
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+        } else { // liveId is set
+            const requestOptions = {
+                method: 'POST',
+                headers: {'Authorization': jwtToken},
+                body: JSON.stringify({quantity: quantity, liveId: searchParams.get("liveId")})
+            };
+            fetch(settings.apiHostURL + `product/${productID}`, requestOptions)
+            .then(response => response.json())
+            .then(response => {
+                if (response.status === 0) {
+                    ChangeCurrentOverlay("confirmPurchase"); // display purchase confirmation
+                    getProductInfo(); // re-get product info to see if it is now out of stock
+                }
+                else {
+                    console.log("ERROR: Purchase product API did not respond with 'success' status code 0.");
+                }
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+        }
+    }
     
     return (
         <div className="RootFlexContainer">
@@ -186,15 +271,23 @@ export default function ProductPage() {
             <div className="ProductDetailsRow">
                 <div className="ProductImage">
                     <img src={gatorMug} alt="Gator Mug"/>
-                    <Button color="primary" variant="contained"><EditIcon /></Button>
                 </div>
                 {productInfo ? 
                     <div className="ProductKeyDetailColumn">
                         <h1>{productInfo.name}</h1>
-                        <h2>{`${productInfo.price}`}</h2>
+                        <h2>${productInfo.price}</h2>
                         <div style={{marginTop: "20px"}}>
-                            <Button startIcon={<DeleteIcon />} color="error" variant="contained" onClick={() => {
-                            }} size="large">Purchase Product</Button>
+                            {productInfo.quantity > 0 && (
+                                <Button startIcon={<ShoppingCartIcon />} color="primary" variant="contained" onClick={() => {
+                                    PurchaseProduct(1); //1 at a time for now...
+                                }} size="large">Purchase Product</Button>
+                            )}
+
+                            {productInfo.quantity <= 0 && (
+                                <Button startIcon={<SentimentDissatisfiedIcon />} disabled="true" color="primary" variant="contained" onClick={() => {
+                                    PurchaseProduct(1); //1 at a time for now...
+                                }} size="large">Out of Stock</Button>
+                            )}
                         </div>
                     </div> 
                     : 
@@ -203,9 +296,9 @@ export default function ProductPage() {
                 {productInfo ?
                     <div style={{flex: 1}} className="flexCenter">
                         <div className="ProductStoreInfo flexCenter colFlex">
-                            <h1>GatorStore</h1>
+                            <h1>{productInfo.storeId}</h1>
                             <Avatar sx={{ bgcolor: 'navy', fontSize: 50, width: 120, height: 120}}>UF</Avatar>
-                            <Button component={Link} to={`/store/${productInfo.storeId}`} startIcon={<MoveUpIcon />} color="secondary" variant="contained" size="large" sx={{marginBottom: 3}}>Back to Store</Button>
+                            <Button component={Link} to={`/store/${productInfo.storeId}`} startIcon={<ArrowBackIcon />} color="secondary" variant="contained" size="large" sx={{marginBottom: 3}}>Back to Store</Button>
                             {/* <Button startIcon={<EditIcon />} color="primary" variant="contained" size="large" sx={{marginBottom: 1}}>Edit Store</Button> */}
                         </div>
                     </div>

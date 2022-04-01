@@ -513,7 +513,6 @@ function SellerStorePage() {
         console.error(error);
       });
   }
-  
 
   function ProductList() {
     return(

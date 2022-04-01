@@ -1,5 +1,6 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
+import {Link} from 'react-router-dom'
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
 import CardActions from "@material-ui/core/CardActions";
@@ -10,7 +11,7 @@ import ShareIcon from "@material-ui/icons/Share";
 import { Avatar, IconButton, CardMedia } from "@material-ui/core";
 
 const Productcard = props => {
-  const { avatarUrl, title, subtitle, description, imageUrl } = props;
+  const { productId, avatarUrl, title, subtitle, description, imageUrl } = props;
   return (
     <Card>
       <CardHeader
@@ -21,7 +22,7 @@ const Productcard = props => {
           </IconButton>
         }
         title={title}
-        subheader={subtitle}
+        subheader={"$" + subtitle}
       />
       <CardMedia style={{ height: "150px" }} image={imageUrl} />
       <CardContent>
@@ -30,7 +31,7 @@ const Productcard = props => {
         </Typography>
       </CardContent>
       <CardActions>
-        <Button size="small">View More</Button>
+        <Button component={Link} to={'/product/' + productId} size="small">View More</Button>
       </CardActions>
     </Card>
   );
