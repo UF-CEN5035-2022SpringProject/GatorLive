@@ -388,10 +388,7 @@ Get the products according to the store, split the item with page
  - {routePath}: /store/{storeId}/product-list?page={page}
    - page parameter decide which page requesting, if overflow, return the last page. If missing, return page 0.
  
- - **Header**
-   | Name | Type | Description |
-   | --- | --- | --- |
-   | Authorization | string | Use for GatorStore Login |
+ - **Header**  - Empty
    
 - **Request Body Table**   
     Empty request body
