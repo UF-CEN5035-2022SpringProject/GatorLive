@@ -6,14 +6,15 @@ import (
 )
 
 type OrderObject struct {
-	Id         string  `json:"id"`
-	UserId     string  `json:"userId"`
-	Subtotal   float64 `json:"subtotal"`
-	LiveId     string  `json:"liveId"`
-	Quantity   int     `json:"quantity"`
-	ProductId  string  `json:"productId"`
-	StoreId    string  `json:"storeId"`
-	CreateTime string  `json:"createTime"`
+	Id          string  `json:"id"`
+	UserId      string  `json:"userId"`
+	Subtotal    float64 `json:"subtotal"`
+	LiveId      string  `json:"liveId"`
+	Quantity    int     `json:"quantity"`
+	ProductId   string  `json:"productId"`
+	ProductName string  `json:"productName"`
+	StoreId     string  `json:"storeId"`
+	CreateTime  string  `json:"createTime"`
 }
 
 func GetOrderNewCount() int {
