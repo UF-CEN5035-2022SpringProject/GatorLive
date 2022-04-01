@@ -403,7 +403,7 @@ function SellerStorePage() {
           <div>
             <Grid container spacing={0} justifyContent="center" alignItems="center" direction='row' style={{marginBottom: 20}}>
               <Grid item md={4} container justifyContent="flex-start">
-                <h1>StoreName</h1>
+                <h1>{storeName}</h1>
               </Grid>
               <Grid item md={2} container style={{color: "red", paddingLeft: 10}}>
                 <CircleIcon style={{verticalAlign: 'middle', marginRight: 10}}/>
