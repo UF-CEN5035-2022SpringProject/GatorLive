@@ -7,10 +7,13 @@
 
 ## New Feautures
 1. APIs & Frontend
-    - Implement RESTful apis for Store, Product and Order objects.
+    - Implement RESTful apis for Store, Product.
       - Check out issue #76
       - Backend api integration with frontend
+      - Create order history after purchasing a product
+    - Link id of new youtube livestream with the store 
     - Add promotion product list to the livestream
+    - Remove authentication of a few APIs, issue #76
     - Implement Product page
     - Implement Buyer webpage
     - Add verification of jwtToken and users' accessibility of backend apis
