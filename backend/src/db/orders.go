@@ -8,7 +8,7 @@ import (
 type OrderObject struct {
 	Id          string  `json:"id"`
 	UserId      string  `json:"userId"`
-	Subtotal    float64 `json:"subtotal"`
+	Subtotal    float64 `json:"subTotal"`
 	LiveId      string  `json:"liveId"`
 	Quantity    int     `json:"quantity"`
 	ProductId   string  `json:"productId"`
