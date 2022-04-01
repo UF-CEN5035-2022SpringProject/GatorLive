@@ -6,19 +6,17 @@ import {
   Route
 } from "react-router-dom";
 
-import SellerStoreList from './pages/SellerStoreList'
 import ProductPage from './pages/ProductPage'
+import StorePage from './pages/Store'
 import LandingPage from './pages/LandingPage'
-import SellerStorePage from './pages/SellerStorePage';
 import LoginRedirect from './pages/LoginRedirect'
 
 ReactDOM.render(
   <BrowserRouter basename="/">
     <Routes>
-      <Route path="/store-list" element={<SellerStoreList/>} />
-      <Route path="/product/:productID" element={<ProductPage/>} />
       <Route path="/" element={<LandingPage/>} />
-      <Route path="/store/:storeID" element={<SellerStorePage/>} />
+      <Route path="/product/:productID" element={<ProductPage/>} />
+      <Route path="/store/:storeID" element={<StorePage/>} />
       <Route path="/login" element={<LoginRedirect/>} />
     </Routes>
   </BrowserRouter>,

@@ -1,7 +1,7 @@
 // Test image slider:
 describe("Renders the home page", () => {
     it("Renders correctly and tests slider", () => {
-        cy.visit("/landingpage")
+        cy.visit("/")
         cy.get(".slider").should("exist")
 
         // Click right arrow and see that the second image is displayed

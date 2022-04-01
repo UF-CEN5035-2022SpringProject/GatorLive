@@ -385,20 +385,6 @@ function SellerStorePage() {
   function LiveInfoBar() {
     return(
       <div>
-        {liveInfoBarState === 'not-live' && (
-          <Grid container spacing={0} justifyContent="center" alignItems="center" direction='row' style={{marginBottom: 20}}>
-            <Grid item md={4} container>
-              <h1>{storeName}</h1>
-            </Grid>
-
-            <Grid item md={4} container justifyContent="flex-end" style={{color: "grey"}}>
-              <Button startIcon={<CircleIcon />} variant="contained" color="error" onClick={() => {
-                ChangeCurrentOverlay("setStreamTitle");
-              }} size="large">Start Livestream</Button>
-            </Grid>
-          </Grid> 
-        )}
-
         {liveInfoBarState === 'live' && (
           <div>
             <Grid container spacing={0} justifyContent="center" alignItems="center" direction='row' style={{marginBottom: 20}}>
@@ -408,14 +394,7 @@ function SellerStorePage() {
               <Grid item md={2} container style={{color: "red", paddingLeft: 10}}>
                 <CircleIcon style={{verticalAlign: 'middle', marginRight: 10}}/>
                 <p style={{alignSelf: 'center'}} onClick={() => {testStreamObject.isLive = false;}}><b>LIVE | </b> 3 viewers</p>
-                
               </Grid>
-              <Grid item md={2} container style={{justifyContent: "flex-end"}}>
-                <Button variant="contained" color="warning" onClick={() => {
-                    EndLivestream();
-                  }} size="large">End Livestream</Button>
-              </Grid>
-              
             </Grid>
             <Grid container spacing={0} justifyContent="center" alignItems="center" direction='row' style={{marginBottom: 0}}>
               <Grid item md={4} container justifyContent='flex-start'>
@@ -456,9 +435,6 @@ function SellerStorePage() {
           <h2>Products:</h2>
         </Grid>
         <Grid item md={4} justifyContent="flex-end" container>
-          <Button size="medium" startIcon={<AddIcon />} variant="contained" color="primary" onClick={() => {
-            ChangeCurrentOverlay("createNewProduct");
-          }}>Create Product</Button>
         </Grid>
       </Grid>
     );

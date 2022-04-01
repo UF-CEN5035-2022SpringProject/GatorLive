@@ -192,27 +192,26 @@ export default function ProductPage() {
                     <div className="ProductKeyDetailColumn">
                         <h1>{productInfo.name}</h1>
                         <h2>{`${productInfo.price}`}</h2>
-                        <Button startIcon={<EditIcon />} color="primary" variant="contained" onClick={() => {
-                            ChangeCurrentOverlay("updateProduct")
-                        }} size="large">Edit Details</Button>
                         <div style={{marginTop: "20px"}}>
                             <Button startIcon={<DeleteIcon />} color="error" variant="contained" onClick={() => {
-                                ChangeCurrentOverlay("deleteConfirm")
-                            }} size="large">Delete Product</Button>
+                            }} size="large">Purchase Product</Button>
                         </div>
                     </div> 
                     : 
                     null
                 }
-                
-                <div style={{flex: 1}} className="flexCenter">
-                    <div className="ProductStoreInfo flexCenter colFlex">
-                        <h1>GatorStore</h1>
-                        <Avatar sx={{ bgcolor: 'navy', fontSize: 50, width: 120, height: 120}}>UF</Avatar>
-                        <Button component={Link} to={'/store-list'} startIcon={<MoveUpIcon />} color="secondary" variant="contained" size="large" sx={{marginBottom: 3}}>Back to Store List</Button>
-                        {/* <Button startIcon={<EditIcon />} color="primary" variant="contained" size="large" sx={{marginBottom: 1}}>Edit Store</Button> */}
+                {productInfo ?
+                    <div style={{flex: 1}} className="flexCenter">
+                        <div className="ProductStoreInfo flexCenter colFlex">
+                            <h1>GatorStore</h1>
+                            <Avatar sx={{ bgcolor: 'navy', fontSize: 50, width: 120, height: 120}}>UF</Avatar>
+                            <Button component={Link} to={`/store/${productInfo.storeId}`} startIcon={<MoveUpIcon />} color="secondary" variant="contained" size="large" sx={{marginBottom: 3}}>Back to Store</Button>
+                            {/* <Button startIcon={<EditIcon />} color="primary" variant="contained" size="large" sx={{marginBottom: 1}}>Edit Store</Button> */}
+                        </div>
                     </div>
-                </div>
+                    :
+                    null
+                }
             </div>
             {productInfo?
                 <div className="ProductDescription">

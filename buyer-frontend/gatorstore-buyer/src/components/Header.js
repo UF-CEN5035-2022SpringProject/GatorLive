@@ -16,7 +16,7 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 
 import { makeStyles } from '@material-ui/core/styles';
-import { Navigate } from 'react-router-dom';
+import settings from '../settings';
 
 const useStyles = makeStyles({
   searchBar: {
@@ -45,7 +45,7 @@ function SignedInDropdown(userData) {
   };
   const SignOut = () => {
     window.sessionStorage.clear();
-    window.location.href = "http://localhost:3000/";
+    window.location.href = `http://localhost:${settings.applicationPort}/`;
   };
 
   return (<>
@@ -68,9 +68,7 @@ function SignedInDropdown(userData) {
     >
       <div style={{padding: 10, color: 'blue'}}>{userData.email}</div>
       <MenuItem component="a" href="/"><HomeIcon style={{marginRight: 20}}/> Home</MenuItem>
-      <MenuItem component="a" href="/store-list"><StorefrontIcon style={{marginRight: 20}}/> My Stores</MenuItem>
-      {/* <MenuItem component="a" href="/store-page"><FormatListBulletedIcon style={{marginRight: 20}}/> My Listings</MenuItem> */}
-      {/* <MenuItem component="a" href="/product-page"><PushPinIcon style={{marginRight: 20}}/> Pinned Listing</MenuItem> */}
+      <MenuItem component="a" href="/store"><StorefrontIcon style={{marginRight: 20}}/> My Favorite Store</MenuItem>
       <MenuItem onClick={SignOut}><LogoutIcon style={{marginRight: 20}}/>Logout</MenuItem>
     </Menu>
   </>);
