@@ -561,7 +561,7 @@ Get the orders according to the store, split the item with page
  - **Request Body Table**
    | Name | Type | Description |
    | ---  | --- | --- |
-   | status | boolean | streamStatus |
+   | isLive | boolean | streamStatus |
    
     PUT Example:
      ```
