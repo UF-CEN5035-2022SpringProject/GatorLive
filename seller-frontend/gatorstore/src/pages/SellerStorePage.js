@@ -31,33 +31,38 @@ function SellerStorePage() {
 
   const { storeID } = useParams(); // Get StoreID string from the url
   const [liveId, SetLiveId] = useState();
+
+  // Call LA1 (to get live product array) only after liveId is set:
+  useEffect(() => {
+    if (liveId != undefined)
+      GetLivestreamStatus(liveId); // LA1
+  }, [liveId]);
   
   const [embedHTML, SetEmbedHTML] = useState('');
   const [embedChatHTML, SetEmbedChatHTML] = useState('');
   var embedStreamHTML = null;
   var embedChatRoomHTML = null; 
+
   // On load: initial check to check if its live or not:
   useEffect(() => {
-    CheckStoreObject(true); 
+    CheckStoreObject(); 
   }, []);
 
   // Every 15 seconds:
   useEffect(() => {
     const interval = setInterval(() => {
       console.log("5-second Fetch...")
-      CheckStoreObject(false); 
+      CheckStoreObject(); 
     }, 5000);
   
     return () => clearInterval(interval);
   }, [])
 
   // Live Product List Hook array:
-  const [ProductArrFlag, SetProductFlag] = useState(false); // avoid duplications
   const [liveProductArray, SetLiveProductArray] = useState([]);
 
   // Checks the status of this store's object in the store API:
-  function CheckStoreObject(detail) {
-    var jwtToken = window.sessionStorage.getItem("user-jwtToken");
+  function CheckStoreObject() {
 
     // call API - TODO: When Yiming finishes this API. Store the embedHTML in variable storeObject
     const requestOptions = {
@@ -69,24 +74,15 @@ function SellerStorePage() {
           if (response.status === 0) {
             SetStoreName(response.result.name); // get name of store
 
-            if (response.result.isLive === true) {
-              console.log("Check Live ID: " + response.result.liveId)
-              SetLiveInfoBarState('live');
-              SetLiveId(response.result.liveId)
-              if(embedHTML === '') {
-                var inputEmbedStreamHTML = '<iframe width="490" height="315" src="https://www.youtube.com/embed/' + response.result.liveId + '" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>'
-                SetEmbedHTML(inputEmbedStreamHTML);
-              }
-              if(embedChatHTML === '') {
-                var inputEmbedChatHTML = '<iframe width="494" height="315" src="https://www.youtube.com/live_chat?v=' + response.result.liveId + '&embed_domain=localhost" frameborder="0"></iframe>';
-                SetEmbedChatHTML(inputEmbedChatHTML);
-              }
-              GetLivestreamStatus(response.result.liveId); // LA1
+            if (response.result.isLive === true) {              
+              SetLiveInfoBarState("live");
 
-              // SetLiveId(response.result.liveId);
-              // if (detail === true) {
-              //   GetLivestreamStatus(response.result.liveId); // LA1
-              // }
+              var inputEmbedStreamHTML = '<iframe width="490" height="315" src="https://www.youtube.com/embed/' + response.result.liveId + '" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>'
+              SetEmbedHTML(inputEmbedStreamHTML);
+              var inputEmbedChatHTML = '<iframe width="494" height="315" src="https://www.youtube.com/live_chat?v=' + response.result.liveId + '&embed_domain=localhost" frameborder="0"></iframe>';
+              SetEmbedChatHTML(inputEmbedChatHTML);
+              
+              SetLiveId(response.result.liveId)
             } else {
               SetLiveInfoBarState('not-live');
             }
@@ -111,13 +107,8 @@ function SellerStorePage() {
       .then(response => {
         if (response.status === 0) {
           // Add live products to some hook array:
-          if(!ProductArrFlag) {
-            console.log('Render Product List');
-            if(response.result.productList != null) {
-              SetLiveProductArray(response.result.productList);
-            }
-          }
-          SetProductFlag(true);
+          console.log(liveProductArray);
+          SetLiveProductArray(response.result.productList);
         } else {
           alert("ERROR: YouTube API did not respond with 'success' status code 0.");
         }
@@ -347,6 +338,9 @@ function SellerStorePage() {
           
           var embedStreamHTML = '<iframe width="560" height="315" src="https://www.youtube.com/embed/' + response.result.liveId + '"' +  ' frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>'
           SetEmbedHTML(embedStreamHTML);
+
+          var inputEmbedChatHTML = '<iframe width="494" height="315" src="https://www.youtube.com/live_chat?v=' + response.result.liveId + '&embed_domain=localhost" frameborder="0"></iframe>';
+          SetEmbedChatHTML(inputEmbedChatHTML);
         } else {
           alert("ERROR: YouTube API did not respond with 'success' status code.");
         }
@@ -437,10 +431,8 @@ function SellerStorePage() {
             <Grid container spacing={0} justifyContent="center" alignItems="center" direction='row' style={{marginBottom: 20}}>
               <Grid item md={8} container direction='column' justifyContent='flex-start' style={{backgroundColor: "#202020", padding: "10px 15px 0px"}}>
                 <div class="featuredItemTitle" style={{color: "white"}}>Featured Items</div>
-                {console.log(liveProductArray.length)}
                 <List name="LiveProductList" selected={0} class="selectStreamItemList">
                   {liveId && liveProductArray.length > 0 && liveProductArray.map(function (product) {
-                    console.log("test Arr");
                     return (
                         <ListItem component={Link} to={`/product/${product.id}?liveId=${liveId}`} selected="false" justify="between" class="selectStreamItem" style={{backgroundColor: "rgb(226, 197, 164)"}}>
                           <div>{product.name}</div>
