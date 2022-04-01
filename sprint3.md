@@ -69,7 +69,9 @@ So, most of the features in this sprint we focus on the store, live and orders f
           1. Build our own chat room, implement product purchase by user comments
           2. Use Youtube live chat iframe, and build a product list which can be shown specifically during live - ***Feature Items***
             <br></br>
-            <img src="https://user-images.githubusercontent.com/69064626/161345098-ad18bad8-ab4e-420e-90cd-9fcda8ad152b.jpeg" width="800">
+            <img src="https://user-images.githubusercontent.com/69064626/161345098-ad18bad8-ab4e-420e-90cd-9fcda8ad152b.jpeg" width="800">     
+            
+            
 (The list and progress of the APIs integrated were recorded in issue #93)
 
 
