@@ -40,8 +40,6 @@ function SellerStorePage() {
   
   const [embedHTML, SetEmbedHTML] = useState('');
   const [embedChatHTML, SetEmbedChatHTML] = useState('');
-  var embedStreamHTML = null;
-  var embedChatRoomHTML = null; 
 
   // On load: initial check to check if its live or not:
   useEffect(() => {
@@ -107,8 +105,8 @@ function SellerStorePage() {
       .then(response => {
         if (response.status === 0) {
           // Add live products to some hook array:
-          console.log(liveProductArray);
           SetLiveProductArray(response.result.productList);
+          console.log("Live Product array: " + liveProductArray);
         } else {
           alert("ERROR: YouTube API did not respond with 'success' status code 0.");
         }
@@ -306,7 +304,7 @@ function SellerStorePage() {
         .then(response => response.json())
         .then(response => {
           if (response.status === 0) {
-            alert("Product created on API. Now redirecting")
+            console.log("Product created on API. Now redirecting")
             navigate("/product/" + response.result.id);
           } else {
             alert("ERROR: YouTube API did not respond with 'success' status code 0.");

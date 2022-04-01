@@ -14,29 +14,33 @@ import Avatar from '@mui/material/Avatar';
 
 import settings from '../settings'
 
-function StoreEntry(storeInfo) {
-  return (
-    <div className="StoreEntry flexCenter rowFlex">
-      <div style={{ flex: 0.7 }} className="flexCenter">
-        <Avatar sx={{ bgcolor: 'navy', width: 80, height: 80}}>{storeInfo.initials}</Avatar>
-      </div>
-      <div style={{ flex: 3 }}>
-        <h1 className="StoreEntryTitle">{storeInfo.name} <OpenInNewIcon /></h1>
-        <div className="StoreEntryDetailRow">
-          <p><b>Birthday:</b> {storeInfo.createDate}</p>
-          <p>|</p>
-          <p><b>ID:</b> {storeInfo.storeId}</p>
-        </div>
-      </div>
-      <div style={{ flex: 1}} className="flexCenter">
-        <Button component={Link} to={'/store/' + storeInfo.storeId} startIcon={<EditIcon />} variant="contained" color="primary" sx={{ marginBottom: 1 }}>Visit</Button>
-        <Button startIcon={<DeleteIcon />} variant="contained" color="secondary">Delete</Button>
-      </div>
-    </div>
-  );
-}
+
 
 function SellerStoreList() {
+  function StoreEntry(storeInfo) {
+    return (
+      <div className="StoreEntry flexCenter rowFlex">
+        <div style={{ flex: 0.7 }} className="flexCenter">
+          <Avatar sx={{ bgcolor: 'navy', width: 80, height: 80}}>{storeInfo.initials}</Avatar>
+        </div>
+        <div style={{ flex: 3 }}>
+          <h1 className="StoreEntryTitle">{storeInfo.name} <OpenInNewIcon /></h1>
+          <div className="StoreEntryDetailRow">
+            <p><b>Birthday:</b> {storeInfo.createDate}</p>
+            <p>|</p>
+            <p><b>ID:</b> {storeInfo.storeId}</p>
+          </div>
+        </div>
+        <div style={{ flex: 1}} className="flexCenter">
+          <Button component={Link} to={'/store/' + storeInfo.storeId} startIcon={<EditIcon />} variant="contained" color="primary" sx={{ marginBottom: 1 }}>Visit</Button>
+          <Button startIcon={<DeleteIcon />} onClick={() => {
+            DeleteStore(storeInfo.storeId);
+          }} variant="contained" color="secondary">Delete</Button>
+        </div>
+      </div>
+    );
+  }
+
   // Hook for overlay
   const [currentOverlay, ChangeCurrentOverlay] = useState("none");
   // Effect for overlay (to freeze scrolling when an overlay is open)
@@ -121,7 +125,10 @@ function SellerStoreList() {
       .then(response => {
         if (response.status !== 0) {
           alert("ERROR: Create Store API did not respond with 'success' status code.");
-         // window.location.href = "http://localhost:3000/";
+        } else {
+          SetStoreArray([]);
+          ChangeStorePage(0);
+          GetPage(0)
         }
       })
       .catch((error) => {
@@ -130,11 +137,16 @@ function SellerStoreList() {
       });
   }
 
+  function DeleteStore(storeID) {
+    console.log("The API to delete a store is yet to be implemented")
+  }
+
   const [storeArray, SetStoreArray] = useState([]);
 
   const [currStorePage, ChangeStorePage] = useState(0);
   var maxPage = 1; // default
 
+  // on load: get store page 0:
   useEffect(() => {
     GetPage(0);
   }, []);
@@ -152,9 +164,11 @@ function SellerStoreList() {
     fetch(settings.apiHostURL + 'user/' + userId + '/store-list?page=' + pageNum, requestOptions)
       .then(response => response.json())
       .then(response => {
-        if (response.status === 0) {
-          if (pageNum <= response.result.maxPage && response.result.storeList != null) {
+        if (response.status === 0 && pageNum <= response.result.maxPage && response.result.storeList != null) {
+          if (pageNum > 0) {
             SetStoreArray(storeArray.concat(response.result.storeList));
+          } else {
+            SetStoreArray(response.result.storeList);
           }
 
           // Set max page number so that this fetch isn't even called if it is an invalid page number
