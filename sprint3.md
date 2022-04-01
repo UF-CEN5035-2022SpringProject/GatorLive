@@ -39,12 +39,15 @@ So, most of the features in this sprint we focus on the store, live and orders f
       - Passing user object in the middleware down with the request.
     
 ### 2. Frontend Components     
-(the API's implemented in the front-end can be found on issue #76)
+(the API's implemented in the front-end can be found on issue #76 and #83)
+  - Create a new React Application for the buyer, with some of the following features
   - Get product list for a store via pages of 5 elements each
     - For this and any other paging retrievals, we make the page load the next page of 5 items when the user scrolls down to the bottom.
+    - ![image](https://user-images.githubusercontent.com/40399062/161351035-75863e79-94ef-42d4-aa0e-dbd3c5400952.png)
   - Get store list for a seller account via pages of 5 elements each
   - Get product information for a product via its URL
     - URL "product/product-id" will automatically retrieve the data for product-id using a GET API
+    - ![image](https://user-images.githubusercontent.com/40399062/161351157-07040c86-7768-46bb-8e87-9268627077ab.png)
   - Get store information for a product via URL
     - URL "store/store-id" will automatically get the data for a store, which also includes is live status and embedded livestream (if live), using a GET API
   - For a store, the livestream API is called every 5 seconds to get current "isLive" status
@@ -67,7 +70,7 @@ So, most of the features in this sprint we focus on the store, live and orders f
           2. Use Youtube live chat iframe, and build a product list which can be shown specifically during live - ***Feature Items***
             <br></br>
             <img src="https://user-images.githubusercontent.com/69064626/161345098-ad18bad8-ab4e-420e-90cd-9fcda8ad152b.jpeg" width="800">
-
+(The list and progress of the APIs integrated were recorded in issue #93)
 
 
 ### 3. Backend Testing
