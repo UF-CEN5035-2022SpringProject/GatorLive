@@ -485,9 +485,9 @@ Get the orders according to the store, split the item with page
 --- 
 ### Live API URLs
 ---
-#### SLA0. Store Livestream API
+#### SLA0. Create Store Livestream API
  - Method: POST
- - {routePath}: /store/{store id}/livestream
+ - {routePath}: /store/{storeId}/livestream
  - **Header**
    | Name | Type | Description |
    | --- | --- | --- |
@@ -497,11 +497,13 @@ Get the orders according to the store, split the item with page
    | Name | Type | Description |
    | ---  | --- | --- |
    | title | string | Use for naming the new livestream |
+   | productIdList | string Array | create product list bind with live stream |
    
     Example:
      ```
      {
-         'title': '123'
+         "title": "123"
+         "productIdList": ["Product-1", "Product-2", ...]
      }
      ```
      
@@ -517,7 +519,11 @@ Get the orders according to the store, split the item with page
               'streamUrl': "some url",
               'createTime': "2006-01-02T15:04:05Z07:00"
               'updateTime': "2006-01-02T15:04:05Z07:00"
-              'embedHTML': "some iframe html"
+              'embedHTML': "some iframe HTML"
+              'productList': [
+                    {productObj},
+                    {productObj}
+              ]
         }
     }
     ```
@@ -534,18 +540,19 @@ Get the orders according to the store, split the item with page
    
      Error Code Table for error situation:
 
-      | ErrorName | ErrorCode | HttpStatus | Description |
-      | ---  | --- | --- | --- |
-      | MISS_PARAMS | 800 | 400 | |
-      | INVALID_PARAMS | 801 | 400 | |
-      | NO_JWTTOKEN | 1000 | 400 | |
-      | INVALID_JWTTOKEN | 1001 | 401 | Expire or invalid jwtToken |
-      | INVALID_ACCESSTOKEN | 9000 | 403 | Expire Google Access Token |
+     | ErrorName | ErrorCode | HttpStatus | Description |
+     | ---  | --- | --- | --- |
+     | UnknownInternalErrCode | 800 | 500 | |
+     | MissingParamsCode | 801 | 400 | |
+     | InvalidParamsCode | 802 | 403 | |
+     | MissingJwtTokenCode | 1000 | 401 | |
+     | InvalidJwtTokenCode | 1001 | 401 | Expire or invalid jwtToken |
+     
       
 ---
-#### SLA1. Store Livestream status API
- - Method: GET/PUT
- - {routePath}: /store/{store id}/livestreamStatus
+#### SLA1. Update Store Livestream status API
+- Method: PUT
+ - {routePath}: /store/{storeId}/livestream/update
  - **Header**
    | Name | Type | Description |
    | --- | --- | --- |
@@ -562,11 +569,6 @@ Get the orders according to the store, split the item with page
          'isLive': true
      }
      ```
-    GET Example:
-    ```
-    {
-    }
-    ```
  - **Response**  
     Success: 
     ```
@@ -577,6 +579,10 @@ Get the orders according to the store, split the item with page
       'createTime': "2006-01-02T15:04:05Z07:00",
       'updateTime': "2006-01-02T15:04:05Z07:00",
       'isLive': True // might change
+      'productList': [
+          {productObj},
+          {productObj}
+       ]
     }
     ```
 
@@ -592,13 +598,13 @@ Get the orders according to the store, split the item with page
    
      Error Code Table for error situation:
 
-      | ErrorName | ErrorCode | HttpStatus | Description |
-      | ---  | --- | --- | --- |
-      | MISS_PARAMS | 800 | 400 | |
-      | INVALID_PARAMS | 801 | 400 | |
-      | NO_JWTTOKEN | 1000 | 400 | |
-      | INVALID_JWTTOKEN | 1001 | 401 | Expire or invalid jwtToken |
-      | INVALID_ACCESSTOKEN | 9000 | 403 | Expire Google Access Token |
+     | ErrorName | ErrorCode | HttpStatus | Description |
+     | ---  | --- | --- | --- |
+     | UnknownInternalErrCode | 800 | 500 | |
+     | MissingParamsCode | 801 | 400 | |
+     | InvalidParamsCode | 802 | 403 | |
+     | MissingJwtTokenCode | 1000 | 401 | |
+     | InvalidJwtTokenCode | 1001 | 401 | Expire or invalid jwtToken |
       
 ---
 ### Product API URLs
