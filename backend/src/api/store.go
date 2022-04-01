@@ -269,6 +269,7 @@ func StoreOrders(w http.ResponseWriter, r *http.Request) {
 
 	ReturnResponse(w, resp, http.StatusOK)
 }
+
 func UpdateIsLive(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	storeId := vars["storeId"]
@@ -321,4 +322,58 @@ func UpdateIsLive(w http.ResponseWriter, r *http.Request) {
 	}
 	ReturnResponse(w, resp, http.StatusOK)
 	return
+}
+
+func StoreRecommendList(w http.ResponseWriter, r *http.Request) {
+
+	page := r.URL.Query().Get("page")
+	if page == "" {
+		page = "0"
+	}
+
+	intPage, err := strconv.Atoi(page)
+	if err != nil {
+		logger.ErrorLogger.Printf("Error page type, err: %v", err)
+		errorMsg := utils.SetErrorMsg("Error type of page query")
+		resp, _ := RespJSON{int(utils.InvalidParamsCode), errorMsg}.SetResponse()
+		ReturnResponse(w, resp, http.StatusBadRequest)
+		return
+	}
+
+	storeList := db.GetStoreRecommend(intPage)
+
+	storeRecommendData := make(map[string]interface{})
+
+	storeListSize := len(storeList)
+	storeRecommendData["maxPage"] = 0
+	storeRecommendData["currectPage"] = 0
+	storeRecommendData["storeList"] = storeList
+
+	if storeListSize != 0 {
+		totalPage := (storeListSize / utils.PageLimit)
+		if (storeListSize % utils.PageLimit) != 0 {
+			totalPage += 1
+		}
+		maxPage := totalPage - 1
+		storeRecommendData["maxPage"] = maxPage
+
+		currectPage := intPage
+		if currectPage > maxPage {
+			currectPage = maxPage
+		}
+		storeRecommendData["currectPage"] = currectPage
+		// arrange the pagenate
+		storeRecommendData["storeList"] = utils.Pagenator(storeList, currectPage, storeListSize)
+	}
+
+	resp, err := RespJSON{0, storeRecommendData}.SetResponse()
+	if err != nil {
+		logger.ErrorLogger.Printf("Error on wrapping JSON resp, err: %v", err)
+		errorMsg := utils.SetErrorMsg("Error on wrapping JSON resp")
+		resp, _ := RespJSON{int(utils.InvalidAccessTokenCode), errorMsg}.SetResponse()
+		ReturnResponse(w, resp, http.StatusInternalServerError)
+		return
+	}
+
+	ReturnResponse(w, resp, http.StatusOK)
 }

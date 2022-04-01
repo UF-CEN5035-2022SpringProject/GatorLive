@@ -39,11 +39,11 @@ func main() {
 	authApis.HandleFunc("/user/{userId}/order-list", api.UserOrderList).Methods("GET", "OPTIONS")
 
 	// Store
+	r.HandleFunc(prodRoutePrefix+"/store/recommend-list", api.StoreRecommendList).Methods("GET")
 	authApis.HandleFunc("/store/create", api.StoreCreate).Methods("POST", "OPTIONS")
 	r.HandleFunc(prodRoutePrefix+"/store/{storeId}/info", api.StoreInfo).Methods("GET")
 	r.HandleFunc(prodRoutePrefix+"/store/{storeId}/product-list", api.StoreProducts).Methods("GET", "OPTIONS")
 	authApis.HandleFunc("/store/{storeId}/order-list", api.StoreOrders).Methods("GET", "OPTIONS")
-	// authApis.HandleFunc("/store/{storeId}/live-list", api.).Methods("GET", "OPTIONS")
 	authApis.HandleFunc("/store/{storeId}/livestream", api.CreateLivebroadcast).Methods("GET", "POST", "OPTIONS")
 	authApis.HandleFunc("/store/{storeId}/livestream/update", api.UpdateIsLive).Methods("PUT", "OPTIONS")
 
@@ -57,8 +57,6 @@ func main() {
 	// TEST API path
 	r.HandleFunc(testRoutePrefix+"/echo", test.EchoString).Methods("GET", "OPTIONS")
 	r.HandleFunc(testRoutePrefix+"/user/info", test.TestDBGetUserObj).Methods("GET", "OPTIONS")
-	// testAuthApis := r.PathPrefix(testRoutePrefix).Subrouter()
-	//testAuthApis.HandleFunc("/user/info", test.TestDBGetUserObj)
 
 	// read google oauth2 credentials
 	api.ReadCredential()

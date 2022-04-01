@@ -135,3 +135,20 @@ func UpdateStoreObj(storeId string, fieldStr string, fieldValue interface{}) err
 	}
 	return err
 }
+
+func GetStoreRecommend(page int) []map[string]interface{} {
+	var storeList []map[string]interface{}
+	// OrderBy("id", firestore.Asc)
+	iter := FireBaseClient.Collection(DbCollections["stores"]).Documents(DatabaseCtx)
+	for {
+		doc, err := iter.Next()
+		if err == iterator.Done {
+			break
+		}
+		if err != nil {
+			logger.WarningLogger.Printf("Error iterating")
+		}
+		storeList = append(storeList, doc.Data())
+	}
+	return storeList
+}
