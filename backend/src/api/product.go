@@ -274,21 +274,22 @@ func ProductPurchase(w http.ResponseWriter, r *http.Request) {
 
 	liveObj := db.GetLiveObj(purchase.LiveId)
 
-	if liveObj == nil{
+	if liveObj == nil {
 		purchase.LiveId = ""
-	} else if liveObj["storeId"].(string) != productObj.StoreId{
+	} else if liveObj["storeId"].(string) != productObj.StoreId {
 		purchase.LiveId = ""
 	}
 
 	newOrder := &db.OrderObject{
-		Id:         newOrderId,
-		CreateTime: nowTime,
-		LiveId:     purchase.LiveId,
-		ProductId:  productId,
-		Quantity:   purchase.Quantity,
-		Subtotal:   subtotal,
-		UserId:     userId,
-		StoreId:    productObj.StoreId,
+		Id:          newOrderId,
+		CreateTime:  nowTime,
+		LiveId:      purchase.LiveId,
+		ProductId:   productId,
+		ProductName: productObj.Name,
+		Quantity:    purchase.Quantity,
+		Subtotal:    subtotal,
+		UserId:      userId,
+		StoreId:     productObj.StoreId,
 	}
 
 	var convertMap map[string]interface{}
