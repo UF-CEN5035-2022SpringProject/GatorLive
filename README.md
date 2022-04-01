@@ -434,7 +434,7 @@ Get the products according to the store, split the item with page
 #### SA3. Store OrderList API
 Get the orders according to the store, split the item with page
  - Method: GET
- - {routePath}: /store/{storeId}/orderList?page={page}
+ - {routePath}: /store/{storeId}/order-list?page={page}
    - page parameter decide which page requesting, if overflow, return the last page. If missing, return page 0.
  
  - **Header**
