@@ -277,6 +277,7 @@ func UserStoreList(w http.ResponseWriter, r *http.Request) {
 		errorMsg := utils.SetErrorMsg("Error type of page query")
 		resp, _ := RespJSON{int(utils.InvalidParamsCode), errorMsg}.SetResponse()
 		ReturnResponse(w, resp, http.StatusBadRequest)
+		return
 	}
 
 	storeList := db.GetUserStore(userId, intPage)
@@ -313,6 +314,7 @@ func UserStoreList(w http.ResponseWriter, r *http.Request) {
 		errorMsg := utils.SetErrorMsg("Error on wrapping JSON resp")
 		resp, _ := RespJSON{int(utils.InvalidAccessTokenCode), errorMsg}.SetResponse()
 		ReturnResponse(w, resp, http.StatusInternalServerError)
+		return
 	}
 
 	ReturnResponse(w, resp, http.StatusOK)
@@ -342,6 +344,7 @@ func UserOrderList(w http.ResponseWriter, r *http.Request) {
 		errorMsg := utils.SetErrorMsg("Error type of page query")
 		resp, _ := RespJSON{int(utils.InvalidParamsCode), errorMsg}.SetResponse()
 		ReturnResponse(w, resp, http.StatusBadRequest)
+		return
 	}
 
 	orderList := db.GetUserOrders(userId, intPage)
@@ -377,6 +380,7 @@ func UserOrderList(w http.ResponseWriter, r *http.Request) {
 		errorMsg := utils.SetErrorMsg("Error on wrapping JSON resp")
 		resp, _ := RespJSON{int(utils.InvalidAccessTokenCode), errorMsg}.SetResponse()
 		ReturnResponse(w, resp, http.StatusInternalServerError)
+		return
 	}
 
 	ReturnResponse(w, resp, http.StatusOK)
