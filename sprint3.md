@@ -38,7 +38,29 @@ So, most of the features in this sprint we focus on the store, live and orders f
   - Expend the verification of jwtToken and users' accessibility of backend apis. #100 #88
       - Passing user object in the middleware down with the request.
     
-### 2. Frontend Components
+### 2. Frontend Components     
+(the API's implemented in the front-end can be found on issue #76)
+  - Get product list for a store via pages of 5 elements each
+    - For this and any other paging retrievals, we make the page load the next page of 5 items when the user scrolls down to the bottom.
+  - Get store list for a seller account via pages of 5 elements each
+  - Get product information for a product via its URL
+    - URL "product/product-id" will automatically retrieve the data for product-id using a GET API
+  - Get store information for a product via URL
+    - URL "store/store-id" will automatically get the data for a store, which also includes is live status and embedded livestream (if live), using a GET API
+  - For a store, the livestream API is called every 5 seconds to get current "isLive" status
+    - If this changes, the page will automatically adapt its live component to show the embedded livestream (both video and chat)
+  - Seller can select "Featured Items" when creating a livestream. These get sent to backend and get retrieved for the viewers
+    - Viewers can click on these items to go to their pages and purchase them
+  - Allow seller to create new products
+  - Implemented the following actions for a seller on a product page:
+      - Update Product data
+      - Delete Product
+  - Purchasing a product (buyer action) from a product page of 5 elements each
+  - Displaying the list of orders for a buyer using pages of 5 elements each
+  - On product page, linked button to go back to its store (store/store-id)
+  - On store page, linked buttons to go to a product's page (product/product-id)
+  - Added a list of recommended stores on landing page
+    - An API populates this list with every store available. Will implement a more streamlined and system for this next sprint.
   - Embed youtube live chat iframe next to youtube livestream video iframe. 
       - Two options while we are designing - Check this #74
           1. Build our own chat room, implement product purchase by user comments
