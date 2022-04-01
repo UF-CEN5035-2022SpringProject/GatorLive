@@ -476,14 +476,14 @@ Get the orders according to the store, split the item with page
      }
      ```
    
-     Error Code Table for error situation:
-      | ErrorName | ErrorCode | HttpStatus | Description |
-      | ---  | --- | --- | --- |
-      | MissingJwtTokenCode | 1000 | 401 | |
-      | InvalidJwtTokenCode | 1001 | 401 | Expire or invalid jwtToken |
+  Error Code Table for error situation:
+  | ErrorName | ErrorCode | HttpStatus | Description |
+  | --- | --- | --- | --- |
+  | MissingJwtTokenCode | 1000 | 401 | |
+  | InvalidJwtTokenCode | 1001 | 401 | Expire or invalid jwtToken |
 
 --- 
-### Live API URLs
+###  Store Livestream API URLs
 ---
 #### SLA0. Create Store Livestream API
  - Method: POST
@@ -605,7 +605,55 @@ Get the orders according to the store, split the item with page
      | InvalidParamsCode | 802 | 403 | |
      | MissingJwtTokenCode | 1000 | 401 | |
      | InvalidJwtTokenCode | 1001 | 401 | Expire or invalid jwtToken |
+ 
+ 
+---
+### Livestream API URLs
+---
+#### LA1. Livestream status API
+ - Method: GET
+ - {routePath}: /live/status?detail={true|false}&liveId=livestreamId
+ - **Header**  - Empty
+   
+ - **Request Body Table**
+   | Name | Type | Description |
+   | ---  | --- | --- |
+   
+    Example:
+     ```
+     {
+     }
+     ```
+    
+ - **Response**  
+    Success: 
+    ```
+    {
+         "status": 0,
+         "result": {
+            <liveObject>
+         }
+     }
+    ```
+
+    Error:
+     ```
+     {
+         "status": 800,
+         "result": {
+            "errorName": "MISS_PARAMS"
+         }
+     }
+     ```
+   
+     Error Code Table for error situation:
+
+      | ErrorName | ErrorCode | HttpStatus | Description |
+      | ---  | --- | --- | --- |
+      | MISS_PARAMS | 800 | 400 | |
+      | INVALID_PARAMS | 801 | 400 | |
       
+ 
 ---
 ### Product API URLs
 ---
