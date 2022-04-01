@@ -49,7 +49,7 @@ So, most of the features in this sprint we focus on the store, live and orders f
 
 
 ### 3. Backend Testing
-    - Check this section
+  - Check this section https://github.com/UF-CEN5035-2022SpringProject/GatorStore/blob/main/sprint3.md#testing
 ---
 ## Bug Fix
 1. APIS & Frontend
