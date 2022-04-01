@@ -16,6 +16,7 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 
 import { makeStyles } from '@material-ui/core/styles';
+import settings from '../settings';
 
 const useStyles = makeStyles({
   searchBar: {
@@ -44,7 +45,7 @@ function SignedInDropdown(userData) {
   };
   const SignOut = () => {
     window.sessionStorage.clear();
-    window.location.href = "http://localhost:3000/";
+    window.location.href = `http://localhost:${settings.applicationPort}/`;
   };
 
   return (<>
