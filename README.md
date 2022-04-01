@@ -175,9 +175,10 @@ Golang and backend set up please check [backendend-readme.md](https://github.com
       | INVALID_ACCESSTOKEN | 9000 | 403 | Expire Google Access Token |
   
 ---
-#### UA2. Get User Info 
+#### UA2 User Info API
+
 Get user info
- - Method: GET
+- Method: GET
  - {routePath}: /user/{userId}/info
 
  - **Header**
@@ -223,7 +224,8 @@ Get user info
      | InvalidJwtTokenCode | 1001 | 401 | Expire or invalid jwtToken |
 
 ---
-#### UA3. User Store List
+#### UA3 User Store List API
+
 Get the users store list, split the item with page
  - Method: GET
  - {routePath}: /user/{userId}/store-list?page={page}
@@ -246,14 +248,22 @@ Get the users store list, split the item with page
     Success: 
     ```
     {
-      'userId': "11002",
-      'maxPage': 3, (start at 0)
-      'currentPage': 0,
-      'storeList': [
-        {storeObject},
-        {storeObject},
-        ...
-      ]
+      "status": 0,
+      "result": {
+          "currectPage": 0,
+          "maxPage": 0,
+          "storeList": [
+              {
+                  "createTime": "2022-03-29T02:32:31Z",
+                  "id": "gatorstore-1",
+                  "isLive": false,
+                  "liveId": "",
+                  "name": "YiMing Fantastic Store",
+                  "updateTime": "2022-03-29T02:32:31Z",
+                  "userId": "11002"
+              }, ...
+          "userId": "11002"
+      }
     }
     ```
 
@@ -273,10 +283,11 @@ Get the users store list, split the item with page
       | ---  | --- | --- | --- |
       | MissingJwtTokenCode | 1000 | 401 | |
       | InvalidJwtTokenCode | 1001 | 401 | Expire or invalid jwtToken |
-
+     
 ### Store API URLs
 ---
 #### SA0. Store Create API
+
  - Method: POST
  - {routePath}: /store/create
  - **Header**
@@ -332,12 +343,9 @@ Get the users store list, split the item with page
 ---
 #### SA1. Get Store Object API
  - Method: GET
- - {routePath}: /store/{storeId}
+ - {routePath}: /store/{storeId}/info
 
- - **Header**
-   | Name | Type | Description |
-   | --- | --- | --- |
-   | Authorization | string | Use for GatorStore Login |
+ - **Header** - Empty
  
  - **Response**  
     Success: 
@@ -378,7 +386,7 @@ Get the users store list, split the item with page
 Get the products according to the store, split the item with page
  - Method: GET
  - {routePath}: /store/{storeId}/product-list?page={page}
-    - page parameter decide which page requesting, if overflow, return the last page. If missing, return page 0.
+   - page parameter decide which page requesting, if overflow, return the last page. If missing, return page 0.
  
  - **Header**
    | Name | Type | Description |
@@ -419,16 +427,17 @@ Get the products according to the store, split the item with page
      ```
    
      Error Code Table for error situation:
-     | ErrorName | ErrorCode | HttpStatus | Description |
-     | ---  | --- | --- | --- |
-     | MissingJwtTokenCode | 1000 | 401 | |
-     | InvalidJwtTokenCode | 1001 | 401 | Expire or invalid jwtToken |
+
+      | ErrorName | ErrorCode | HttpStatus | Description |
+      | ---  | --- | --- | --- |
+      | MissingJwtTokenCode | 1000 | 401 | |
+      | InvalidJwtTokenCode | 1001 | 401 | Expire or invalid jwtToken |
       
 ---
-#### SA3. Store Order List API
+#### SA3. Store OrderList API
 Get the orders according to the store, split the item with page
  - Method: GET
- - {routePath}: /store/{storeId}/order-list?page={page}
+ - {routePath}: /store/{storeId}/orderList?page={page}
    - page parameter decide which page requesting, if overflow, return the last page. If missing, return page 0.
  
  - **Header**
@@ -469,10 +478,10 @@ Get the orders according to the store, split the item with page
      ```
    
      Error Code Table for error situation:
-     | ErrorName | ErrorCode | HttpStatus | Description |
-     | ---  | --- | --- | --- |
-     | MissingJwtTokenCode | 1000 | 401 | |
-     | InvalidJwtTokenCode | 1001 | 401 | Expire or invalid jwtToken |
+      | ErrorName | ErrorCode | HttpStatus | Description |
+      | ---  | --- | --- | --- |
+      | MissingJwtTokenCode | 1000 | 401 | |
+      | InvalidJwtTokenCode | 1001 | 401 | Expire or invalid jwtToken |
 
 --- 
 ### Live API URLs
@@ -595,7 +604,298 @@ Get the orders according to the store, split the item with page
 ---
 ### Product API URLs
 ---
+#### PA1. Product Create API
+ - Method: POST
+ - {routePath}: /product/create
+ - **Header**
+   | Name | Type | Description |
+   | --- | --- | --- |
+   | Authorization | string |  jwtToken |
+   
+ - **Request Body Table**
+   | Name | Type | Description |
+   | ---  | --- | --- |
+   | name | string | product name |
+   | price | float64 | product price |
+   | description | string | product introduction |
+   | quantity | int | how many product in stock |
+   | picture | string | picture in base64 |
+   | storeId | string | publish to which store |
 
+    Example:
+     ```
+     {
+         'name': 'gator',
+         'price": 1000,
+         'description':'real gator',
+         'quantity': 1,
+         'picture':'123123123',
+         'storeId':'11001'
+     }
+     
+ - **Response**  
+    Success: 
+    ```
+    {
+        "status": 0,
+        "result": {
+              'id': "113024", // product id
+              'name':'gator',
+              'storeId':'11001',
+              'createTime': "2006-01-02T15:04:05Z07:00",
+              'updateTime': "2006-01-02T15:04:05Z07:00",
+              'price':'1000',
+              'quantity':'1',
+              'description':'real gator',
+              'picture':'123123',
+              'isDeleted':false
+        }
+    }
+    ```
+
+    Error:
+     ```
+     {
+         "status": 800,
+         "result": {
+            "errorName": "MISS_PARAMS"
+         }
+     }
+     ```
+   
+     Error Code Table for error situation:
+
+      | ErrorName | ErrorCode | HttpStatus | Description |
+      | ---  | --- | --- | --- |
+      | MISS_PARAMS | 800 | 400 | |
+      | INVALID_PARAMS | 801 | 400 | |
+      | NO_JWTTOKEN | 1000 | 401 | Missing JwtToken |
+      | INVALID_JWTTOKEN | 1001 | 401 | Expire or invalid jwtToken |
+      | INVALID_ACCESSTOKEN | 9000 | 403 | Expire Google Access Token |
+  
+---
+#### PA2. Product Get API
+ - Method: GET
+ - {routePath}: /product/{product id}/info
+ - **Header** - Empty
+ - **Request Body Table**
+   | Name | Type | Description |
+   | ---  | --- | --- |
+
+    Example:
+     ```
+     {
+     }
+     
+ - **Response**  
+    Success: 
+    ```
+    {
+        "status": 0,
+        "result": {
+             {productObject}
+        }
+    }
+    ```
+
+    Error:
+     ```
+     {
+         "status": 800,
+         "result": {
+            "errorName": "MISS_PARAMS"
+         }
+     }
+     ```
+   
+     Error Code Table for error situation:
+
+      | ErrorName | ErrorCode | HttpStatus | Description |
+      | ---  | --- | --- | --- |
+      | MISS_PARAMS | 800 | 400 | |
+      | INVALID_PARAMS | 801 | 400 | |
+      | NO_JWTTOKEN | 1000 | 401 | Missing JwtToken |
+      | INVALID_JWTTOKEN | 1001 | 401 | Expire or invalid jwtToken |
+      | INVALID_ACCESSTOKEN | 9000 | 403 | Expire Google Access Token |
+  
+---
+#### PA3. Product Update API
+ - Method: PUT
+ - {routePath}: /product/{product id}
+ - **Header**
+   | Name | Type | Description |
+   | --- | --- | --- |
+   | Authorization | string |  jwtToken |
+   
+ - **Request Body Table**
+   | Name | Type | Description |
+   | ---  | --- | --- |
+   | (optional)name | string | product name |
+   | (optional)price | string | product price |
+   | (optional)description | string | product introduction |
+   |(optional) quantity | string | how many product in stock |
+   | (optional)picture | string | picture in base64 |
+
+    Example:
+     ```
+     {
+         'name': 'gator',
+         'price": '1000',
+         'description':'real gator',
+         'quantity': '1',
+         'picture':'123123123'
+     }
+     
+ - **Response**  
+    Success: 
+    ```
+    {
+        "status": 0,
+        "result": {
+              {productObject}
+        }
+    }
+    ```
+
+    Error:
+     ```
+     {
+         "status": 800,
+         "result": {
+            "errorName": "MISS_PARAMS"
+         }
+     }
+     ```
+   
+     Error Code Table for error situation:
+
+      | ErrorName | ErrorCode | HttpStatus | Description |
+      | ---  | --- | --- | --- |
+      | MISS_PARAMS | 800 | 400 | |
+      | INVALID_PARAMS | 801 | 400 | |
+      | NO_JWTTOKEN | 1000 | 401 | Missing JwtToken |
+      | INVALID_JWTTOKEN | 1001 | 401 | Expire or invalid jwtToken |
+      | INVALID_ACCESSTOKEN | 9000 | 403 | Expire Google Access Token |
+  
+---
+#### PA4. Product Purchase API
+ - Method: POST
+ - {routePath}: /product/{product id}
+ - **Header**
+   | Name | Type | Description |
+   | --- | --- | --- |
+   | Authorization | string |  jwtToken |
+   
+ - **Request Body Table**
+   | Name | Type | Description |
+   | ---  | --- | --- |
+   |quantity | string | how many product in stock |
+   |liveId| string | bind with livestream |
+
+    Example:
+     ```
+     {
+         'quantity': '1'
+         'liveId': ''  (optional)
+     }
+     
+ - **Response**  
+    Success: 
+    ```
+    {
+      "status": 0,
+      "result": {
+          "createTime": "2022-03-30T14:58:43Z",
+          "id": "order-5",
+          "liveId": "",
+          "productId": "product-1",
+          "quantity": 1,
+          "storeId": "gatorstore-1",
+          "subtotal": 1000,
+          "userId": "11002"
+      }
+    }
+    ```
+
+    Error:
+     ```
+     {
+         "status": 800,
+         "result": {
+            "errorName": "MISS_PARAMS"
+         }
+     }
+     ```
+   
+     Error Code Table for error situation:
+
+      | ErrorName | ErrorCode | HttpStatus | Description |
+      | ---  | --- | --- | --- |
+      | MISS_PARAMS | 800 | 400 | |
+      | INVALID_PARAMS | 801 | 400 | |
+      | NO_JWTTOKEN | 1000 | 401 | Missing JwtToken |
+      | INVALID_JWTTOKEN | 1001 | 401 | Expire or invalid jwtToken |
+      | INVALID_ACCESSTOKEN | 9000 | 403 | Expire Google Access Token |
+  
+---
+#### PA5. Product Delete API
+ - Method: DELETE
+ - {routePath}: /product/{product id}
+ - **Header**
+   | Name | Type | Description |
+   | --- | --- | --- |
+   | Authorization | string |  jwtToken |
+   
+ - **Request Body Table**
+   | Name | Type | Description |
+   | ---  | --- | --- |
+
+    Example:
+     ```
+     {
+     }
+     
+ - **Response**  
+    Success: 
+    ```
+    {
+        "status": 0,
+        "result": {
+              'id': "113024", // product id
+              'name':'gator',
+              'storeId':'11001',
+              'createTime': "2006-01-02T15:04:05Z07:00",
+              'updateTime': "2006-01-02T15:04:05Z07:00",
+              'price':'1000',
+              'quantity':'1',
+              'description':'real gator',
+              'picture':'123123',
+              'isDeleted':true
+        }
+    }
+    ```
+
+    Error:
+     ```
+     {
+         "status": 800,
+         "result": {
+            "errorName": "INVALID_JWTTOKEN"
+         }
+     }
+     ```
+   
+     Error Code Table for error situation:
+
+      | ErrorName | ErrorCode | HttpStatus | Description |
+      | ---  | --- | --- | --- |
+      | MISS_PARAMS | 800 | 400 | |
+      | INVALID_PARAMS | 801 | 400 | |
+      | NO_JWTTOKEN | 1000 | 401 | Missing JwtToken |
+      | INVALID_JWTTOKEN | 1001 | 401 | Expire or invalid jwtToken |
+      | INVALID_ACCESSTOKEN | 9000 | 403 | Expire Google Access Token |
+  
+---
 ### Test API URLs
 ---
 ## Ojbect Document
@@ -715,7 +1015,34 @@ The key will be **liveId**, and the value will be as below:
    'embedChatRoom': "chatroom iframe html"
  }
  ```
- 
+---
+#### Product Object
+   | Name | Type | Description |
+   | ---  | --- | --- |
+   | id | string | product id |
+   | name | string | product name |
+   | price | float| product price |
+   | description | string | product introduction |
+   | quantity | int| how many product in stock |
+   | picture | string | picture in base64 |
+   | storeId | string | publish to which store |
+   | createTime | string | createTime |
+   | updateTime | string | updateTime|
+   | isDeleted | boolean | |
+   ```
+   {
+       'id': "113024", // product id
+       'name':'gator',
+       'storeId':'11001',
+       'createTime': "2006-01-02T15:04:05Z07:00",
+       'updateTime': "2006-01-02T15:04:05Z07:00",
+       'price':'1000',
+       'quantity':'1',
+       'description':'real gator',
+       'picture':'123123',
+       'isDeleted':false
+   }
+   ```
 ---
 ### Global ErrorCode  
 - General Errors such as missing params or invalid params will be under 1000
