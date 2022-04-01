@@ -385,6 +385,18 @@ function SellerStorePage() {
   function LiveInfoBar() {
     return(
       <div>
+        {liveInfoBarState === 'not-live' && (
+          <Grid container spacing={0} justifyContent="center" alignItems="center" direction='row' style={{marginBottom: 20}}>
+            <Grid item md={4} container>
+              <h1>{storeName}</h1>
+            </Grid>
+
+            <Grid item md={4} container justifyContent="flex-end" style={{color: "grey"}}>
+              ...is taking a break
+            </Grid>
+          </Grid> 
+        )}
+
         {liveInfoBarState === 'live' && (
           <div>
             <Grid container spacing={0} justifyContent="center" alignItems="center" direction='row' style={{marginBottom: 20}}>
