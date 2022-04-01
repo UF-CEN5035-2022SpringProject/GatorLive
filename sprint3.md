@@ -12,11 +12,11 @@
       - Backend api integration with frontend
       - Create order history after purchasing a product
     - Link id of new youtube livestream with the store 
-    - Add promotion product list to the livestream
+    - Add promotion product list to the livestream. issue #83
     - Remove authentication of a few APIs, issue #76
     - Implement Product page
     - Implement Buyer webpage
-    - Add verification of jwtToken and users' accessibility of backend apis
+    - Add verification of jwtToken and users' accessibility of backend apis. #100 #88
     
 2. Embed iframe
     - Embed youtube live chat next to youtube livestream video iframe.
