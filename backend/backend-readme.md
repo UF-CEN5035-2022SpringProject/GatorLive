@@ -37,6 +37,15 @@ backend\src\github.com\UF-CEN5035-2022SpringProject\GatorStore
 
 Please enter the path and enter ```go get``` to download every dependencies.
 
+# Set Credentials
+The credentials have been save in the private Github link below  
+https://github.com/UF-CEN5035-2022SpringProject/GatorStoreCredentials
+
+- Google API credentials (Key for calling google api)
+- Google Database Credentials (Key for remote accessing google firestore)
+
+If you want to join or test our product please send a email to ***yimingchang@ufl.com*** for develop permission
+
 # Run Go program
 ---
 Differences between the three cmd below:
