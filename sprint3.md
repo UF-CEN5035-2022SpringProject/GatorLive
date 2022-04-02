@@ -1,5 +1,17 @@
 # Sprint3
 ---
+## What we have done in Sprint3
+- More New Features
+  - https://github.com/UF-CEN5035-2022SpringProject/GatorStore/blob/main/sprint3.md#new-feautures
+- Our Project Board
+  - https://github.com/UF-CEN5035-2022SpringProject/GatorStore/blob/main/sprint3.md#project-board
+- Running Document are in each applications  
+- Demo Video
+  - https://github.com/UF-CEN5035-2022SpringProject/GatorStore/blob/main/sprint3.md#demo-video
+- More Test Case for new features
+  - https://github.com/UF-CEN5035-2022SpringProject/GatorStore/blob/main/sprint3.md#testing
+
+---
 ## Demo Video
 
 ---
@@ -10,8 +22,6 @@ Down below link is the cards with sprint3 label
 https://github.com/orgs/UF-CEN5035-2022SpringProject/projects/1?card_filter_query=label%3Asprint3
 
 ---
-## Application Instruction Document
-
 ## New Feautures
 
 ### User Stories
