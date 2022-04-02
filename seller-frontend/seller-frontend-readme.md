@@ -1,4 +1,4 @@
-# GatorStore Seller Manage System
+# GatorStore Seller E-Commerse Manage Web application
 ---
 # How to Run
 1. After starting the backend, then set the target backend api url correctly in settings.js
