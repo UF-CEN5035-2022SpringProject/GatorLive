@@ -482,6 +482,54 @@ Get the orders according to the store, split the item with page
   | MissingJwtTokenCode | 1000 | 401 | |
   | InvalidJwtTokenCode | 1001 | 401 | Expire or invalid jwtToken |
 
+---
+# SA5. Store Recommend List API
+Get the products according to the store, split the item with page
+ - Method: GET
+ - {routePath}: /store/recommend-list?page={page}
+   - page parameter decide which page requesting, if overflow, return the last page. If missing, return page 0.
+ 
+ - **Header** - empty
+   
+- **Request Body Table**   
+    Empty request body
+    GET Example:
+    ```
+    {
+    }
+    ```
+- **Response**  
+    If storeList is empty, the value will be null
+    Success: 
+    ```
+    {
+      'maxPage': 3, (start at 0)
+      'currentPage': 0,
+      'storeList': [
+        {storeObj},
+        {storeObj},
+        ...
+      ]
+    }
+    ```
+
+    Error:
+     ```
+     {
+         "status": 1000,
+         "result": {
+            "errorName": "MissingJwtTokenCode"
+         }
+     }
+     ```
+   
+     Error Code Table for error situation:
+
+      | ErrorName | ErrorCode | HttpStatus | Description |
+      | ---  | --- | --- | --- |
+      | MissingJwtTokenCode | 1000 | 401 | |
+      | InvalidJwtTokenCode | 1001 | 401 | Expire or invalid jwtToken |
+
 --- 
 ###  Store Livestream API URLs
 ---
