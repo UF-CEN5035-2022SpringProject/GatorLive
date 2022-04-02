@@ -23,14 +23,14 @@ type UserObject struct {
 
 /*** JWT functions ***/
 func MapJwtToken(jwtToken string) map[string]interface{} {
-	logger.DebugLogger.Printf("Find jwtObj by token %s", jwtToken)
+	logger.DebugLogger.Printf("Try to find jwtObj by token %s", jwtToken)
 	dsnap, err := FireBaseClient.Collection(DbCollections["jwtTokenMap"]).Doc(jwtToken).Get(DatabaseCtx)
 	if err != nil {
 		logger.WarningLogger.Printf("Cannot find user jwtToken (%s). %s", jwtToken, err)
 		return nil
 	}
 	value := dsnap.Data()
-	logger.DebugLogger.Printf("Document data: %#v\n", value)
+	logger.DebugLogger.Printf("MapJwtToken data: %#v\n", value)
 	return value
 }
 
@@ -56,7 +56,7 @@ func GetUserNewCount() int {
 	}
 	value := dsnap.Data()
 	newUserId := value["number"].(int64) + 1
-	logger.DebugLogger.Printf("Document data: %#v\n, %T, newUserId: %v", value["number"], value["number"], newUserId)
+	logger.DebugLogger.Printf("GetUserNewCount data: %#v\n, %T, newUserId: %v", value["number"], value["number"], newUserId)
 	// return strconv.Itoa(int(newUserId))
 	return int(newUserId)
 }
@@ -68,7 +68,7 @@ func GetUserObj(userEmail string) map[string]interface{} {
 		return nil
 	}
 	value := dsnap.Data()
-	logger.DebugLogger.Printf("Document data: %#v\n", value)
+	logger.DebugLogger.Printf("GetUserObj data: %#v\n", value)
 	return value
 }
 
@@ -128,17 +128,4 @@ func GetStoreObjbyUserId(userId string) map[string]interface{} {
 	value := dsnap.Data()
 	logger.DebugLogger.Printf("Document data: %#v\n", value)
 	return value
-}
-
-func UpdateStoreObj(userId string, fieldStr string, fieldValue interface{}) error {
-	_, err := FireBaseClient.Collection(DbCollections["stores"]).Doc(userId).Update(DatabaseCtx, []firestore.Update{
-		{
-			Path:  fieldStr,
-			Value: fieldValue,
-		},
-	})
-	if err != nil {
-		logger.WarningLogger.Printf("Error updating value on field %s. %s", fieldStr, err)
-	}
-	return err
 }

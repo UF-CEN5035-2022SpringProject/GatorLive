@@ -18,6 +18,7 @@ import (
 	"github.com/UF-CEN5035-2022SpringProject/GatorStore/utils"
 
 	// "github.com/UF-CEN5035-2022SpringProject/GatorStore/logger"
+	gorillaContext "github.com/gorilla/context"
 	"github.com/gorilla/mux"
 	"golang.org/x/oauth2"
 
@@ -27,10 +28,12 @@ import (
 )
 
 type Title struct {
-	Title string `json:"title"`
+	Title         string   `json:"title"`
+	ProductIdList []string `json:"productIdList"`
 }
-type Status struct {
-	IsLive bool `json:"isLive"`
+
+type LiveId struct {
+	LiveId string `json:"liveId"`
 }
 
 // func token(accessToken string) (*oauth2.Token, error) {
@@ -80,9 +83,7 @@ func bind(service *youtube.Service, live *youtube.LiveBroadcast, stream *youtube
 	}
 	return nil
 }
-func verify(jwtToken string, storeid string) string {
-	return "1"
-}
+
 func GetEmail(jwtToken string) map[string]interface{} {
 	dsnap, err := db.FireBaseClient.Collection("jwtTokenMap").Doc(jwtToken).Get(db.DatabaseCtx)
 	if err != nil {
@@ -99,8 +100,24 @@ func CreateLivebroadcast(w http.ResponseWriter, r *http.Request) {
 	storeId := vars["storeId"]
 	jwtToken := r.Header.Get("Authorization")
 
-	// TODO verify
-	if verify(jwtToken, storeId) == "" {
+	// verify
+	userData := gorillaContext.Get(r, "userData").(map[string]interface{})
+
+	storeObj := db.GetStoreObj(storeId)
+	if storeObj == nil {
+		logger.ErrorLogger.Printf("invald request, unable to get store")
+		errorMsg := utils.SetErrorMsg("invald request, unable to get store")
+		resp, _ := RespJSON{int(utils.InvalidParamsCode), errorMsg}.SetResponse()
+		ReturnResponse(w, resp, http.StatusBadRequest)
+		return
+	}
+
+	userId := userData["id"].(string)
+	if storeObj["userId"] != userId {
+		logger.ErrorLogger.Printf("invald request, permission denied")
+		errorMsg := utils.SetErrorMsg("invald request, permission denied")
+		resp, _ := RespJSON{int(utils.InvalidJwtTokenCode), errorMsg}.SetResponse()
+		ReturnResponse(w, resp, http.StatusForbidden)
 		return
 	}
 
@@ -157,10 +174,19 @@ func CreateLivebroadcast(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	createTime := time.Now()
-	startTime := createTime.Add(time.Minute * 10)
+	// startTime := createTime.Add(time.Minute * 10)
+	// endTime := startTime.Add((time.Hour * 24))
+
+	startTime := createTime
 	endTime := startTime.Add((time.Hour * 24))
 
 	newLive := &youtube.LiveBroadcast{
+		ContentDetails: &youtube.LiveBroadcastContentDetails{
+			EnableAutoStart:    true,
+			EnableAutoStop:     true,
+			LatencyPreference:  "ultraLow",
+			ClosedCaptionsType: "closedCaptionsDisabled",
+		},
 		Snippet: &youtube.LiveBroadcastSnippet{
 			Title:              storeId + "-" + title.Title,
 			ScheduledStartTime: startTime.UTC().Format(time.RFC3339),
@@ -207,68 +233,62 @@ func CreateLivebroadcast(w http.ResponseWriter, r *http.Request) {
 	liveObj["createTime"] = createTime.UTC().Format(time.RFC3339)
 	liveObj["updateTime"] = createTime.UTC().Format(time.RFC3339)
 	liveObj["embedHTML"] = newLive.ContentDetails.MonitorStream.EmbedHtml
+	liveObj["productList"] = title.ProductIdList
+	liveObj["storeId"] = storeId
 
 	if db.GetLiveObj(newLive.Id) == nil {
 		db.AddLiveObj(newLive.Id, liveObj)
 	} else {
 		// TODO: Update Live Obj
 	}
+
+	productObjList := make([]map[string]interface{}, len(title.ProductIdList))
+	for index := 0; index < len(title.ProductIdList); index++ {
+		productObjList[index] = db.GetProductObj(title.ProductIdList[index])
+	}
+
+	liveObj["productList"] = productObjList
+
+	// update liveId in store
+	db.UpdateStoreObj(storeId, "liveId", liveObj["id"])
+
 	resp, _ := RespJSON{0, liveObj}.SetResponse()
 	ReturnResponse(w, resp, http.StatusOK)
 }
-func LivestreamStatus(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	storeId := vars["storeId"]
-	jwtToken := r.Header.Get("Authorization")
 
-	// TODO verify jwtToken existence
-	emailObj := db.MapJwtToken(jwtToken)
-	if emailObj == nil {
-		logger.ErrorLogger.Printf("Invalid JwtToken")
-		errorMsg := utils.SetErrorMsg("Invalid JwtToken")
-		resp, _ := RespJSON{int(utils.InvalidJwtTokenCode), errorMsg}.SetResponse()
-		ReturnResponse(w, resp, http.StatusUnauthorized)
-	}
-	email := fmt.Sprintf("%v", emailObj["Email"])
-	userProfile := db.GetUserObj(email)
-	userId := fmt.Sprintf("%v", userProfile["id"])
-	// update store object
-	if r.Method == "PUT" {
-		// TODO
-		if verify(jwtToken, storeId) == "" {
-			return
-		}
-		b, err := io.ReadAll(r.Body)
-		if err != nil {
-			logger.ErrorLogger.Printf("Unable to read livestream status req: %v", err)
-			errorMsg := utils.SetErrorMsg("Unable to read livestream status req")
-			resp, _ := RespJSON{int(utils.InvalidParamsCode), errorMsg}.SetResponse()
-			ReturnResponse(w, resp, http.StatusBadRequest)
-		}
-		var status Status
-		err = json.Unmarshal(b, &status)
-		if err != nil {
-			logger.ErrorLogger.Printf("Unable to decode livestream status req: %v", err)
-			errorMsg := utils.SetErrorMsg("Unable to decode livestream status req")
-			resp, _ := RespJSON{int(utils.InvalidParamsCode), errorMsg}.SetResponse()
-			ReturnResponse(w, resp, http.StatusBadRequest)
-		}
-		db.UpdateStoreObj(userId, "isLive", status.IsLive)
-	}
-	// return store object
+func GetLiveStream(w http.ResponseWriter, r *http.Request) {
 
-	storeObj := db.GetStoreObjbyUserId(userId)
-	if storeObj == nil {
-		logger.ErrorLogger.Printf("Unable to get storeObj by userId %s", userId)
-		errorMsg := utils.SetErrorMsg("Unable to get storeObj by userId")
+	detail := r.URL.Query().Get("detail")
+	liveId := r.URL.Query().Get("liveId")
+
+	liveObj := db.GetLiveObj(liveId)
+
+	if liveObj == nil {
+		logger.ErrorLogger.Printf("invald request, unable to get livestream")
+		errorMsg := utils.SetErrorMsg("invald request, unable to get livestream")
 		resp, _ := RespJSON{int(utils.InvalidParamsCode), errorMsg}.SetResponse()
 		ReturnResponse(w, resp, http.StatusBadRequest)
+		return
 	}
 
-	resp, err := RespJSON{0, storeObj}.SetResponse()
-	if err != nil {
-		logger.ErrorLogger.Printf("Error on wrapping JSON resp, Error: %s", err)
+	if detail == "" {
+		detail = "true"
 	}
+	if detail == "true" {
+		productIdList := liveObj["productList"].([]interface{})
+		productObjList := make([]map[string]interface{}, len(productIdList))
+		for index := 0; index < len(productIdList); index++ {
+			productObjList[index] = db.GetProductObj(productIdList[index].(string))
+		}
+
+		liveObj["productList"] = productObjList
+
+	} else {
+		liveObj["productList"] = nil
+	}
+	liveObj["streamKey"] = ""
+	liveObj["streamUrl"] = ""
+	resp, _ := RespJSON{0, liveObj}.SetResponse()
 	ReturnResponse(w, resp, http.StatusOK)
-	return
+
 }

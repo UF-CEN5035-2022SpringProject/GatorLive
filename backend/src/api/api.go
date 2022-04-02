@@ -8,6 +8,8 @@ import (
 	"github.com/UF-CEN5035-2022SpringProject/GatorStore/db"
 	"github.com/UF-CEN5035-2022SpringProject/GatorStore/logger"
 	"github.com/UF-CEN5035-2022SpringProject/GatorStore/utils"
+
+	gorillaContext "github.com/gorilla/context"
 )
 
 func HeaderMiddleware(next http.Handler) http.Handler {
@@ -36,7 +38,6 @@ func CrossAllowMiddleware(next http.Handler) http.Handler {
 
 func AuthMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// TODO: Add authentication
 		token := r.Header.Get("Authorization")
 		logger.DebugLogger.Printf("Authorization header token %s\n", token)
 
@@ -49,8 +50,18 @@ func AuthMiddleware(next http.Handler) http.Handler {
 		}
 
 		jwtMap := db.MapJwtToken(token)
+		logger.DebugLogger.Printf("jwtMap %v\n", jwtMap)
 		if jwtMap != nil {
 			// Pass down the request to the next middleware (or final handler)
+			userData := db.GetUserObj(jwtMap["Email"].(string))
+			if userData == nil {
+				logger.ErrorLogger.Printf("Invalid JWT, user obj not found")
+				errorMsg := utils.SetErrorMsg("Invalid JWT, user obj not found")
+				resp, _ := RespJSON{int(utils.InvalidJwtTokenCode), errorMsg}.SetResponse()
+				ReturnResponse(w, resp, http.StatusUnauthorized)
+				return
+			}
+			gorillaContext.Set(r, "userData", userData)
 			next.ServeHTTP(w, r)
 		} else {
 			// Write an error and stop the handler chain
@@ -58,7 +69,6 @@ func AuthMiddleware(next http.Handler) http.Handler {
 			errorMsg := utils.SetErrorMsg("Invalid JWT, not found")
 			resp, _ := RespJSON{int(utils.MissingJwtTokenCode), errorMsg}.SetResponse()
 			ReturnResponse(w, resp, http.StatusUnauthorized)
-
 			return
 		}
 	})

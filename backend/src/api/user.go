@@ -18,6 +18,7 @@ import (
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 
+	gorillaContext "github.com/gorilla/context"
 	g "google.golang.org/api/oauth2/v2"
 	youtube "google.golang.org/api/youtube/v3"
 )
@@ -220,14 +221,9 @@ func Login(w http.ResponseWriter, r *http.Request) {
 func UserInfo(w http.ResponseWriter, r *http.Request) {
 	// Depend on the action
 	// 1. Get userInfo
-	logger.DebugLogger.Println(r.Method)
 	vars := mux.Vars(r)
 	if r.Method == "GET" {
-		fmt.Fprintf(w, "Get %v user info", vars["userId"])
-		jwtToken := r.Header.Get("jwtToken")
-
-		userEmail := db.MapJwtToken(jwtToken)["email"]
-		userData := db.GetUserObj(userEmail.(string))
+		userData := gorillaContext.Get(r, "userData").(map[string]interface{})
 
 		if userData == nil {
 			logger.ErrorLogger.Printf("Invalid JWT, unable to get user")
@@ -238,10 +234,10 @@ func UserInfo(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if userData["id"] != vars["userId"] {
-			logger.ErrorLogger.Printf("invald request")
-			errorMsg := utils.SetErrorMsg("invald request")
+			logger.ErrorLogger.Printf("invald request, permission denied")
+			errorMsg := utils.SetErrorMsg("invald request, permission denied")
 			resp, _ := RespJSON{int(utils.InvalidJwtTokenCode), errorMsg}.SetResponse()
-			ReturnResponse(w, resp, http.StatusBadRequest)
+			ReturnResponse(w, resp, http.StatusForbidden)
 			return
 		}
 
@@ -255,4 +251,137 @@ func UserInfo(w http.ResponseWriter, r *http.Request) {
 	} else if r.Method == "PUT" {
 		fmt.Fprintf(w, "Update %v user info", vars["userId"])
 	}
+}
+
+func UserStoreList(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	userId := vars["userId"]
+
+	userData := gorillaContext.Get(r, "userData").(map[string]interface{})
+	if userId != userData["id"].(string) {
+		logger.ErrorLogger.Printf("invald request, permission denied")
+		errorMsg := utils.SetErrorMsg("invald request, permission denied")
+		resp, _ := RespJSON{int(utils.InvalidJwtTokenCode), errorMsg}.SetResponse()
+		ReturnResponse(w, resp, http.StatusForbidden)
+		return
+	}
+
+	page := r.URL.Query().Get("page")
+	if page == "" {
+		page = "0"
+	}
+
+	intPage, err := strconv.Atoi(page)
+	if err != nil {
+		logger.ErrorLogger.Printf("Error page type, err: %v", err)
+		errorMsg := utils.SetErrorMsg("Error type of page query")
+		resp, _ := RespJSON{int(utils.InvalidParamsCode), errorMsg}.SetResponse()
+		ReturnResponse(w, resp, http.StatusBadRequest)
+		return
+	}
+
+	storeList := db.GetUserStore(userId, intPage)
+
+	storeListData := make(map[string]interface{})
+	storeListData["userId"] = userId
+
+	storeListSize := len(storeList)
+	storeListData["maxPage"] = 0
+	storeListData["currectPage"] = 0
+	storeListData["storeList"] = storeList
+
+	logger.DebugLogger.Printf("storeListSize: %d", storeListSize)
+	if storeListSize != 0 {
+		totalPage := (storeListSize / utils.PageLimit)
+		if (storeListSize % utils.PageLimit) != 0 {
+			totalPage += 1
+		}
+		maxPage := totalPage - 1
+		storeListData["maxPage"] = maxPage
+
+		currectPage := intPage
+		if currectPage > maxPage {
+			currectPage = maxPage
+		}
+		storeListData["currectPage"] = currectPage
+		// arrange the pagenate
+		storeListData["storeList"] = utils.Pagenator(storeList, currectPage, storeListSize)
+	}
+
+	resp, err := RespJSON{0, storeListData}.SetResponse()
+	if err != nil {
+		logger.ErrorLogger.Printf("Error on wrapping JSON resp, err: %v", err)
+		errorMsg := utils.SetErrorMsg("Error on wrapping JSON resp")
+		resp, _ := RespJSON{int(utils.InvalidAccessTokenCode), errorMsg}.SetResponse()
+		ReturnResponse(w, resp, http.StatusInternalServerError)
+		return
+	}
+
+	ReturnResponse(w, resp, http.StatusOK)
+}
+
+func UserOrderList(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	userId := vars["userId"]
+
+	userData := gorillaContext.Get(r, "userData").(map[string]interface{})
+	if userId != userData["id"].(string) {
+		logger.ErrorLogger.Printf("invald request, permission denied")
+		errorMsg := utils.SetErrorMsg("invald request, permission denied")
+		resp, _ := RespJSON{int(utils.InvalidJwtTokenCode), errorMsg}.SetResponse()
+		ReturnResponse(w, resp, http.StatusForbidden)
+		return
+	}
+
+	page := r.URL.Query().Get("page")
+	if page == "" {
+		page = "0"
+	}
+
+	intPage, err := strconv.Atoi(page)
+	if err != nil {
+		logger.ErrorLogger.Printf("Error page type, err: %v", err)
+		errorMsg := utils.SetErrorMsg("Error type of page query")
+		resp, _ := RespJSON{int(utils.InvalidParamsCode), errorMsg}.SetResponse()
+		ReturnResponse(w, resp, http.StatusBadRequest)
+		return
+	}
+
+	orderList := db.GetUserOrders(userId, intPage)
+
+	orderListData := make(map[string]interface{})
+	orderListData["userId"] = userId
+
+	orderListSize := len(orderList)
+	orderListData["maxPage"] = 0
+	orderListData["currectPage"] = 0
+	orderListData["orderList"] = orderList
+
+	if orderListSize != 0 {
+		totalPage := (orderListSize / utils.PageLimit)
+		if (orderListSize % utils.PageLimit) != 0 {
+			totalPage += 1
+		}
+		maxPage := totalPage - 1
+		orderListData["maxPage"] = maxPage
+
+		currectPage := intPage
+		if currectPage > maxPage {
+			currectPage = maxPage
+		}
+		orderListData["currectPage"] = currectPage
+		// arrange the pagenate
+		orderListData["orderList"] = utils.Pagenator(orderList, currectPage, orderListSize)
+	}
+
+	resp, err := RespJSON{0, orderListData}.SetResponse()
+	if err != nil {
+		logger.ErrorLogger.Printf("Error on wrapping JSON resp, err: %v", err)
+		errorMsg := utils.SetErrorMsg("Error on wrapping JSON resp")
+		resp, _ := RespJSON{int(utils.InvalidAccessTokenCode), errorMsg}.SetResponse()
+		ReturnResponse(w, resp, http.StatusInternalServerError)
+		return
+	}
+
+	ReturnResponse(w, resp, http.StatusOK)
 }

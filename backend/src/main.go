@@ -35,18 +35,28 @@ func main() {
 	authApis := r.PathPrefix(prodRoutePrefix).Subrouter()
 	// USER path
 	authApis.HandleFunc("/user/{userId}/info", api.UserInfo).Methods("GET", "PUT", "OPTIONS")
-	authApis.HandleFunc("/user/store-list", test.EchoString)
+	authApis.HandleFunc("/user/{userId}/store-list", api.UserStoreList).Methods("GET", "OPTIONS")
+	authApis.HandleFunc("/user/{userId}/order-list", api.UserOrderList).Methods("GET", "OPTIONS")
 
 	// Store
-	authApis.HandleFunc("/store/{storeId}/product-list", test.EchoString)
+	r.HandleFunc(prodRoutePrefix+"/store/recommend-list", api.StoreRecommendList).Methods("GET")
+	authApis.HandleFunc("/store/create", api.StoreCreate).Methods("POST", "OPTIONS")
+	r.HandleFunc(prodRoutePrefix+"/store/{storeId}/info", api.StoreInfo).Methods("GET")
+	r.HandleFunc(prodRoutePrefix+"/store/{storeId}/product-list", api.StoreProducts).Methods("GET", "OPTIONS")
+	authApis.HandleFunc("/store/{storeId}/order-list", api.StoreOrders).Methods("GET", "OPTIONS")
 	authApis.HandleFunc("/store/{storeId}/livestream", api.CreateLivebroadcast).Methods("GET", "POST", "OPTIONS")
-	authApis.HandleFunc("/store/{storeId}/livestreamStatus", api.LivestreamStatus).Methods("GET", "PUT", "OPTIONS")
+	authApis.HandleFunc("/store/{storeId}/livestream/update", api.UpdateIsLive).Methods("PUT", "OPTIONS")
 
+	// live
+	r.HandleFunc(prodRoutePrefix+"/live/status", api.GetLiveStream).Methods("GET", "OPTIONS")
+
+	// Product
+	authApis.HandleFunc("/product/create", api.ProductCreate).Methods("POST", "OPTIONS")
+	r.HandleFunc(prodRoutePrefix+"/product/{productId}/info", api.ProductRESTFUL).Methods("GET", "OPTIONS")
+	authApis.HandleFunc("/product/{productId}", api.ProductRESTFUL).Methods("POST", "PUT", "DELETE", "OPTIONS")
 	// TEST API path
 	r.HandleFunc(testRoutePrefix+"/echo", test.EchoString).Methods("GET", "OPTIONS")
 	r.HandleFunc(testRoutePrefix+"/user/info", test.TestDBGetUserObj).Methods("GET", "OPTIONS")
-	// testAuthApis := r.PathPrefix(testRoutePrefix).Subrouter()
-	//testAuthApis.HandleFunc("/user/info", test.TestDBGetUserObj)
 
 	// read google oauth2 credentials
 	api.ReadCredential()
@@ -60,7 +70,6 @@ func main() {
 		r.Use(api.CrossAllowMiddleware)
 		r.Use(mux.CORSMethodMiddleware(r))
 	}
-	// testAuthApis.Use(api.AuthMiddleware)
 	authApis.Use(api.AuthMiddleware)
 	r.Use(api.HeaderMiddleware)
 
