@@ -98,4 +98,4 @@ So, most of the features in this sprint we focus on the store, live and orders f
 - Dockerize Application
 - Auntomatic Test by using PostMan API (For example, Jenkins can import Postman file and run all API by real request)
 - More Instruction for general user
-- Design explicit instructions on Landing Page --> Good prototype
+- Design explicit instructions on Landing Page --> More comprehensive prototype
