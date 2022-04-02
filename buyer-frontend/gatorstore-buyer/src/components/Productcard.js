@@ -22,7 +22,7 @@ const Productcard = props => {
           </IconButton>
         }
         title={title}
-        subheader={subtitle}
+        subheader={"$" + subtitle}
       />
       <CardMedia style={{ height: "150px" }} image={imageUrl} />
       <CardContent>
