@@ -5,7 +5,13 @@
   - https://github.com/UF-CEN5035-2022SpringProject/GatorStore/blob/main/sprint3.md#new-feautures
 - Our Project Board
   - https://github.com/UF-CEN5035-2022SpringProject/GatorStore/blob/main/sprint3.md#project-board
-- Running Document are in each applications  
+- Instructions on running the applications are in each applications
+  - GatorStore Backend  
+    https://github.com/UF-CEN5035-2022SpringProject/GatorStore/blob/main/backend/backend-readme.md
+  - Seller E-Commerse Manage Web application  
+    https://github.com/UF-CEN5035-2022SpringProject/GatorStore/blob/main/seller-frontend/seller-frontend-readme.md
+  - Buyer E-Commerse Web application
+
 - Demo Video
   - https://github.com/UF-CEN5035-2022SpringProject/GatorStore/blob/main/sprint3.md#demo-video
 - More Test Case for new features
@@ -13,6 +19,7 @@
 
 ---
 ## Demo Video
+https://www.youtube.com/watch?v=ioquXggbBkY
 
 ---
 ## Project Board
