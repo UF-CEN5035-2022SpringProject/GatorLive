@@ -1,3 +1,12 @@
+# GatorStore Seller Manage System
+---
+# How to Run
+```
+npm install && npm start
+```
+
+- The application will be located at port 3000
+
 # Routing To Pages Via /paths:
 ---
 Routing will be done via the **react-router-dom library**, version 6.2.1.   
