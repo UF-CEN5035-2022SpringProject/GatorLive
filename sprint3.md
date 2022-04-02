@@ -10,8 +10,8 @@
     https://github.com/UF-CEN5035-2022SpringProject/GatorStore/blob/main/backend/backend-readme.md
   - Seller E-Commerse Manage Web application  
     https://github.com/UF-CEN5035-2022SpringProject/GatorStore/blob/main/seller-frontend/seller-frontend-readme.md
-  - Buyer E-Commerse Web application
-
+  - Buyer E-Commerse Web application  
+    https://github.com/UF-CEN5035-2022SpringProject/GatorStore/blob/main/buyer-frontend/buyer-frontend-readme.md
 - Demo Video
   - https://github.com/UF-CEN5035-2022SpringProject/GatorStore/blob/main/sprint3.md#demo-video
 - More Test Case for new features
