@@ -11,6 +11,8 @@ import ProductPage from './pages/ProductPage'
 import LandingPage from './pages/LandingPage'
 import SellerStorePage from './pages/SellerStorePage';
 import LoginRedirect from './pages/LoginRedirect'
+import Orders from './pages/Orders'
+import PastLivestreams from './pages/Livestreams'
 
 ReactDOM.render(
   <BrowserRouter basename="/">
@@ -20,6 +22,9 @@ ReactDOM.render(
       <Route path="/" element={<LandingPage/>} />
       <Route path="/store/:storeID" element={<SellerStorePage/>} />
       <Route path="/login" element={<LoginRedirect/>} />
+
+      <Route path="/orders" element={<Orders/>} /> 
+      <Route path="/livestreams" element={<PastLivestreams/>} /> 
     </Routes>
   </BrowserRouter>,
   document.getElementById('root')
