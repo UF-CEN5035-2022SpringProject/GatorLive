@@ -44,11 +44,13 @@ func main() {
 	r.HandleFunc(prodRoutePrefix+"/store/{storeId}/info", api.StoreInfo).Methods("GET")
 	r.HandleFunc(prodRoutePrefix+"/store/{storeId}/product-list", api.StoreProducts).Methods("GET", "OPTIONS")
 	authApis.HandleFunc("/store/{storeId}/order-list", api.StoreOrders).Methods("GET", "OPTIONS")
+	authApis.HandleFunc("/store/{storeId}/live-list", api.StoreLives).Methods("GET", "OPTIONS")
 	authApis.HandleFunc("/store/{storeId}/livestream", api.CreateLivebroadcast).Methods("GET", "POST", "OPTIONS")
 	authApis.HandleFunc("/store/{storeId}/livestream/update", api.UpdateIsLive).Methods("PUT", "OPTIONS")
 
 	// live
 	r.HandleFunc(prodRoutePrefix+"/live/status", api.GetLiveStream).Methods("GET", "OPTIONS")
+	authApis.HandleFunc("/live/{liveId}/order-list", api.LiveOrders).Methods("GET", "OPTIONS")
 
 	// Product
 	authApis.HandleFunc("/product/create", api.ProductCreate).Methods("POST", "OPTIONS")

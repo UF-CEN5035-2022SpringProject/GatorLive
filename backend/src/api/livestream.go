@@ -3,6 +3,7 @@ package api
 import (
 	"context"
 	"fmt"
+	"strconv"
 
 	// "encoding/json"
 	// "fmt"
@@ -291,4 +292,88 @@ func GetLiveStream(w http.ResponseWriter, r *http.Request) {
 	resp, _ := RespJSON{0, liveObj}.SetResponse()
 	ReturnResponse(w, resp, http.StatusOK)
 
+}
+
+func LiveOrders(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	liveId := vars["liveId"]
+
+	liveObj := db.GetLiveObj(liveId)
+	if liveObj == nil {
+		logger.ErrorLogger.Printf("invald request, unable to get live obj")
+		errorMsg := utils.SetErrorMsg("invald request, unable to get live")
+		resp, _ := RespJSON{int(utils.InvalidParamsCode), errorMsg}.SetResponse()
+		ReturnResponse(w, resp, http.StatusBadRequest)
+		return
+	}
+
+	userData := gorillaContext.Get(r, "userData").(map[string]interface{})
+	storeObj := db.GetStoreObj(liveObj["storeId"].(string))
+	if storeObj == nil {
+		logger.ErrorLogger.Printf("invald request, unable to get store")
+		errorMsg := utils.SetErrorMsg("invald request, unable to get store")
+		resp, _ := RespJSON{int(utils.InvalidParamsCode), errorMsg}.SetResponse()
+		ReturnResponse(w, resp, http.StatusBadRequest)
+		return
+	}
+
+	if storeObj["userId"] != userData["id"].(string) {
+		logger.ErrorLogger.Printf("invald request, permission denied")
+		errorMsg := utils.SetErrorMsg("invald request, permission denied")
+		resp, _ := RespJSON{int(utils.InvalidJwtTokenCode), errorMsg}.SetResponse()
+		ReturnResponse(w, resp, http.StatusForbidden)
+		return
+	}
+
+	page := r.URL.Query().Get("page")
+	if page == "" {
+		page = "0"
+	}
+
+	intPage, err := strconv.Atoi(page)
+	if err != nil {
+		logger.ErrorLogger.Printf("Error page type, err: %v", err)
+		errorMsg := utils.SetErrorMsg("Error type of page query")
+		resp, _ := RespJSON{int(utils.InvalidParamsCode), errorMsg}.SetResponse()
+		ReturnResponse(w, resp, http.StatusBadRequest)
+		return
+	}
+
+	orderList := db.GetLiveOrders(liveId, intPage)
+
+	liveOrderData := make(map[string]interface{})
+	liveOrderData["liveId"] = liveId
+
+	orderListSize := len(orderList)
+	liveOrderData["maxPage"] = 0
+	liveOrderData["currectPage"] = 0
+	liveOrderData["orderList"] = orderList
+
+	if orderListSize != 0 {
+		totalPage := (orderListSize / utils.PageLimit)
+		if (orderListSize % utils.PageLimit) != 0 {
+			totalPage += 1
+		}
+		maxPage := totalPage - 1
+		liveOrderData["maxPage"] = maxPage
+
+		currectPage := intPage
+		if currectPage > maxPage {
+			currectPage = maxPage
+		}
+		liveOrderData["currectPage"] = currectPage
+		// arrange the pagenate
+		liveOrderData["orderList"] = utils.Pagenator(orderList, currectPage, orderListSize)
+	}
+
+	resp, err := RespJSON{0, liveOrderData}.SetResponse()
+	if err != nil {
+		logger.ErrorLogger.Printf("Error on wrapping JSON resp, err: %v", err)
+		errorMsg := utils.SetErrorMsg("Error on wrapping JSON resp")
+		resp, _ := RespJSON{int(utils.InvalidAccessTokenCode), errorMsg}.SetResponse()
+		ReturnResponse(w, resp, http.StatusInternalServerError)
+		return
+	}
+
+	ReturnResponse(w, resp, http.StatusOK)
 }
