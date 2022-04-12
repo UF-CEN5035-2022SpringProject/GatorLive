@@ -8,15 +8,17 @@ import EditIcon from '@mui/icons-material/Edit';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import Button from '@mui/material/Button';
 import gatorPlush from '../images/gator-plush.png';
+import SentimentDissatisfiedIcon from '@mui/icons-material/SentimentDissatisfied';
 
 import settings from '../settings'
+import { useParams } from 'react-router-dom';
 import { useNavigate } from "react-router-dom";
 
 function MyOrders() {
     const navigate = useNavigate(); // to redirect using navigate()
+    const { storeId } = useParams();
     
-    // UNCOMMENT WHEN USING SERVER:
-    /* On load: Check that user is logged (if not, back to landing page they go)
+    // On load: Check that user is logged (if not, back to landing page they go)
     useEffect(() => {
         if (window.sessionStorage.getItem("user-jwtToken") === null) {
             alert("Please login to see your orders.");
@@ -25,7 +27,7 @@ function MyOrders() {
 
         // Get first page
         GetPage(0);
-    }, []);*/
+    }, []);
 
     function OrderEntry(orderInfo) {
         return (
@@ -38,8 +40,6 @@ function MyOrders() {
                     <div className="StoreEntryDetailRow">
                         <p><b>Quantity:</b> {orderInfo.quantity}</p>
                         <p>|</p>
-                        <p><b>Store:</b> name (unless /orders/storeID)</p>
-                        <p>|</p>
                         <p><b>ID:</b> {orderInfo.id}</p>
                     </div>
                 </div>
@@ -51,9 +51,10 @@ function MyOrders() {
         );
     } 
 
-    const [orderArray, SetOrderArray] = useState([{
-        productName: "Test", productId: "25S", quantity: "3", subTotal: "35"
-    }]);
+    const [orderArray, SetOrderArray] = useState([]);
+
+    // To see if store even exists:
+    const [actualStore, SetIfActualStore] = useState(true);
 
     // For pagination:
     const [currProductPage, ChangeProductPage] = useState(0);
@@ -69,7 +70,7 @@ function MyOrders() {
     }
 
     function GetPage(pageNum) {
-        /* Get JWT Token for POST request header:
+        // Get JWT Token for POST request header:
         var jwtToken = window.sessionStorage.getItem("user-jwtToken");
         var userId = window.sessionStorage.getItem("user-id");
         
@@ -80,7 +81,7 @@ function MyOrders() {
             'Authorization': jwtToken
         }
         };
-        fetch(settings.apiHostURL + 'user/' + userId + '/order-list?page=' + pageNum, requestOptions)
+        fetch(settings.apiHostURL + 'store/' + storeId + '/order-list?page=' + pageNum, requestOptions)
         .then(response => response.json())
         .then(response => {
             if (response.status === 0) {
@@ -90,36 +91,47 @@ function MyOrders() {
                 }
                 // Set max page number so that this fetch isn't even called if it is an invalid page number
                 maxProductPage = response.result.maxPage;
+
+                SetIfActualStore(true)
             }
             else {
-            console.log("ERROR: Order Page API did not respond with 'success' status code.");
+                console.log("ERROR: Order Page API did not respond with 'success' status code.");
+                SetIfActualStore(false)
             }
         })
         .catch((error) => {
             console.error(error);
-        });*/
+        });
     }
 
     function OrderList() {
         return (
-            <div class="store-list-container" onScroll={(e) => {
-                if (e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight) {
-                  ScrollDown();
-                }
-              }}>
-                <div class="store-list-container">
-                    <div className="storeListContainer">
-                    {orderArray && orderArray.length > 0 && ( orderArray.map(function (order) {
-                        return(
-                            <OrderEntry productName={order.productName} id={order.productId} quantity={order.quantity} subTotal={order.subTotal}/>
-                            );
-                        })
-                    )}
-                    {orderArray.length == 0 && (
-                        <div>- You have no orders. -</div>
-                    )}
+            <div class="store-list-container">
+                {actualStore && (
+                    <div class="store-list-container" onScroll={(e) => {
+                        if (e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight) {
+                        ScrollDown();
+                        }
+                    }}>
+                        <div className="storeListContainer">
+                            {orderArray && orderArray.length > 0 && ( orderArray.map(function (order) {
+                                return(
+                                    <OrderEntry productName={order.productName} id={order.productId} quantity={order.quantity} subTotal={order.subTotal}/>
+                                    );
+                                })
+                            )}
+                            {orderArray.length == 0 && (
+                                <div>- {storeId} has no orders. -</div>
+                            )}
+                        </div>
                     </div>
-                </div>
+                )}
+
+                {!actualStore && (
+                    <div className="storeListContainer">
+                        <SentimentDissatisfiedIcon fontSize='large' color='warning'/>
+                    </div>
+                )}
             </div>
         );
     }
@@ -130,7 +142,12 @@ function MyOrders() {
 
         <div className="flexCenter colFlex">
             <div className="storeListSubHeader">
-            <h1>Order History:</h1>
+                {actualStore && (
+                    <h1>{storeId}'s Order History:</h1>
+                )}
+                {!actualStore && (
+                    <p style={{fontSize: "30px"}}>You don't have access to <b>{storeId}</b></p>
+                )}
             </div>
         
             <OrderList />

@@ -23,8 +23,8 @@ ReactDOM.render(
       <Route path="/store/:storeID" element={<SellerStorePage/>} />
       <Route path="/login" element={<LoginRedirect/>} />
 
-      <Route path="/orders" element={<Orders/>} /> 
-      <Route path="/livestreams" element={<PastLivestreams/>} /> 
+      <Route path="/:storeId/orders" element={<Orders/>} /> 
+      <Route path="/:storeId/livestreams" element={<PastLivestreams/>} /> 
     </Routes>
   </BrowserRouter>,
   document.getElementById('root')
