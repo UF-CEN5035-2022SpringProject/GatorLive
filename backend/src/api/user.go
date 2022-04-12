@@ -102,6 +102,8 @@ func ReadCredential() {
 // API ENTRYPOINT
 func Login(w http.ResponseWriter, r *http.Request) {
 	// setup config
+	loginFrom := r.URL.Query().Get("from")
+
 	ctx := context.Background()
 	conf := &oauth2.Config{
 		ClientID:     ClientID,
@@ -110,12 +112,11 @@ func Login(w http.ResponseWriter, r *http.Request) {
 
 		Endpoint:    google.Endpoint,
 		RedirectURL: RedirectURL[1],
-		// Endpoint: oauth2.Endpoint{
-		// 	AuthURL:  "https://provider.com/o/oauth2/auth",
-		// 	TokenURL: "https://provider.com/o/oauth2/token",
-		// },
 	}
 
+	if loginFrom == "buyer" {
+		conf.RedirectURL = RedirectURL[2]
+	}
 	// get code or assesstoken from http.request
 	b, err := io.ReadAll(r.Body)
 	logger.DebugLogger.Printf("request login body %s", b)
