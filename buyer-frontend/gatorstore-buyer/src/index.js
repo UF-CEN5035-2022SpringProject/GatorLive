@@ -11,11 +11,13 @@ import StorePage from './pages/Store'
 import LandingPage from './pages/LandingPage'
 import LoginRedirect from './pages/LoginRedirect'
 import MyOrders from './pages/MyOrders'
+import InstructionPage from './pages/InstructionPage';
 
 ReactDOM.render(
   <BrowserRouter basename="/">
     <Routes>
-      <Route path="/" element={<LandingPage/>} />
+      <Route path="/" element={<InstructionPage/>} />
+      <Route path="/home" element={<LandingPage/>} />
       <Route path="/product/:productID" element={<ProductPage/>} />
       <Route path="/store/:storeID" element={<StorePage/>} />
       <Route path="/login" element={<LoginRedirect/>} />
@@ -24,4 +26,3 @@ ReactDOM.render(
   </BrowserRouter>,
   document.getElementById('root')
 );
-
