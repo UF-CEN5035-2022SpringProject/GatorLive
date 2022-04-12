@@ -84,17 +84,6 @@ func bind(service *youtube.Service, live *youtube.LiveBroadcast, stream *youtube
 	return nil
 }
 
-func GetEmail(jwtToken string) map[string]interface{} {
-	dsnap, err := db.FireBaseClient.Collection("jwtTokenMap").Doc(jwtToken).Get(db.DatabaseCtx)
-	if err != nil {
-		logger.WarningLogger.Printf("Cannot find user by email. %s", err)
-		return nil
-	}
-	value := dsnap.Data()
-	logger.ErrorLogger.Printf("Document data: %#v\n", value)
-
-	return value
-}
 func CreateLivebroadcast(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	storeId := vars["storeId"]
