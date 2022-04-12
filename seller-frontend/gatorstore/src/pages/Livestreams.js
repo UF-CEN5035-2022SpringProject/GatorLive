@@ -52,6 +52,7 @@ function Livestreams() {
                         </TableHead>
 
                         <TableBody>
+                            {console.log(liveOrdersArray)}
                             {
                                 liveOrdersArray && liveOrdersArray.length > 0 && liveOrdersArray[stream.index].map(function (order) {
                                     return(
@@ -101,10 +102,19 @@ function Livestreams() {
         }
     }
 
-    function GetLiveOrders(pageNum, liveId) {
+    useEffect(() => {
+        if (liveList != undefined) {
+            liveList.forEach((livestream, index) => {
+                liveOrdersArray.concat([]);
+                GetLiveOrders(0, livestream.id, index);   
+            })
+        }
+      }, [liveList]);
+
+    function GetLiveOrders(pageNum, liveId, index) {
         // Get JWT Token for POST request header:
         var jwtToken = window.sessionStorage.getItem("user-jwtToken");
-                
+                        
         // Call API to get product list:
         const requestOptions = {
         method: 'GET',
@@ -116,7 +126,14 @@ function Livestreams() {
         .then(response => response.json())
         .then(response => {
             if (response.status === 0) {
-                return response.result.orderList;
+                if (response.result.orderList !== null) {
+                    
+                    //console.log(response.result.orderList)
+
+                    //SetLiveOrdersArray(liveOrdersArray.concat(response.result.orderList));
+                    liveOrdersArray[index] = response.result.orderList;
+                    SetLiveOrdersArray(liveOrdersArray);
+                } 
             }
             else {
                 console.log("ERROR: Order Page API did not respond with 'success' status code.");
@@ -158,34 +175,6 @@ function Livestreams() {
                 console.log("ERROR: Order Page API did not respond with 'success' status code.");
                 SetIfActualStore(false)
             }
-        })
-        .then(list => {
-            console.log("starting store-list forEach")
-            liveList.forEach((livestream, index) => {
-                // Get JWT Token for POST request header:
-                var jwtToken = window.sessionStorage.getItem("user-jwtToken");
-                        
-                // Call API to get product list:
-                const requestOptions = {
-                method: 'GET',
-                headers: {
-                    'Authorization': jwtToken
-                }
-                };
-                fetch(settings.apiHostURL + 'live/' + livestream.id + '/order-list?page=' + 0, requestOptions)
-                .then(response => response.json())
-                .then(response => {
-                    if (response.status === 0) {
-                        SetLiveOrdersArray(liveOrdersArray.concat(response.result.orderList));
-                    }
-                    else {
-                        console.log("ERROR: Order Page API did not respond with 'success' status code.");
-                    }
-                })
-                .catch((error) => {
-                    console.error(error);
-                });
-            })
         })
         .catch((error) => {
             console.error(error);
