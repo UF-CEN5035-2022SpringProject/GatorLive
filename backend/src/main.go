@@ -3,7 +3,6 @@ package main
 import (
 	"log"
 	"net/http"
-	"strings"
 	"time"
 
 	"github.com/UF-CEN5035-2022SpringProject/GatorStore/api"
@@ -39,9 +38,9 @@ func main() {
 	authApis.HandleFunc("/user/{userId}/order-list", api.UserOrderList).Methods("GET", "OPTIONS")
 
 	// Store
-	r.HandleFunc(prodRoutePrefix+"/store/recommend-list", api.StoreRecommendList).Methods("GET")
+	r.HandleFunc(prodRoutePrefix+"/store/recommend-list", api.StoreRecommendList).Methods("GET", "OPTIONS")
 	authApis.HandleFunc("/store/create", api.StoreCreate).Methods("POST", "OPTIONS")
-	r.HandleFunc(prodRoutePrefix+"/store/{storeId}/info", api.StoreInfo).Methods("GET")
+	r.HandleFunc(prodRoutePrefix+"/store/{storeId}/info", api.StoreInfo).Methods("GET", "OPTIONS")
 	r.HandleFunc(prodRoutePrefix+"/store/{storeId}/product-list", api.StoreProducts).Methods("GET", "OPTIONS")
 	authApis.HandleFunc("/store/{storeId}/order-list", api.StoreOrders).Methods("GET", "OPTIONS")
 	authApis.HandleFunc("/store/{storeId}/live-list", api.StoreLives).Methods("GET", "OPTIONS")
@@ -62,9 +61,9 @@ func main() {
 
 	// read google oauth2 credentials
 	api.ReadCredential()
-	logger.InfoLogger.Println("client id: " + api.ClientID)
-	logger.InfoLogger.Println("client secret: " + api.ClientSecret)
-	logger.InfoLogger.Println("redirect uris: " + strings.Join(api.RedirectURL, ","))
+	// logger.InfoLogger.Println("client id: " + api.ClientID)
+	// logger.InfoLogger.Println("client secret: " + api.ClientSecret)
+	// logger.InfoLogger.Println("redirect uris: " + strings.Join(api.RedirectURL, ","))
 
 	// If debug = True then set the CORSMethodMiddleware
 	if IsDev {

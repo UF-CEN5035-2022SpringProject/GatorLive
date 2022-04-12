@@ -104,7 +104,6 @@ func GetStoreOrders(storeId string, page int) []map[string]interface{} {
 
 func GetUserStore(userId string, page int) []map[string]interface{} {
 	var storeList []map[string]interface{}
-	// OrderBy("id", firestore.Asc)
 	iter := FireBaseClient.Collection(DbCollections["stores"]).Where("userId", "==", userId).Documents(DatabaseCtx)
 	for {
 		doc, err := iter.Next()
@@ -122,7 +121,6 @@ func GetUserStore(userId string, page int) []map[string]interface{} {
 
 func GetUserOrders(userId string, page int) []map[string]interface{} {
 	var storeList []map[string]interface{}
-	// OrderBy("id", firestore.Asc)
 	iter := FireBaseClient.Collection(DbCollections["orders"]).Where("userId", "==", userId).Documents(DatabaseCtx)
 	for {
 		doc, err := iter.Next()
@@ -153,8 +151,7 @@ func UpdateStoreObj(storeId string, fieldStr string, fieldValue interface{}) err
 
 func GetStoreRecommend(page int) []map[string]interface{} {
 	var storeList []map[string]interface{}
-	// OrderBy("id", firestore.Asc)
-	iter := FireBaseClient.Collection(DbCollections["stores"]).Documents(DatabaseCtx)
+	iter := FireBaseClient.Collection(DbCollections["stores"]).OrderBy("isLive", firestore.Desc).Documents(DatabaseCtx)
 	for {
 		doc, err := iter.Next()
 		if err == iterator.Done {
