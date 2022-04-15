@@ -31,8 +31,6 @@ function Livestreams() {
         GetPage(0);
     }, []);
 
-    var liveOrderMap = new Map();
-
     function LivestreamEntry(stream) {
         return (
             <div className="LivestreamEntry rowFlex">
