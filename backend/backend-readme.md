@@ -10,7 +10,16 @@
    ![image](https://user-images.githubusercontent.com/11768359/163622397-8764550f-5505-4b02-8d7b-177cbd0242c2.png)
 
 3. Google Database Credentials (Key for remote accessing google firestore)
-4. Golang (v1.17.6)
+   1. Create a new project at https://console.firebase.google.com/
+   1. Create a new Firestore database
+   2. Create all following collections either by code or manually. (`users`,`stores`,`products`,`settings`,`jwtTokenMap`,`lives`)
+   3. Under `settings` collection, add following documents(`orderAutoIncrement`,`productAutoIncrement`,`storeAutoIncrement`,`userAutoIncrement`)
+   4. In each documents added in previous step, add `number` field.
+   5. Go to `Project settings > Service accounts`, generate and download new private key.
+
+
+5. Golang (v1.17.6)
+   - Refer to https://go.dev/doc/install
 
 # Installation
 
