@@ -5,15 +5,15 @@ import Footer from '../components/Footer';
 import '../styles/sellerStoreList.css';
 
 import AddIcon from '@mui/icons-material/Add';
-import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import Button from '@mui/material/Button';
 import TextField from "@mui/material/TextField";
 import Avatar from '@mui/material/Avatar';
+import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
+import VideoLibraryIcon from '@mui/icons-material/VideoLibrary';
 
 import settings from '../settings'
-
 
 
 function SellerStoreList() {
@@ -24,15 +24,18 @@ function SellerStoreList() {
           <Avatar sx={{ bgcolor: 'navy', width: 80, height: 80}}>{storeInfo.initials}</Avatar>
         </div>
         <div style={{ flex: 3 }}>
-          <h1 className="StoreEntryTitle">{storeInfo.name} <OpenInNewIcon /></h1>
+          <Link to={'/store/' + storeInfo.storeId}><h1 className="StoreEntryTitle">{storeInfo.name} <OpenInNewIcon /></h1></Link>
           <div className="StoreEntryDetailRow">
             <p><b>Birthday:</b> {storeInfo.createDate}</p>
             <p>|</p>
             <p><b>ID:</b> {storeInfo.storeId}</p>
           </div>
         </div>
-        <div style={{ flex: 1}} className="flexCenter">
-          <Button component={Link} to={'/store/' + storeInfo.storeId} startIcon={<EditIcon />} variant="contained" color="primary" sx={{ marginBottom: 1 }}>Visit</Button>
+        <div style={{ flex: 1, marginRight: 10}} className="flexCenter">
+          <div style={{display:"flex", flexDirection: "row"}}>
+            <Button component={Link} to={'/' + storeInfo.storeId + "/orders"} startIcon={<ShoppingBagIcon />} style={{marginRight: 15}} variant="contained" color="primary" sx={{ marginBottom: 1 }}>Orders</Button>
+            <Button component={Link} to={'/' + storeInfo.storeId + "/livestreams"} startIcon={<VideoLibraryIcon />} variant="contained" color="warning" sx={{ marginBottom: 1 }}>Livestreams</Button>
+          </div>
           <Button startIcon={<DeleteIcon />} onClick={() => {
             DeleteStore(storeInfo.storeId);
           }} variant="contained" color="secondary">Delete</Button>
