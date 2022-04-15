@@ -1,3 +1,22 @@
+# Requirements
+1. Google API credentials (Key for calling google/youtube api)
+   1. Create a new project at https://console.cloud.google.com/
+   2. Go to `APIs & Services` section
+   3. Enable `YouTube Data API v3`
+   4. Create a new `OAuth 2.0 Client ID`
+   5. Carefully change the redirect uri as follow and save.(Order matters)
+   ![image](https://user-images.githubusercontent.com/11768359/163622161-a9771954-de17-4e68-a3c8-13b6eab26120.png)
+   1. Download the credential 
+   ![image](https://user-images.githubusercontent.com/11768359/163622397-8764550f-5505-4b02-8d7b-177cbd0242c2.png)
+
+3. Google Database Credentials (Key for remote accessing google firestore)
+4. Golang (v1.17.6)
+
+# Installation
+
+# Run
+
+
 # Golang Version 
 ---
 **go1.17.6**
