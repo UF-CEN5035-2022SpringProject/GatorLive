@@ -35,6 +35,7 @@ function Livestreams() {
     }, []);
 
     function LivestreamEntry(stream) {
+        console.log('LivestreamEntry')
         return (
             <div className="LivestreamEntry rowFlex">
                 <p className="LivestreamTitle"><b>{stream.date}</b> | "{stream.streamName}"</p>
@@ -50,24 +51,28 @@ function Livestreams() {
                                 <TableCell align="right">User</TableCell>
                             </TableRow>
                         </TableHead>
-
+                        {console.log(`draw the orders of liveOrdersArray ${stream.index}, len ${liveOrdersArray.length}`)}
+                        {console.log(`--------`)}
+                        {console.log(liveOrdersArray)}
+                        {console.log(liveOrdersArray.length)}
                         <TableBody>
-                            {console.log(liveOrdersArray)}
                             {
+                                liveOrdersArray && liveOrdersArray.length > stream.index && (liveOrdersArray[stream.index].map((order) => {console.log(order.id)}))
+                            }
+                            {/* {
                                 liveOrdersArray && liveOrdersArray.length > 0 && liveOrdersArray[stream.index].map(function (order) {
                                     return(
-                                    <TableRow key={order.name}>
-                                        <TableCell component="th" scope="row">
-                                            {order.name}
-                                        </TableCell>
-                                        <TableCell align="right">{order.quantity}</TableCell>
-                                        <TableCell align="right">{order.subTotal}</TableCell>
-                                        <TableCell align="right">{order.user}</TableCell>
-                                    </TableRow>
+                                        <TableRow key={order.name}>
+                                            <TableCell component="th" scope="row">
+                                                {order.name}
+                                            </TableCell>
+                                            <TableCell align="right">{order.quantity}</TableCell>
+                                            <TableCell align="right">{order.subTotal}</TableCell>
+                                            <TableCell align="right">{order.user}</TableCell>
+                                        </TableRow>
                                     );
                                 })
-                                
-                            }
+                            } */}
                         </TableBody>
                     </Table>
                 </TableContainer>
@@ -103,9 +108,10 @@ function Livestreams() {
     }
 
     useEffect(() => {
-        if (liveList != undefined) {
+        if (liveList && liveList.length > 0) {
+            // console.log('liveOrdersArray++++')
+            // console.log(liveOrdersArray)
             liveList.forEach((livestream, index) => {
-                liveOrdersArray.concat([]);
                 GetLiveOrders(0, livestream.id, index);   
             })
         }
@@ -126,14 +132,27 @@ function Livestreams() {
         .then(response => response.json())
         .then(response => {
             if (response.status === 0) {
+                var newArray = liveOrdersArray;
                 if (response.result.orderList !== null) {
                     
-                    //console.log(response.result.orderList)
+                    // //console.log(response.result.orderList)
+                    // console.log('orderList');
+                    // console.log(response.result.orderList);
+                    // console.log(`index:${index}`)
+                    // console.log(`liveOrdersArray~~~~`);
+                    // console.log(liveOrdersArray);
+                    newArray.push(response.result.orderList);
+                    SetLiveOrdersArray(newArray);
 
-                    //SetLiveOrdersArray(liveOrdersArray.concat(response.result.orderList));
-                    liveOrdersArray[index] = response.result.orderList;
-                    SetLiveOrdersArray(liveOrdersArray);
-                } 
+                    // {'liveId':[], ...}
+                    // get(liveId) = orderList
+
+                    // render get(stream.id) = array
+                }
+                else {
+                    newArray.push([]);
+                    SetLiveOrdersArray(newArray);
+                }
             }
             else {
                 console.log("ERROR: Order Page API did not respond with 'success' status code.");
@@ -165,6 +184,7 @@ function Livestreams() {
                 // if page requested isn't more than max page: Add orders of this new page to "orderArray"
                 if (pageNum <= response.result.maxPage && response.result.liveList != null) {
                     SetLiveList(liveList.concat(response.result.liveList));
+                    // initializeLiveOrderArray(response.result.liveList);
                     console.log("finished live-list")
                 }
                 // Set max page number so that this fetch isn't even called if it is an invalid page number
@@ -179,6 +199,14 @@ function Livestreams() {
         .catch((error) => {
             console.error(error);
         });
+    }
+
+    function initializeLiveOrderArray(list) {
+        var localArr = [];
+        list.forEach(() => {
+            localArr.push([]);
+        })
+        SetLiveOrdersArray(localArr);
     }
 
     function LivestreamList() {
