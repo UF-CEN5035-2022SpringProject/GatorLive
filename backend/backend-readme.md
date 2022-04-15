@@ -14,8 +14,10 @@
    1. Create a new Firestore database
    2. Create all following collections either by code or manually. (`users`,`stores`,`products`,`settings`,`jwtTokenMap`,`lives`)
    3. Under `settings` collection, add following documents(`orderAutoIncrement`,`productAutoIncrement`,`storeAutoIncrement`,`userAutoIncrement`)
-   4. In each documents added in previous step, add `number` field.
-   5. Go to `Project settings > Service accounts`, generate and download new private key.
+   5. In each documents added in previous step, add `number` field.
+   ![animate](https://user-images.githubusercontent.com/11768359/163630924-dce04970-381c-45eb-ac20-0d05e5b57cac.gif)
+   
+   7. Go to `Project settings > Service accounts`, generate and download new private key.
 
 
 5. Golang (v1.17.6)
