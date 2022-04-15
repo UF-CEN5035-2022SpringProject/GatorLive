@@ -28,7 +28,7 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "export PORT=3001 && react-scripts start",
     "startWindows": "set PORT=3001 && react-scripts start",
     "build": "react-scripts build",
     "test": "cypress open",
