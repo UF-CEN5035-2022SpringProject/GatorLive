@@ -40,8 +40,9 @@
 }
 .headerLogo {
   flex: 1;
+  font-family: 'Titillium Web';
   font-weight: bold;
-  font-size: 30px;
+  font-size: 50px;
   background-color: inherit;
 }
 .searchBarContainer {
@@ -111,10 +112,38 @@
   margin-left: 80px;
   border-radius: 15px;
 }
+
+
 .instruction-title {
-  color: #BF4418;
-  font-family: Roboto, sans-serif;
+  color: white;
   font-weight: 700;
   line-height: 1.167;
   letter-spacing: 0.05em;
+  font-family: 'Titillium Web';
+  font-size: 40px;
 }
+.instruction-content {
+  color: white;
+  font-weight: 700;
+  line-height: 1.167;
+  letter-spacing: 0.05em;
+  font-size: 24px;
+  font-family: 'Ubuntu';
+}
+.block-title {
+  color: #BF4418;
+  font-weight: 700;
+  line-height: 1.167;
+  letter-spacing: 0.05em;
+  font-family: 'Titillium Web';
+  font-size: 40px;
+}
+.block-content {
+  color: grey;
+  font-size: 24px;
+  font-family: 'Ubuntu';
+  padding: 30px;
+}
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital@1&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Titillium+Web:ital,wght@1,400;1,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Audiowide');

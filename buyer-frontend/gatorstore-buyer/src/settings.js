@@ -1,6 +1,6 @@
 export default {
     HeaderText: {
-        'fontFamily': 'Titillium Web',
+        'fontFamily': 'Ubuntu',
         'fontSize': 16
     },
     Colors: {
@@ -10,7 +10,7 @@ export default {
         'forthColor': '#38383f'
     },
     Font: {
-        'major': 'Titillium Web',
+        'major': 'Ubuntu',
         'secondary': 'Audiowide'
     },
     applicationPort: 3001,
