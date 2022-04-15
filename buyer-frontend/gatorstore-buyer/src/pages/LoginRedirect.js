@@ -17,7 +17,7 @@ function LoginRedirect() {
             method: 'POST',
             body: JSON.stringify({code: loginCode})
         };
-        const res = fetch(settings.apiHostURL + 'user/login', requestOptions)
+        const res = fetch(settings.apiHostURL + 'user/login?from=buyer', requestOptions)
             .then(response => response.json())
             .then(response => {
                 backendStatus = response.status;
