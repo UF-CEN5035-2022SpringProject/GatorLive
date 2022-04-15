@@ -23,8 +23,20 @@
 
 # Installation
 
-# Run
+1. Download/Clone the project.
+2. Place the `Google API credentials` and `Google Database Credentials` under `GatorStore/backend/src/` directory
+3. Opening a command prompt and typing the following command
+    ```
+    cd GatorStore/backend/src
+    go get
+    ```
 
+# Run
+- Opening a command prompt and typing the following command
+    ```
+    cd GatorStore/backend/src
+    go run main.go
+    ```
 
 # Golang Version 
 ---
