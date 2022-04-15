@@ -1,3 +1,7 @@
+# Backend members
+ - Hung-You Chou
+ - Yi-Ming Chang
+
 # Requirements
 1. Google API credentials (Key for calling google/youtube api)
    1. Create a new project at https://console.cloud.google.com/
