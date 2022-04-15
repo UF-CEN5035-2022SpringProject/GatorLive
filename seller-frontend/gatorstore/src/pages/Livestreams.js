@@ -22,20 +22,18 @@ import SentimentDissatisfiedIcon from '@mui/icons-material/SentimentDissatisfied
 function Livestreams() {
     const navigate = useNavigate(); // to redirect using navigate()
     const { storeId } = useParams();
-    
     // On load: Check that user is logged (if not, back to landing page they go)
     useEffect(() => {
         if (window.sessionStorage.getItem("user-jwtToken") === null) {
             alert("Please login to see your livestreams.");
             navigate("/");
         }
-
-        // Get first page
         GetPage(0);
     }, []);
 
+    var liveOrderMap = new Map();
+
     function LivestreamEntry(stream) {
-        console.log('LivestreamEntry')
         return (
             <div className="LivestreamEntry rowFlex">
                 <p className="LivestreamTitle"><b>{stream.date}</b> | "{stream.streamName}"</p>
@@ -46,43 +44,34 @@ function Livestreams() {
                         <TableHead>
                             <TableRow>
                                 <TableCell>Product</TableCell>
+                                <TableCell align="right">Purchase Time</TableCell>
                                 <TableCell align="right">Quantity</TableCell>
                                 <TableCell align="right">Subtotal ($)</TableCell>
-                                <TableCell align="right">User</TableCell>
+                                <TableCell align="right">UserId</TableCell>
                             </TableRow>
                         </TableHead>
-                        {console.log(`draw the orders of liveOrdersArray ${stream.index}, len ${liveOrdersArray.length}`)}
-                        {console.log(`--------`)}
-                        {console.log(liveOrdersArray)}
-                        {console.log(liveOrdersArray.length)}
                         <TableBody>
                             {
-                                liveOrdersArray && liveOrdersArray.length > stream.index && (liveOrdersArray[stream.index].map((order) => {console.log(order.id)}))
-                            }
-                            {/* {
-                                liveOrdersArray && liveOrdersArray.length > 0 && liveOrdersArray[stream.index].map(function (order) {
+                                liveOrdersArray && liveOrdersArray.length > 0 && liveOrdersArray[stream.index] != null && liveOrdersArray[stream.index].map(function (order) {
                                     return(
-                                        <TableRow key={order.name}>
+                                        <TableRow key={order.productId}>
                                             <TableCell component="th" scope="row">
-                                                {order.name}
+                                                {order.productName}
                                             </TableCell>
+                                            <TableCell align="right">{order.createTime}</TableCell>
                                             <TableCell align="right">{order.quantity}</TableCell>
                                             <TableCell align="right">{order.subTotal}</TableCell>
-                                            <TableCell align="right">{order.user}</TableCell>
+                                            <TableCell align="right">{order.userId}</TableCell>
                                         </TableRow>
                                     );
                                 })
-                            } */}
+                            }
                         </TableBody>
                     </Table>
                 </TableContainer>
             </div>
         );
     }
-
-
-    // Live-list!:
-    const [liveList, SetLiveList] = useState([]);
 
     const testLiveOrders = [
         {name: "Gator Jacket", quantity: "2", subTotal: "35.50", user: "user1"},
@@ -107,64 +96,45 @@ function Livestreams() {
         }
     }
 
-    useEffect(() => {
-        if (liveList && liveList.length > 0) {
-            // console.log('liveOrdersArray++++')
-            // console.log(liveOrdersArray)
-            liveList.forEach((livestream, index) => {
-                GetLiveOrders(0, livestream.id, index);   
-            })
-        }
-      }, [liveList]);
+    // Array of arrays for live orders. Used to render by index
+    const [liveOrdersArray, SetLiveOrdersArray] = useState([]);
 
-    function GetLiveOrders(pageNum, liveId, index) {
+    function GetLiveOrders(pageNum, liveId) {
         // Get JWT Token for POST request header:
         var jwtToken = window.sessionStorage.getItem("user-jwtToken");
                         
         // Call API to get product list:
         const requestOptions = {
-        method: 'GET',
-        headers: {
-            'Authorization': jwtToken
-        }
+            method: 'GET',
+            headers: {
+                'Authorization': jwtToken
+            }
         };
-        fetch(settings.apiHostURL + 'live/' + liveId + '/order-list?page=' + pageNum, requestOptions)
-        .then(response => response.json())
-        .then(response => {
-            if (response.status === 0) {
-                var newArray = liveOrdersArray;
-                if (response.result.orderList !== null) {
-                    
-                    // //console.log(response.result.orderList)
-                    // console.log('orderList');
-                    // console.log(response.result.orderList);
-                    // console.log(`index:${index}`)
-                    // console.log(`liveOrdersArray~~~~`);
-                    // console.log(liveOrdersArray);
-                    newArray.push(response.result.orderList);
-                    SetLiveOrdersArray(newArray);
 
-                    // {'liveId':[], ...}
-                    // get(liveId) = orderList
-
-                    // render get(stream.id) = array
+        return fetch(settings.apiHostURL + 'live/' + liveId + '/order-list?page=' + pageNum, requestOptions)
+            .then(response => response.json())
+            .then(response => {
+                if (response.status === 0) {
+                    if (response.result.orderList !== null) {
+                        return response.result.orderList;
+                    }
+                    else {
+                        return null;
+                    }
                 }
                 else {
-                    newArray.push([]);
-                    SetLiveOrdersArray(newArray);
+                    console.log("ERROR: Order Page API did not respond with 'success' status code.");
+                    return null;
                 }
-            }
-            else {
-                console.log("ERROR: Order Page API did not respond with 'success' status code.");
-            }
-        })
-        .catch((error) => {
-            console.error(error);
-        });
+            })
+            .catch((error) => {
+                console.error(error);
+                return null;
+            });
     }
 
-    // Array of arrays for live orders. Used to render by index
-    const [liveOrdersArray, SetLiveOrdersArray] = useState([]);
+    // Live-list!:
+    const [liveList, SetLiveList] = useState([]);
 
     function GetPage(pageNum) {
         // Get JWT Token for POST request header:
@@ -183,9 +153,9 @@ function Livestreams() {
             if (response.status === 0) {
                 // if page requested isn't more than max page: Add orders of this new page to "orderArray"
                 if (pageNum <= response.result.maxPage && response.result.liveList != null) {
+                    console.log(response.result.liveList);
                     SetLiveList(liveList.concat(response.result.liveList));
-                    // initializeLiveOrderArray(response.result.liveList);
-                    console.log("finished live-list")
+                    getLiveOrderArray(response.result.liveList);
                 }
                 // Set max page number so that this fetch isn't even called if it is an invalid page number
                 maxProductPage = response.result.maxPage;
@@ -200,13 +170,17 @@ function Livestreams() {
             console.error(error);
         });
     }
-
-    function initializeLiveOrderArray(list) {
-        var localArr = [];
-        list.forEach(() => {
-            localArr.push([]);
-        })
-        SetLiveOrdersArray(localArr);
+    
+    function getLiveOrderArray(targetlist) {
+        var tempOrderArr = [];
+        var promises = targetlist.map((liveObj) => GetLiveOrders(0, liveObj.id))
+        Promise.all(promises).then(result => {
+            console.log(result);
+            result.forEach((resp) => {
+                tempOrderArr.push(resp);
+            });
+            SetLiveOrdersArray(tempOrderArr);
+        });
     }
 
     function LivestreamList() {
@@ -256,7 +230,7 @@ function Livestreams() {
                         <p style={{fontSize: "30px"}}>You don't have access to <b>{storeId}</b></p>
                     )}
                 </div>
-            
+
                 <LivestreamList />
             </div>
             <Footer />
