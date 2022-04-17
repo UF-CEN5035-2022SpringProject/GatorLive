@@ -121,16 +121,16 @@ function MyOrders() {
 
     return (
         <div className="RootFlexContainer">
-        <Header />
+            <Header />
 
-        <div className="flexCenter colFlex">
-            <div className="storeListSubHeader">
-            <h1>Your Orders</h1>
+            <div className="flexCenter colFlex">
+                <div className="storeListSubHeader">
+                <h1>Your Orders</h1>
+                </div>
+            
+                <OrderList />
             </div>
-        
-            <OrderList />
-        </div>
-        <Footer />
+            <Footer />
         </div>
     );
 }

@@ -110,11 +110,12 @@ function InstructionPage() {
                         Watch Live Shopping
                     </div>
                     <Item 
-                        className='block-content' 
                         elevation={CardElevation}
                         style={{marginTop: 30, height: 500}}
                     >
-                        TEST
+                        <div className='block-content'>
+                            When a seller's store goes live, its page will showcase the livestream and chat! <br/>Keep up with a store to shop through live seller/buyer communication!
+                        </div>
                     </Item>
                 </div>
                 <div style={{width: '2%'}}/>
@@ -139,11 +140,12 @@ function InstructionPage() {
                         Follow Your Orders
                     </div>
                     <Item 
-                        className='block-content' 
                         elevation={CardElevation}
                         style={{marginTop: 30, height: 500}}
                     >
-                        TEST
+                        <div className='block-content'>
+                            Visit the "My Orders" page through the header (top-right button) to see your order history! <br/>Details such as their quantities, store, title, and product page can be found here.
+                        </div>
                     </Item>
                 </div>
                 <div style={{width: '2%'}}/>

@@ -24,8 +24,6 @@ function LandingPage() {
         .then(response => response.json())
         .then(response => {
             if (response.status === 0) {
-                // console.log('Get recommend store list');
-                // console.log(response.result.storeList);
                 SetRecommendStores(response.result.storeList);
             } else {
                 alert("ERROR: YouTube API did not respond with 'success' status code 0.");
@@ -36,14 +34,13 @@ function LandingPage() {
         });
     }
     return( 
-    <div>
-        <div >
-            <Header/>
-        </div>
+    <div className="RootFlexContainer">
+        <Header/>
+
         <div>
             <ImageSlider slides={SliderData} />
         </div>
-        <div>
+        <div style={{width: "92%", margin: "0 auto 0"}}>
             <h2 style={{marginBottom: "30px"}}>Stores You are interested:</h2>
             <Grid container>
                 {storeList && storeList.length > 0 && storeList.map((store)=>
@@ -55,10 +52,8 @@ function LandingPage() {
                 )}      
             </Grid>
         </div>
-        <div>
-            <Footer/>
-        </div>
 
+        <Footer/>
     </div>
     );
     }
