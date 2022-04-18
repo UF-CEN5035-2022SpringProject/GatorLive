@@ -2,7 +2,9 @@ import React from 'react';
 import Header from '../components/Header.js';
 import Footer from '../components/Footer';
 import Paper from '@mui/material/Paper';
-import { createTheme, ThemeProvider, styled } from '@mui/material/styles';
+import { styled } from '@mui/material/styles';
+import GoogleIcon from '@mui/icons-material/Google';
+import settings from '../settings.js';
 
 const Item = styled(Paper)(({ theme }) => ({
     ...theme.typography.body2,
@@ -12,8 +14,27 @@ const Item = styled(Paper)(({ theme }) => ({
     lineHeight: '60px',
 }));
 
-const lightTheme = createTheme({ palette: { mode: 'light' } });
 const CardElevation = 24;
+
+function GoogleButton() { // for when user is NOT signed in
+    return (<div className="g-signin">
+      <a id="loginButton" style={{textDecoration: 'none'}} href={`https://accounts.google.com/o/oauth2/auth?access_type=offline&client_id=138444517704-gg6649ok973letdlh55bpte8bna7721o.apps.googleusercontent.com&redirect_uri=http%3A%2F%2Flocalhost%3A${settings.applicationPort}%2Flogin&response_type=code&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fyoutube+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile&state=state`}>
+        <button className='login' style={{marginLeft: 0}}>
+          <GoogleIcon style={{verticalAlign: 'middle', marginRight: 10}}/> Sign-In / Sign-Up 
+        </button>
+      </a>
+    </div>);
+  }
+
+function RedirectToSellerButton() { // for when user is NOT signed in
+    return (<div className="g-signin">
+        <a id="redirectToSellerButton" style={{textDecoration: 'none'}} href={`http://${settings.applicationHost}:3000`}>
+        <button className='login' style={{marginLeft: 0}}>
+            <GoogleIcon style={{verticalAlign: 'middle', marginRight: 10}}/> Join GatorStore as a Seller 
+        </button>
+        </a>
+    </div>);
+}
 
 function InstructionPage() {
     return( 
@@ -23,7 +44,7 @@ function InstructionPage() {
             </div>
             <div style={{ 
                 display: 'flex',
-                height: 600, 
+                height: 400, 
                 width: '100%', 
                 marginTop: 10, 
                 justifyContent: 'center',
@@ -33,7 +54,7 @@ function InstructionPage() {
                 <div style={{
                     display: 'flex', 
                     height: '100%', 
-                    width: '50%', 
+                    width: '100%', 
                     flexDirection: 'column',
                 }}> 
                     <div style={{marginTop: 30}}/>
@@ -41,10 +62,22 @@ function InstructionPage() {
                         What is GatorStore?
                     </div>
                     <div style={{marginTop: 15}}/>
-                    <div className='instruction-content'>
+                    <div className='instruction-content' style={{display: 'flex', justifyContent: 'center'}}>
                         By reading the name we are not simply a E-commerce platform. <br/>
-                        We provide user using live streams to advise their products and get more attentions. <br/>
-                        Boost the profit by using this spectacular feature! <br/>
+                        Watch our Seller's Live Streams to find the product you want! <br/>
+                        Get special discount in the Live Rooms! <br/>
+                    </div>
+                    <div style={{marginTop: 70}}/>
+                    <div style={{width: '100%', height: 70, display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly'}}>
+                        <div className='instruction-btn' style={{height: '100%', width:300}}>
+                            Browse the Stores
+                        </div>
+                        <div className='instruction-btn' style={{height: '100%', width:300}}>
+                            Live Shopping
+                        </div>
+                        <div className='instruction-btn' style={{height: '100%', width:300}}>
+                            Follow Your Orders
+                        </div>
                     </div>
                 </div>
             </div>
@@ -107,7 +140,7 @@ function InstructionPage() {
                 }}> 
                     <div style={{marginTop: 30}}/>
                     <div className='block-title' style={{display: 'flex', justifyContent: 'center'}}>
-                        Watch Live Shopping
+                        Live Shopping
                     </div>
                     <Item 
                         elevation={CardElevation}
@@ -162,17 +195,24 @@ function InstructionPage() {
                 width: '100%', 
                 marginTop: 30, 
                 justifyContent: 'center',
-                alignContent: 'center',
+                alignItems: 'center',
                 backgroundImage: "url(/tower-login.jpeg)",
                 backgroundRepeat: "no-repeat",
                 backgroundPosition: "center",
                 backgroundSize: "cover",
             }}>
-                <div style={{
-                    display: "flex", 
-                    height: '600px', 
-                    width: '800px'
+                <div className='instruction-card-root instruction-card-outlined instruction-card-rounded' style={{
+                    height: '45%', 
+                    width: '30%',
+                    display: 'flex', 
+                    flexDirection: 'column',
+                    alignItems: 'center'
                 }}>
+                    <div className='instruction-title' style={{color: 'rgba(0, 0, 0, 0.75)', fontSize: 32, marginTop: 15, marginBottom: 15}}>Start Browsing</div>
+                    <GoogleButton />
+                    <div style={{width: '80%', height: 2, backgroundColor: 'rgba(0, 0, 0, 0.4)', marginTop: 15}}></div>
+                    <div className='instruction-title' style={{color: 'rgba(0, 0, 0, 0.75)', fontSize: 32, marginTop: 15, marginBottom: 15}}>Befome a Seller</div>
+                    <RedirectToSellerButton />
                 </div>
             </div>
             <div>
