@@ -5,7 +5,7 @@ import ActionAreaCard from'../components/aboutcard';
 import {Grid} from "@material-ui/core";
 import ImageSlider from '../components/ImageSlider';
 import { SliderData } from '../components/SliderData';
-import settings from '../settings'
+import settings from '../settings';
 import {Link} from 'react-router-dom'
 
 function LandingPage() {
@@ -40,11 +40,11 @@ function LandingPage() {
         <div>
             <ImageSlider slides={SliderData} />
         </div>
-        <div style={{width: "92%", margin: "0 auto 0"}}>
-            <h2 style={{marginBottom: "30px"}}>Stores You are interested:</h2>
-            <Grid container>
+        <div style={{width: "100%", display: 'flex', alignItems: 'center', flexDirection: 'column'}}>
+            <h2>Stores You are interested:</h2>
+            <Grid container style={{marginBottom: 30}}>
                 {storeList && storeList.length > 0 && storeList.map((store)=>
-                    <Grid component={Link} to={`/store/${store.id}`} item xs={3}>
+                    <Grid component={Link} to={`/store/${store.id}`} style={{marginTop: 30,  display: 'flex', alignItems: 'center', justifyContent: 'center'}} item xs={3}>
                         <ActionAreaCard
                             storeName={store.name}
                         />
