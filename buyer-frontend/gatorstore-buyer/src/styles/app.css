@@ -3,6 +3,7 @@
   padding: 0;
   box-sizing: border-box;
   font-family: Arial;
+  scroll-behavior: smooth;
 }
 
 /* To stick footer always to bottom, wrap all elements with: */
@@ -56,10 +57,54 @@
 
 /* Footer Classes: */
 .footer {
-  background-color: #285797;
+  /* background-color: #285797; */
+  background-color: blue;
+  background-image: linear-gradient(to bottom right,rgb(40,116,252) 0%,rgb(2,3,129) 100%);
   color: #ffffff;
-  padding: 15px 5px 15px;
+  padding: 30px 5px 15px;
   margin-top: auto;
+  height: 450px;
+}
+.footer-title {
+  color: #fff;
+  font-weight: 700;
+  line-height: 1.167;
+  letter-spacing: 0.05em;
+  font-family: 'Oswald';
+  font-size: 48px;
+}
+.footer-block {
+  width: 20%;
+  height: 85%;
+}
+.footer-name {
+  font-size: 28px;
+  line-height: 40px;
+  color: #FFFFFF;
+  font-family: 'Oswald';
+  padding-bottom: 15px;
+  border-bottom: 3px solid #E8552F;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: row;
+  text-transform:uppercase;
+}
+.footer-linkedIn-btn {
+  margin-top: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: scale(1.8);
+  color:inherit;
+}
+.footer-member-content {
+  padding: 10px 0px 0px 10px;
+  font-family: 'Oswald';
+  font-size: 24px;
+  font-weight: 400;
+  font-style: normal;
+  line-height: 32px;
 }
 /* Image Slider: */
 .slider {
@@ -201,21 +246,21 @@
 }
 
 .block-title {
-  color: #BF4418;
+  color: #0021A5;
   font-weight: 700;
   line-height: 1.167;
   letter-spacing: 0.05em;
   font-family: 'Titillium Web';
-  font-size: 40px;
+  font-size: 58px;
 }
 .block-content {
-  color: grey;
+  color: black;
   font-size: 21px;
   font-family: 'Ubuntu';
-  padding: 30px;
-  text-align: center;
-  height: 100%;
+}
+.block-img {
+  box-shadow: 0 4px 8px 0 rgb(0 0 0 / 20%), 0 6px 20px 0 rgb(0 0 0 / 19%);
 }
 @import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital@1&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Titillium+Web:ital,wght@1,400;1,700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Audiowide');
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@300&family=Righteous&display=swap');
