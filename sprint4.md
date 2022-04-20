@@ -37,11 +37,16 @@ https://github.com/orgs/UF-CEN5035-2022SpringProject/projects/1
 ---
 ## Frontend team members
 Sebastian Llerena
+
 Yi-Ming Chang
+
 ## Backend team members
 Hung-You Chou
+
 Yi-Ming Chang
+
 --- 
 ## Public release
 Seller: 
+
 Buyer: 
