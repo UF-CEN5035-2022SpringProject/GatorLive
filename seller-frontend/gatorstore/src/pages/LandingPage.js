@@ -124,7 +124,7 @@ function LandingPage() {
                         Open up Stores
                     </div>
                     <div className='block-content'>
-                        Create your own store for custmer to online-shopping easily. <br/> 
+                        Create your own store for customer to online-shopping easily. <br/> 
                         Manage multiple store in the same platform efficiently. 
                     </div>
                 </div>
@@ -132,8 +132,8 @@ function LandingPage() {
                 <div style={{width: 2, height: 300, backgroundColor: '#FA4616'}}/>
                 <div style={{width: '2%'}}/>
                 <img 
-                    alt='storeProducts' 
-                    src='/storeProductImage.png'
+                    alt='storeList' 
+                    src='/storeListImage.png'
                     className='block-img'
                     style={{
                         height: 500, 
@@ -220,8 +220,94 @@ function LandingPage() {
                 <div style={{width: 2, height: 300, backgroundColor: '#FA4616'}}/>
                 <div style={{width: '2%'}}/>
                 <img 
-                    alt='storeProducts' 
-                    src='/storeProductImage.png'
+                    alt='storeLiveStream' 
+                    src='/liveStreamImage.png'
+                    className='block-img'
+                    style={{
+                        height: 500, 
+                        width: '46%', 
+                        marginTop: 106.5, 
+                        borderRadius: 15
+                    }}
+                />  
+                <div style={{width: '2%'}}/>
+            </div>
+            <div
+                style={{ 
+                display: 'flex',
+                height: 600, 
+                width: '100%', 
+                marginTop: 10, 
+                flexDirection: 'row',
+                justifyContent: 'center',
+                alignItems: 'center'
+            }}>
+                <div style={{width: '2%'}}/>
+                <img 
+                    alt='liveObs' 
+                    src='/liveObs.gif'
+                    className='block-img'
+                    style={{
+                        height: 500, 
+                        width: '46%', 
+                        marginTop: 106.5, 
+                        borderRadius: 15
+                    }}
+                />
+                <div style={{width: '2%'}}/>
+                <div style={{width: 2, height: 300, backgroundColor: '#FA4616'}}/>
+                <div style={{width: '2%'}}/>
+                <div style={{
+                    display: 'flex', 
+                    height: '100%', 
+                    width: '46%', 
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    textAlign: 'left' 
+                }}> 
+                    <div className='block-title'>
+                        Stream by OBS 
+                    </div>
+                    <div className='block-content'>
+                        The Store Page is the hub for live user interactions and browsing through the products. <br/> 
+                        You can visit each of the products to buy them by clicking on "View More" beneath each. 
+                    </div>
+                </div>
+                <div style={{width: '2%'}}/>
+            </div>
+            <div
+                style={{ 
+                display: 'flex',
+                height: 600, 
+                width: '100%', 
+                marginTop: 10, 
+                flexDirection: 'row',
+                justifyContent: 'center',
+                alignItems: 'center'
+            }}>
+                <div style={{width: '2%'}}/>
+                <div style={{
+                    display: 'flex', 
+                    height: '100%', 
+                    width: '46%', 
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    textAlign: 'right' 
+                }}> 
+                    <div className='block-title'>
+                        Live History with Orders 
+                    </div>
+                    <div className='block-content'>
+                        The Store Page is the hub for live user interactions and browsing through the products. <br/> 
+                        You can visit each of the products to buy them by clicking on "View More" beneath each. 
+                    </div>
+                </div>
+                <div style={{width: '2%'}}/>
+                <div style={{width: 2, height: 300, backgroundColor: '#FA4616'}}/>
+                <div style={{width: '2%'}}/>
+                <img 
+                    alt='liveHistoryListImage' 
+                    src='/liveHistoryListImage.png'
                     className='block-img'
                     style={{
                         height: 500, 
@@ -245,8 +331,8 @@ function LandingPage() {
             }}>
                 <div style={{width: '2%'}}/>
                 <img 
-                    alt='storeProducts' 
-                    src='/storeProductImage.png'
+                    alt='orderHistory' 
+                    src='/orderHistoryImage.png'
                     className='block-img'
                     style={{
                         height: 500, 
@@ -280,7 +366,7 @@ function LandingPage() {
                 display: "flex", 
                 height: '600px', 
                 width: '100%', 
-                marginTop: 30, 
+                marginTop: 100, 
                 justifyContent: 'center',
                 alignItems: 'center',
                 backgroundImage: "url(/tower-login.jpeg)",
