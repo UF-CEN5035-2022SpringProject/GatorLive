@@ -13,15 +13,28 @@
 
 ---
 ## Description
+**Front-end New Features:**
+ - Created a new instructions page (at "/") for both buyer and seller projects
+ - Created a new page for sellers to get the livestream history for each of their stores
+ - Implemented page for sellers to see the order history for each of their stores
+ - Fixed Bug described in [#124](https://github.com/UF-CEN5035-2022SpringProject/GatorStore/issues/124): Made it available for products to be bought from livestream (bug from past sprint 3)
+ - Redesigned header and footer to more closely match UF theme
+ - Replaced slider images from "/home" on buyer site with images relevant and specially made for GatorStore
+ - Updated and finalized Cypress testing for buyer and seller projects
 
+**Back-end New Features:**
+ - 
 
 ---
 ## Demo video functionality
 
----
 ## Cypress test video 
-https://user-images.githubusercontent.com/11768359/164333721-e5650811-a415-45f5-9b31-1a044607a670.mp4
+Buyer:    
+https://user-images.githubusercontent.com/40399062/164333895-316649c4-6227-4dd4-b2bb-1a63994b5f6b.mp4   
 
+
+Seller:    
+https://user-images.githubusercontent.com/40399062/164333928-e97956af-8aa6-4d8e-a317-88b6ef85b1f7.mp4
 
 ---
 
