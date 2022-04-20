@@ -18,7 +18,7 @@ const CardElevation = 24;
 
 function GoogleButton() { // for when user is NOT signed in
     return (<div className="g-signin">
-      <a id="loginButton" style={{textDecoration: 'none'}} href='https://accounts.google.com/o/oauth2/auth?access_type=offline&client_id=138444517704-gg6649ok973letdlh55bpte8bna7721o.apps.googleusercontent.com&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Flogin&response_type=code&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fyoutube+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile&state=state'>
+      <a id="loginButton" style={{textDecoration: 'none'}} href={`https://accounts.google.com/o/oauth2/auth?access_type=offline&client_id=138444517704-gg6649ok973letdlh55bpte8bna7721o.apps.googleusercontent.com&redirect_uri=${settings.googleLoginRedirectURL}&response_type=code&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fyoutube+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile&state=state`}>
         <button className='login' style={{marginLeft: 0}}>
           <GoogleIcon style={{verticalAlign: 'middle', marginRight: 10}}/> Sign-In / Sign-Up 
         </button>
@@ -29,7 +29,7 @@ function GoogleButton() { // for when user is NOT signed in
 
 function RedirectToBuyerButton() { // for when user is NOT signed in
     return (<div className="g-signin">
-        <a id="redirectToBuyerButton" style={{textDecoration: 'none'}} href={`http://${settings.applicationHost}:3001`}>
+        <a id="redirectToBuyerButton" style={{textDecoration: 'none'}} href={settings.buyerAppURL}>
         <button className='login' style={{marginLeft: 0}}>
             <GoogleIcon style={{verticalAlign: 'middle', marginRight: 10}}/> Browse the Stores 
         </button>

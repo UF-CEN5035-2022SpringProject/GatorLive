@@ -14,5 +14,8 @@ export default {
         'secondary': 'Audiowide'
     },
     apiHostURL: 'http://localhost:8080/api/',
-    testApiHostURL: 'http://localhost:8080/test/api'
+    testApiHostURL: 'http://localhost:8080/test/api',
+    googleLoginRedirectURL: 'http%3A%2F%2Flocalhost%3A3000%2Flogin',
+    applicationRootURL: 'http://localhost:3000',
+    buyerAppURL: 'http://localhost:3001'
 }
