@@ -18,9 +18,16 @@
 ---
 ## Demo video functionality
 
+---
 ## Cypress test video 
+https://user-images.githubusercontent.com/11768359/164333721-e5650811-a415-45f5-9b31-1a044607a670.mp4
+
+
 ---
 
+## Backend unit test description
+We are using `Go test`.
+Because part of the functionalities rely on Google services, we are not able to get 100% coverage(62%).
 
 ## Backend unit test video 
 https://user-images.githubusercontent.com/11768359/163632604-da2fd917-84c9-4c87-bc0f-cf2d0486ac5b.mp4
