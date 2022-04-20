@@ -283,7 +283,7 @@ function InstructionPage() {
                 display: "flex", 
                 height: '600px', 
                 width: '100%', 
-                marginTop: 50, 
+                marginTop: 100, 
                 justifyContent: 'center',
                 alignItems: 'center',
                 backgroundImage: "url(/tower-login.jpeg)",

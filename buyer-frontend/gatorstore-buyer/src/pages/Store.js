@@ -542,7 +542,7 @@ function SellerStorePage() {
 
       <Overlay/>
 
-      <div style={{minHeight: "80vh"}}>
+      <div style={{minHeight: "80vh", marginTop: 30}}>
         <LiveInfoBar />
 
         <ProductsHeader/>
