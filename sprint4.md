@@ -23,7 +23,7 @@
  - Updated and finalized Cypress testing for buyer and seller projects
 
 **Back-end New Features:**
- - 
+ - ...
 
 ---
 ## Demo video functionality
