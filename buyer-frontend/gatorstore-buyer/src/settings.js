@@ -14,6 +14,6 @@ export default {
         'secondary': 'Audiowide'
     },
     applicationPort: 3001,
-    apiHostURL: 'http://localhost:8080/api/',
-    testApiHostURL: 'http://localhost:8080/test/api'
+    apiHostURL: 'http://10.228.11.202:8080/api/',
+    testApiHostURL: 'http://10.228.11.202:8080/test/api'
 }

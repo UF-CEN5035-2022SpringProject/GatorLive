@@ -3,7 +3,7 @@ describe("Renders the home page", () => {
     it("Renders correctly and tests slider", () => {
         sessionStorage.clear() // try as a non-logged in user first
 
-        cy.visit("/")
+        cy.visit("/home")
         cy.get(".slider").should("exist")
 
         // Click right arrow and see that the second image is displayed
@@ -26,7 +26,7 @@ describe("Renders a store page correctly", () => {
     })
 
     it('Check product page for product-1', function() {
-        cy.visit('localhost:3000/store/gatorstore-1');
+        cy.visit('localhost:3001/store/gatorstore-1');
         cy.get(':nth-child(1) > .MuiPaper-root > .MuiCardMedia-root').should("exist");
         cy.get(':nth-child(1) > .MuiPaper-root > .MuiCardActions-root > .MuiButtonBase-root > .MuiButton-label').click();
     });
@@ -40,12 +40,12 @@ describe("Render a product page correctly", () => {
         
         // check that button led to store
         cy.url().then(($url) => {
-            $url.includes("localhost:3000/store/gatorstore-1")
+            $url.includes("localhost:3001/store/gatorstore-1")
         })
     })
 
     it("Tests purchasing product without logging in", () => {
-        cy.visit('localhost:3000/product/product-1');
+        cy.visit('localhost:3001/product/product-1');
         cy.get('.ProductKeyDetailColumn > div > .MuiButton-root').click(); // try to purchase product
 
         // system should display popup to tell them to sign first:
@@ -62,7 +62,7 @@ describe("Render a product page correctly", () => {
             sessionStorage.setItem("user-jwtToken", "gst.R2F0b3JTdG9yZV9zaGViYXNxdWluZUBnbWFpbC5jb20xMTAwNA==_MjAyMi0wMi0yNVQyMTowMTo0OVo=")
         })
 
-        cy.visit('localhost:3000/product/product-1');
+        cy.visit('localhost:3001/product/product-1');
         cy.get('.ProductKeyDetailColumn > div > .MuiButton-root').click(); // try to purchase product
 
         cy.wait(4000) // wait for API to send request
@@ -89,7 +89,7 @@ describe("Logs out successfully", () => {
 
         // check you got re-directed to landing page:
         cy.url().then(($url) => {
-            $url.includes("localhost:3000/")
+            $url.includes("localhost:3001/")
         })
     })
 })
