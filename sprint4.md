@@ -21,10 +21,10 @@ https://user-images.githubusercontent.com/11768359/163632604-da2fd917-84c9-4c87-
 
 ---
 ## Link to API Documentation
-
+https://github.com/UF-CEN5035-2022SpringProject/GatorStore/blob/main/README.md
 ---
 ## Link to Project board
-
+https://github.com/orgs/UF-CEN5035-2022SpringProject/projects/1
 ---
 ## Link to Sprint4 deliverables
 
