@@ -14,6 +14,18 @@ We hope to provide users not only a platform to sell their products but also wit
 
 Reference: https://www.nngroup.com/articles/livestream-ecommerce-china/
 ---
+## Tutorials
+
+Seller livestream tutorial
+
+https://github.com/UF-CEN5035-2022SpringProject/GatorStore/blob/main/seller-frontend/seller-instructions.md
+
+Backend setup tutorial
+
+https://github.com/UF-CEN5035-2022SpringProject/GatorStore/blob/main/backend/backend-readme.md
+
+---
+
 
 ## Learnings:
 Golang:
