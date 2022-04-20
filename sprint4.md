@@ -11,6 +11,12 @@
 - Frontend and backend team members
 - Bonus points for public release
 
+---
+## Description
+
+
+---
+## Demo video functionality
 
 ## Cypress test video 
 ---
@@ -29,7 +35,13 @@ https://github.com/orgs/UF-CEN5035-2022SpringProject/projects/1
 ## Link to Sprint4 deliverables
 
 ---
+## Frontend team members
+Sebastian Llerena
+Yi-Ming Chang
 ## Backend team members
-
+Hung-You Chou
+Yi-Ming Chang
 --- 
 ## Public release
+Seller: 
+Buyer: 
