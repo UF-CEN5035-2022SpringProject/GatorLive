@@ -2,18 +2,21 @@ import React, {useState, useEffect} from 'react';
 import { Link } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import '../styles/myOrders.css';
+import '../styles/orders.css';
 
 import EditIcon from '@mui/icons-material/Edit';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import Button from '@mui/material/Button';
 import gatorPlush from '../images/gator-plush.png';
+import SentimentDissatisfiedIcon from '@mui/icons-material/SentimentDissatisfied';
 
 import settings from '../settings'
+import { useParams } from 'react-router-dom';
 import { useNavigate } from "react-router-dom";
 
 function MyOrders() {
     const navigate = useNavigate(); // to redirect using navigate()
+    const { storeId } = useParams();
     
     // On load: Check that user is logged (if not, back to landing page they go)
     useEffect(() => {
@@ -42,13 +45,16 @@ function MyOrders() {
                 </div>
                 <div style={{ flex: 1}} className="flexCenter">
                 <Button component={Link} to={'/product/' + orderInfo.id} startIcon={<EditIcon />} variant="contained" color="primary" sx={{ marginBottom: 1 }}>View Product</Button>
-                    <p><b>Price:</b> ${orderInfo.subTotal}</p>
+                    <p style={{fontSize: "20px", paddingTop: "8px"}}><b>Price:</b> ${orderInfo.subTotal}</p>
                 </div>
             </div>
         );
     } 
 
     const [orderArray, SetOrderArray] = useState([]);
+
+    // To see if store even exists:
+    const [actualStore, SetIfActualStore] = useState(true);
 
     // For pagination:
     const [currProductPage, ChangeProductPage] = useState(0);
@@ -75,7 +81,7 @@ function MyOrders() {
             'Authorization': jwtToken
         }
         };
-        fetch(settings.apiHostURL + 'user/' + userId + '/order-list?page=' + pageNum, requestOptions)
+        fetch(settings.apiHostURL + 'store/' + storeId + '/order-list?page=' + pageNum, requestOptions)
         .then(response => response.json())
         .then(response => {
             if (response.status === 0) {
@@ -85,9 +91,12 @@ function MyOrders() {
                 }
                 // Set max page number so that this fetch isn't even called if it is an invalid page number
                 maxProductPage = response.result.maxPage;
+
+                SetIfActualStore(true)
             }
             else {
-            console.log("ERROR: Order Page API did not respond with 'success' status code.");
+                console.log("ERROR: Order Page API did not respond with 'success' status code.");
+                SetIfActualStore(false)
             }
         })
         .catch((error) => {
@@ -97,40 +106,53 @@ function MyOrders() {
 
     function OrderList() {
         return (
-            <div class="store-list-container" onScroll={(e) => {
-                if (e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight) {
-                  ScrollDown();
-                }
-              }}>
-                <div class="store-list-container">
-                    <div className="storeListContainer">
-                    {orderArray && orderArray.length > 0 && ( orderArray.map(function (order) {
-                        return(
-                            <OrderEntry productName={order.productName} id={order.productId} quantity={order.quantity} subTotal={order.subTotal}/>
-                            );
-                        })
-                    )}
-                    {orderArray.length == 0 && (
-                        <div>- You have no orders. -</div>
-                    )}
+            <div class="store-list-container">
+                {actualStore && (
+                    <div class="store-list-container" onScroll={(e) => {
+                        if (e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight) {
+                        ScrollDown();
+                        }
+                    }}>
+                        <div className="storeListContainer">
+                            {orderArray && orderArray.length > 0 && ( orderArray.map(function (order) {
+                                return(
+                                    <OrderEntry productName={order.productName} id={order.productId} quantity={order.quantity} subTotal={order.subTotal}/>
+                                    );
+                                })
+                            )}
+                            {orderArray.length == 0 && (
+                                <div>- {storeId} has no orders. -</div>
+                            )}
+                        </div>
                     </div>
-                </div>
+                )}
+
+                {!actualStore && (
+                    <div className="storeListContainer">
+                        <SentimentDissatisfiedIcon fontSize='large' color='warning'/>
+                    </div>
+                )}
             </div>
         );
     }
 
     return (
         <div className="RootFlexContainer">
-            <Header />
+        <Header />
 
-            <div className="flexCenter colFlex">
-                <div className="storeListSubHeader">
-                <h1>Your Orders</h1>
-                </div>
-            
-                <OrderList />
+        <div className="flexCenter colFlex">
+            <div className="storeListSubHeader">
+                {actualStore && (
+                    <h1>{storeId}'s Order History:</h1>
+                )}
+                {!actualStore && (
+                    <p style={{fontSize: "30px"}}>You don't have access to <b>{storeId}</b></p>
+                )}
             </div>
-            <Footer />
+        
+            <OrderList />
+        </div>
+        <Footer />
         </div>
     );
 }

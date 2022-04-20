@@ -17,7 +17,7 @@ function LoginRedirect() {
             method: 'POST',
             body: JSON.stringify({code: loginCode})
         };
-        const res = fetch(settings.apiHostURL + 'user/login', requestOptions)
+        const res = fetch(settings.apiHostURL + 'user/login?from=buyer', requestOptions)
             .then(response => response.json())
             .then(response => {
                 backendStatus = response.status;
@@ -30,7 +30,7 @@ function LoginRedirect() {
                     window.sessionStorage.setItem('user-id', response.result.id);
                     window.sessionStorage.setItem('user-jwtToken', response.result.jwtToken);
 
-                    window.location.href = `http://localhost:${settings.applicationPort}/`;
+                    window.location.href = `${settings.applicationRootURL}/home`;
                 } else {
                     alert("ERROR: User was not able to be authenticated.");
                 }

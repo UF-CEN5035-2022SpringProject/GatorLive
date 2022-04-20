@@ -1,6 +1,6 @@
 export default {
     HeaderText: {
-        'fontFamily': 'Titillium Web',
+        'fontFamily': 'Ubuntu',
         'fontSize': 16
     },
     Colors: {
@@ -10,10 +10,14 @@ export default {
         'forthColor': '#38383f'
     },
     Font: {
-        'major': 'Titillium Web',
+        'major': 'Ubuntu',
         'secondary': 'Audiowide'
     },
-    applicationPort: 3000,
-    apiHostURL: 'http://10.136.85.137:8080/api/',
-    testApiHostURL: 'http://10.136.85.137:8080/test/api'
+    googleLoginRedirectURL: 'http%3A%2F%2Flocalhost%3A3001%2Flogin',
+    applicationRootURL: 'http://localhost:3001',
+    applicationPort: 3001,
+    applicationHost: 'localhost',
+    apiHostURL: 'http://localhost:8080/api/',
+    testApiHostURL: 'http://localhost:8080/test/api',
+    sellerAppURL: 'http://localhost:3000'
 }

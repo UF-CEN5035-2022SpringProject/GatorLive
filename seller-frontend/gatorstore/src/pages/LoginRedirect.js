@@ -30,7 +30,7 @@ function LoginRedirect() {
                     window.sessionStorage.setItem('user-id', response.result.id);
                     window.sessionStorage.setItem('user-jwtToken', response.result.jwtToken);
 
-                    window.location.href = "http://localhost:3000/store-list";
+                    window.location.href = `${settings.applicationRootURL}/store-list`;
                 } else {
                     alert("ERROR: User was not able to be authenticated.");
                 }

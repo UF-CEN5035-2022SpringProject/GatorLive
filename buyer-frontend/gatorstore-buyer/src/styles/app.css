@@ -3,6 +3,7 @@
   padding: 0;
   box-sizing: border-box;
   font-family: Arial;
+  scroll-behavior: smooth;
 }
 
 /* To stick footer always to bottom, wrap all elements with: */
@@ -31,15 +32,18 @@
 
 /* Header Classes: */
 .header {
-  background-color: rgb(226, 197, 164);
+  background-color: #285797;
+  color: #ffffff;
   height: 10vh;
   display: flex;
-  margin-bottom: 20px;
+  /* margin-bottom: 20px; */
+  border-bottom: 4px solid rgb(224, 129, 46);
 }
 .headerLogo {
   flex: 1;
+  font-family: 'Titillium Web';
   font-weight: bold;
-  font-size: 30px;
+  font-size: 50px;
   background-color: inherit;
 }
 .searchBarContainer {
@@ -53,10 +57,54 @@
 
 /* Footer Classes: */
 .footer {
-  background-color: rgb(226, 197, 164);
-  color: rgb(58, 58, 58);
-  padding: 15px 5px 15px;
+  /* background-color: #285797; */
+  background-color: blue;
+  background-image: linear-gradient(to bottom right,rgb(40,116,252) 0%,rgb(2,3,129) 100%);
+  color: #ffffff;
+  padding: 30px 5px 15px;
   margin-top: auto;
+  height: 450px;
+}
+.footer-title {
+  color: #fff;
+  font-weight: 700;
+  line-height: 1.167;
+  letter-spacing: 0.05em;
+  font-family: 'Oswald';
+  font-size: 48px;
+}
+.footer-block {
+  width: 20%;
+  height: 85%;
+}
+.footer-name {
+  font-size: 28px;
+  line-height: 40px;
+  color: #FFFFFF;
+  font-family: 'Oswald';
+  padding-bottom: 15px;
+  border-bottom: 3px solid #E8552F;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: row;
+  text-transform:uppercase;
+}
+.footer-linkedIn-btn {
+  margin-top: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: scale(1.8);
+  color:inherit;
+}
+.footer-member-content {
+  padding: 10px 0px 0px 10px;
+  font-family: 'Oswald';
+  font-size: 24px;
+  font-weight: 400;
+  font-style: normal;
+  line-height: 32px;
 }
 /* Image Slider: */
 .slider {
@@ -109,3 +157,110 @@
   margin-left: 80px;
   border-radius: 15px;
 }
+
+.instruction-title {
+  color: white;
+  font-weight: 700;
+  line-height: 1.167;
+  letter-spacing: 0.05em;
+  font-family: 'Titillium Web';
+  font-size: 40px;
+}
+
+.instruction-content {
+  color: white;
+  line-height: 1.167;
+  letter-spacing: 0.05em;
+  font-size: 24px;
+  font-family: 'Ubuntu';
+  text-align: center;
+}
+
+.instruction-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-family: 'Titillium Web';
+  font-size: 26px !important;
+  font-weight: bold;
+  line-height: 40px !important;
+  color: #fff;
+  text-transform:uppercase;
+
+  border: 1.5px solid #a2a2a2;
+  border-radius: 4px;
+  outline: 0 none;
+  padding: 15px 25px;
+  position: relative;
+  transition: all 0.75s ease-in-out 0s;
+  cursor: pointer;
+}
+.instruction-btn::after, .instruction-btn::before {
+  border-radius: 4px;
+  content: "";
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  transform: scale(0);
+  transition: all 0.5s ease-in-out 0s;
+  width: 100%;
+  z-index: 3;
+}
+.instruction-btn::before {
+  border-bottom: 3px solid #fff;
+  border-left: 2px solid #fff;
+  transform-origin: 0 100% 0;
+}
+.instruction-btn::after {
+  border-right: 3px solid #fff;
+  border-top: 2px solid #fff;
+  transform-origin: 100% 0 0;
+}
+.instruction-btn:hover::after, .instruction-btn:hover::before {
+  transform: scale(1);
+}
+.instruction-btn:hover {
+  border: 1.5px solid rgba(0, 160, 80, 0);
+  background: #343741!important;
+}
+
+.instruction-next-step-card {
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-color: #CCC;
+  border-radius: 4px;
+}
+
+.instruction-card-outlined {
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-color: #CCC;
+}
+.instruction-card-rounded {
+  border-radius: 4px;
+}
+.instruction-card-root {
+  color: rgba(0, 0, 0, 0.87);
+  transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  background-color: #fff;
+}
+
+.block-title {
+  color: #0021A5;
+  font-weight: 700;
+  line-height: 1.167;
+  letter-spacing: 0.05em;
+  font-family: 'Titillium Web';
+  font-size: 58px;
+}
+.block-content {
+  color: black;
+  font-size: 21px;
+  font-family: 'Ubuntu';
+}
+.block-img {
+  box-shadow: 0 4px 8px 0 rgb(0 0 0 / 20%), 0 6px 20px 0 rgb(0 0 0 / 19%);
+}
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital@1&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Titillium+Web:ital,wght@1,400;1,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@300&family=Righteous&display=swap');

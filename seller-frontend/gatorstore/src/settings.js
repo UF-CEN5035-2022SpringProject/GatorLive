@@ -13,6 +13,9 @@ export default {
         'major': 'Titillium Web',
         'secondary': 'Audiowide'
     },
-    apiHostURL: 'http://10.136.85.137:8080/api/',
-    testApiHostURL: 'http://10.136.85.137:8080/test/api'
+    apiHostURL: 'http://localhost:8080/api/',
+    testApiHostURL: 'http://localhost:8080/test/api',
+    googleLoginRedirectURL: 'http%3A%2F%2Flocalhost%3A3000%2Flogin',
+    applicationRootURL: 'http://localhost:3000',
+    buyerAppURL: 'http://localhost:3001'
 }

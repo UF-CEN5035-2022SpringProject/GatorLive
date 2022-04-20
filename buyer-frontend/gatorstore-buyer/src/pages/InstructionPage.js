@@ -5,6 +5,7 @@ import Paper from '@mui/material/Paper';
 import { styled } from '@mui/material/styles';
 import GoogleIcon from '@mui/icons-material/Google';
 import settings from '../settings.js';
+import { textAlign } from '@mui/system';
 
 const Item = styled(Paper)(({ theme }) => ({
     ...theme.typography.body2,
@@ -25,29 +26,26 @@ function GoogleButton() { // for when user is NOT signed in
       </a>
     </div>);
   }
-  
 
-function RedirectToBuyerButton() { // for when user is NOT signed in
+function RedirectToSellerButton() { // for when user is NOT signed in
     return (<div className="g-signin">
-        <a id="redirectToBuyerButton" style={{textDecoration: 'none'}} href={settings.buyerAppURL}>
+        <a id="redirectToSellerButton" style={{textDecoration: 'none'}} href={settings.sellerAppURL}>
         <button className='login' style={{marginLeft: 0}}>
-            <GoogleIcon style={{verticalAlign: 'middle', marginRight: 10}}/> Browse the Stores 
+            <GoogleIcon style={{verticalAlign: 'middle', marginRight: 10}}/> Join GatorStore as a Seller 
         </button>
         </a>
     </div>);
 }
 
-function LandingPage() {
-    const introOpenStore = useRef(null);
-    const introProductDisplay = useRef(null);
-    const introLivePromotions = useRef(null);
-    const introOrderFeature = useRef(null);
+function InstructionPage() {
+    const introGatorStore = useRef(null);
+    const introLiveShop = useRef(null);
+    const introFollowOrders = useRef(null);
     const introTeam = useRef(null);
 
-    const toOpenStoreScroll = () => introOpenStore.current.scrollIntoView();
-    const toProductDisplayScroll = () => introProductDisplay.current.scrollIntoView();
-    const toLivePromotionsScroll = () => introLivePromotions.current.scrollIntoView();
-    const toOrdersFeature = () => introOrderFeature.current.scrollIntoView();
+    const toGatorStoreScroll = () => introGatorStore.current.scrollIntoView();
+    const toLiveShopScroll = () => introLiveShop.current.scrollIntoView();
+    const toFollowOrdersScroll = () => introFollowOrders.current.scrollIntoView();
     const toTeamScroll = () => introTeam.current.scrollIntoView();
 
     return( 
@@ -62,7 +60,7 @@ function LandingPage() {
                 marginTop: 2, 
                 justifyContent: 'center',
                 backgroundColor: 'blue', /* For browsers that do not support gradients */
-                backgroundImage: 'linear-gradient(to bottom right,red 0%,rgb(224, 129, 46) 100%)'
+                backgroundImage: 'linear-gradient(to bottom right,rgb(2,3,129) 0%,rgb(40,116,252) 100%)'
             }}>
                 <div style={{
                     display: 'flex', 
@@ -72,27 +70,24 @@ function LandingPage() {
                 }}> 
                     <div style={{marginTop: 30}}/>
                     <div className='instruction-title' style={{display: 'flex', justifyContent: 'center'}}>
-                        Start Your Shopping Channel
+                        What is GatorStore?
                     </div>
                     <div style={{marginTop: 15}}/>
                     <div className='instruction-content' style={{display: 'flex', justifyContent: 'center'}}>
-                        We are not simply a E-commerce platform. <br/>
-                        Start your Shopping Channel to make your products sell dramatically fast! <br/>
-                        As a Seller, join GatorStore! <br/>
+                        By reading the name we are not simply a E-commerce platform. <br/>
+                        Watch our Seller's Live Streams to find the product you want! <br/>
+                        Get special discount in the Live Rooms! <br/>
                     </div>
                     <div style={{marginTop: 70}}/>
                     <div style={{width: '100%', height: 70, display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly'}}>
-                        <div className='instruction-btn' onClick={toOpenStoreScroll} style={{height: '100%', width:300}}>
-                            Open up Stores
+                        <div className='instruction-btn' onClick={toGatorStoreScroll} style={{height: '100%', width:300}}>
+                            Browse the Stores
                         </div>
-                        <div className='instruction-btn' onClick={toProductDisplayScroll} style={{height: '100%', width:300}}>
-                            Product display
+                        <div className='instruction-btn' onClick={toLiveShopScroll} style={{height: '100%', width:300}}>
+                            Live Shopping
                         </div>
-                        <div className='instruction-btn' onClick={toLivePromotionsScroll} style={{height: '100%', width:300}}>
-                            Live Promotions 
-                        </div>
-                        <div className='instruction-btn' onClick={toOrdersFeature} style={{height: '100%', width:300}}>
-                            Order Management 
+                        <div className='instruction-btn' onClick={toFollowOrdersScroll} style={{height: '100%', width:300}}>
+                            Follow Your Orders
                         </div>
                         <div className='instruction-btn' onClick={toTeamScroll} style={{height: '100%', width:300}}>
                             Meet the Team
@@ -111,7 +106,7 @@ function LandingPage() {
             }}>
                 <div style={{width: '2%'}}/>
                 <div 
-                    ref={introOpenStore} 
+                    ref={introGatorStore} 
                     style={{
                     display: 'flex', 
                     height: '100%', 
@@ -121,11 +116,11 @@ function LandingPage() {
                     textAlign: 'right' 
                 }}> 
                     <div className='block-title'>
-                        Open up Stores
+                            Browse the Stores
                     </div>
                     <div className='block-content'>
-                        Create your own store for custmer to online-shopping easily. <br/> 
-                        Manage multiple store in the same platform efficiently. 
+                        The Store Page is the hub for live user interactions and browsing through the products. <br/> 
+                        You can visit each of the products to buy them by clicking on "View More" beneath each. 
                     </div>
                 </div>
                 <div style={{width: '2%'}}/>
@@ -145,7 +140,7 @@ function LandingPage() {
                 <div style={{width: '2%'}}/>
             </div>
             <div
-                ref={introProductDisplay} 
+                ref={introLiveShop} 
                 style={{ 
                 display: 'flex',
                 height: 600, 
@@ -179,7 +174,7 @@ function LandingPage() {
                     textAlign: 'left' 
                 }}> 
                     <div className='block-title'>
-                        Product display 
+                        Live Shopping
                     </div>
                     <div className='block-content'>
                         The Store Page is the hub for live user interactions and browsing through the products. <br/> 
@@ -189,7 +184,7 @@ function LandingPage() {
                 <div style={{width: '2%'}}/>
             </div>
             <div
-                ref={introLivePromotions}
+                ref={introFollowOrders}
                 style={{ 
                 display: 'flex',
                 height: 600, 
@@ -209,7 +204,7 @@ function LandingPage() {
                     textAlign: 'right' 
                 }}> 
                     <div className='block-title'>
-                        Promote products by Live 
+                        Follow Your Orders
                     </div>
                     <div className='block-content'>
                         The Store Page is the hub for live user interactions and browsing through the products. <br/> 
@@ -230,50 +225,6 @@ function LandingPage() {
                         borderRadius: 15
                     }}
                 />  
-                <div style={{width: '2%'}}/>
-            </div>
-            <div
-                ref={introOrderFeature} 
-                style={{ 
-                display: 'flex',
-                height: 600, 
-                width: '100%', 
-                marginTop: 10, 
-                flexDirection: 'row',
-                justifyContent: 'center',
-                alignItems: 'center'
-            }}>
-                <div style={{width: '2%'}}/>
-                <img 
-                    alt='storeProducts' 
-                    src='/storeProductImage.png'
-                    className='block-img'
-                    style={{
-                        height: 500, 
-                        width: '46%', 
-                        marginTop: 106.5, 
-                        borderRadius: 15
-                    }}
-                /> 
-                <div style={{width: '2%'}}/>
-                <div style={{width: 2, height: 300, backgroundColor: '#FA4616'}}/>
-                <div style={{width: '2%'}}/>
-                <div style={{
-                    display: 'flex', 
-                    height: '100%', 
-                    width: '46%', 
-                    flexDirection: 'column',
-                    justifyContent: 'center',
-                    textAlign: 'left' 
-                }}> 
-                    <div className='block-title'>
-                        Order Management 
-                    </div>
-                    <div className='block-content'>
-                        The Store Page is the hub for live user interactions and browsing through the products. <br/> 
-                        You can visit each of the products to buy them by clicking on "View More" beneath each. 
-                    </div>
-                </div> 
                 <div style={{width: '2%'}}/>
             </div>
             <div style={{
@@ -295,11 +246,11 @@ function LandingPage() {
                     flexDirection: 'column',
                     alignItems: 'center'
                 }}>
-                    <div className='instruction-title' style={{color: 'rgba(0, 0, 0, 0.75)', fontSize: 32, marginTop: 15, marginBottom: 15}}>Join as Seller</div>
+                    <div className='instruction-title' style={{color: 'rgba(0, 0, 0, 0.75)', fontSize: 32, marginTop: 15, marginBottom: 15}}>Start Browsing</div>
                     <GoogleButton />
                     <div style={{width: '80%', height: 2, backgroundColor: 'rgba(0, 0, 0, 0.4)', marginTop: 15}}></div>
-                    <div className='instruction-title' style={{color: 'rgba(0, 0, 0, 0.75)', fontSize: 32, marginTop: 15, marginBottom: 15}}>Buy on GatorStore</div>
-                    <RedirectToBuyerButton />
+                    <div className='instruction-title' style={{color: 'rgba(0, 0, 0, 0.75)', fontSize: 32, marginTop: 15, marginBottom: 15}}>Become a Seller</div>
+                    <RedirectToSellerButton />
                 </div>
             </div>
             <div ref={introTeam} style={{marginTop: 30}}>
@@ -310,4 +261,4 @@ function LandingPage() {
     );
 }
 
-export default LandingPage;
+export default InstructionPage;
