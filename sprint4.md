@@ -23,8 +23,8 @@
  - Updated and finalized Cypress testing for buyer and seller projects
 
 **Back-end New Features:**
- - ...
-
+ - Created [Store OrderList API](https://github.com/UF-CEN5035-2022SpringProject/GatorStore/issues/76#issuecomment-1076493741): Get the orders according to the store #120
+ - Created [Get Live Orders](https://github.com/UF-CEN5035-2022SpringProject/GatorStore/issues/120#issuecomment-1097158961): Get the lives according to the store #120
 
 **Seller livestream tutorial**
 
