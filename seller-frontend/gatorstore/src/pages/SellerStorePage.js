@@ -77,7 +77,7 @@ function SellerStorePage() {
 
               var inputEmbedStreamHTML = '<iframe width="490" height="315" src="https://www.youtube.com/embed/' + response.result.liveId + '" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>'
               SetEmbedHTML(inputEmbedStreamHTML);
-              var inputEmbedChatHTML = '<iframe width="494" height="315" src="https://www.youtube.com/live_chat?v=' + response.result.liveId + '&embed_domain=localhost" frameborder="0"></iframe>';
+              var inputEmbedChatHTML = '<iframe width="494" height="315" src="https://www.youtube.com/live_chat?v=' + response.result.liveId + `&embed_domain=${settings.domain}" frameborder="0"></iframe>`;
               SetEmbedChatHTML(inputEmbedChatHTML);
               
               SetLiveId(response.result.liveId)
@@ -337,7 +337,7 @@ function SellerStorePage() {
           var embedStreamHTML = '<iframe width="560" height="315" src="https://www.youtube.com/embed/' + response.result.liveId + '"' +  ' frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>'
           SetEmbedHTML(embedStreamHTML);
 
-          var inputEmbedChatHTML = '<iframe width="494" height="315" src="https://www.youtube.com/live_chat?v=' + response.result.liveId + '&embed_domain=localhost" frameborder="0"></iframe>';
+          var inputEmbedChatHTML = '<iframe width="494" height="315" src="https://www.youtube.com/live_chat?v=' + response.result.liveId + `&embed_domain=${settings.domain}" frameborder="0"></iframe>`;
           SetEmbedChatHTML(inputEmbedChatHTML);
         } else {
           alert("ERROR: YouTube API did not respond with 'success' status code.");
@@ -553,7 +553,7 @@ function SellerStorePage() {
 
       <Overlay/>
 
-      <div style={{minHeight: "80vh"}}>
+      <div style={{minHeight: "80vh", marginTop: 30}}>
         <LiveInfoBar />
 
         <ProductsHeader/>
