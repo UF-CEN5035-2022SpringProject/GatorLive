@@ -1,3 +1,3 @@
 package utils
 
-const PageLimit = 5
+const PageLimit = 8

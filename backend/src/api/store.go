@@ -377,3 +377,78 @@ func StoreRecommendList(w http.ResponseWriter, r *http.Request) {
 
 	ReturnResponse(w, resp, http.StatusOK)
 }
+
+func StoreLives(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	storeId := vars["storeId"]
+
+	// check if request is valid to access store product list
+	storeObj := db.GetStoreObj(storeId)
+	if storeObj == nil {
+		logger.ErrorLogger.Printf("invald request, unable to get store")
+		errorMsg := utils.SetErrorMsg("invald request, unable to get store")
+		resp, _ := RespJSON{int(utils.InvalidParamsCode), errorMsg}.SetResponse()
+		ReturnResponse(w, resp, http.StatusBadRequest)
+		return
+	}
+
+	userData := gorillaContext.Get(r, "userData").(map[string]interface{})
+	if storeObj["userId"] != userData["id"].(string) {
+		logger.ErrorLogger.Printf("invald request, permission denied")
+		errorMsg := utils.SetErrorMsg("invald request, permission denied")
+		resp, _ := RespJSON{int(utils.InvalidJwtTokenCode), errorMsg}.SetResponse()
+		ReturnResponse(w, resp, http.StatusForbidden)
+		return
+	}
+
+	page := r.URL.Query().Get("page")
+	if page == "" {
+		page = "0"
+	}
+
+	intPage, err := strconv.Atoi(page)
+	if err != nil {
+		logger.ErrorLogger.Printf("Error page type, err: %v", err)
+		errorMsg := utils.SetErrorMsg("Error type of page query")
+		resp, _ := RespJSON{int(utils.InvalidParamsCode), errorMsg}.SetResponse()
+		ReturnResponse(w, resp, http.StatusBadRequest)
+		return
+	}
+
+	liveList := db.GetStoreLives(storeId, intPage)
+
+	storeLiveData := make(map[string]interface{})
+	storeLiveData["storeId"] = storeId
+
+	liveListSize := len(liveList)
+	storeLiveData["maxPage"] = 0
+	storeLiveData["currectPage"] = 0
+	storeLiveData["liveList"] = liveList
+
+	if liveListSize != 0 {
+		totalPage := (liveListSize / utils.PageLimit)
+		if (liveListSize % utils.PageLimit) != 0 {
+			totalPage += 1
+		}
+		maxPage := totalPage - 1
+		storeLiveData["maxPage"] = maxPage
+
+		currectPage := intPage
+		if currectPage > maxPage {
+			currectPage = maxPage
+		}
+		storeLiveData["currectPage"] = currectPage
+		// arrange the pagenate
+		storeLiveData["liveList"] = utils.Pagenator(liveList, currectPage, liveListSize)
+	}
+
+	resp, err := RespJSON{0, storeLiveData}.SetResponse()
+	if err != nil {
+		logger.ErrorLogger.Printf("Error on wrapping JSON resp, err: %v", err)
+		errorMsg := utils.SetErrorMsg("Error on wrapping JSON resp")
+		resp, _ := RespJSON{int(utils.InvalidAccessTokenCode), errorMsg}.SetResponse()
+		ReturnResponse(w, resp, http.StatusInternalServerError)
+		return
+	}
+	ReturnResponse(w, resp, http.StatusOK)
+}
