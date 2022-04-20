@@ -29,11 +29,13 @@
 ## Demo video functionality
 
 ## Cypress test video 
-Buyer:    
+Buyer:
+
 https://user-images.githubusercontent.com/40399062/164333895-316649c4-6227-4dd4-b2bb-1a63994b5f6b.mp4   
 
 
-Seller:    
+Seller:  
+
 https://user-images.githubusercontent.com/40399062/164333928-e97956af-8aa6-4d8e-a317-88b6ef85b1f7.mp4
 
 ---
