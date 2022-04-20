@@ -25,6 +25,7 @@
      
      
 5. Create a livestream for a store
+     (this is a gif)
      ![livestream](https://user-images.githubusercontent.com/11768359/164325047-9a4299ee-3425-4b4e-907e-3f5b3954592d.gif)
 
 7. Stream created
@@ -36,5 +37,6 @@
     ![image](https://user-images.githubusercontent.com/11768359/164326883-7858052c-15b6-4cba-afde-56d090f708ab.png)
 
 2. Start streaming!
+    (this is a gif)
     ![golive](https://user-images.githubusercontent.com/11768359/164328315-1cb62008-b050-4ebd-bdc5-0b025c367622.gif)
 
