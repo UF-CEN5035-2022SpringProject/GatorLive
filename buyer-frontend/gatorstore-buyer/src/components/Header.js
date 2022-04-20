@@ -68,7 +68,7 @@ function SignedInDropdown(userData) {
       onClose={handleClose}
     >
       <div style={{padding: 10, color: 'blue'}}>{userData.email}</div>
-      <MenuItem component="a" href="/"><HomeIcon style={{marginRight: 20}}/> Home</MenuItem>
+      <MenuItem component="a" href="/home"><HomeIcon style={{marginRight: 20}}/> Home</MenuItem>
       <MenuItem component="a" href="/store/gatorstore-1"><StorefrontIcon style={{marginRight: 20}}/> My Favorite Store</MenuItem>
       <MenuItem component="a" href="/orders"><ShoppingCartIcon style={{marginRight: 20}}/> My Orders</MenuItem>
       <MenuItem onClick={SignOut}><LogoutIcon style={{marginRight: 20}}/>Logout</MenuItem>
