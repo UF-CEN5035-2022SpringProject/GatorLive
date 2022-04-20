@@ -19,7 +19,7 @@ const CardElevation = 24;
 
 function GoogleButton() { // for when user is NOT signed in
     return (<div className="g-signin">
-      <a id="loginButton" style={{textDecoration: 'none'}} href={`https://accounts.google.com/o/oauth2/auth?access_type=offline&client_id=138444517704-gg6649ok973letdlh55bpte8bna7721o.apps.googleusercontent.com&redirect_uri=http%3A%2F%2Flocalhost%3A${settings.applicationPort}%2Flogin&response_type=code&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fyoutube+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile&state=state`}>
+      <a id="loginButton" style={{textDecoration: 'none'}} href={`https://accounts.google.com/o/oauth2/auth?access_type=offline&client_id=138444517704-gg6649ok973letdlh55bpte8bna7721o.apps.googleusercontent.com&redirect_uri=${settings.googleLoginRedirectURL}&response_type=code&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fyoutube+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile&state=state`}>
         <button className='login' style={{marginLeft: 0}}>
           <GoogleIcon style={{verticalAlign: 'middle', marginRight: 10}}/> Sign-In / Sign-Up 
         </button>
@@ -29,7 +29,7 @@ function GoogleButton() { // for when user is NOT signed in
 
 function RedirectToSellerButton() { // for when user is NOT signed in
     return (<div className="g-signin">
-        <a id="redirectToSellerButton" style={{textDecoration: 'none'}} href={`http://${settings.applicationHost}:3000`}>
+        <a id="redirectToSellerButton" style={{textDecoration: 'none'}} href={settings.sellerAppURL}>
         <button className='login' style={{marginLeft: 0}}>
             <GoogleIcon style={{verticalAlign: 'middle', marginRight: 10}}/> Join GatorStore as a Seller 
         </button>
@@ -38,12 +38,12 @@ function RedirectToSellerButton() { // for when user is NOT signed in
 }
 
 function InstructionPage() {
-    const introGatoStore = useRef(null);
+    const introGatorStore = useRef(null);
     const introLiveShop = useRef(null);
     const introFollowOrders = useRef(null);
     const introTeam = useRef(null);
 
-    const toGatorStoreScroll = () => introGatoStore.current.scrollIntoView();
+    const toGatorStoreScroll = () => introGatorStore.current.scrollIntoView();
     const toLiveShopScroll = () => introLiveShop.current.scrollIntoView();
     const toFollowOrdersScroll = () => introFollowOrders.current.scrollIntoView();
     const toTeamScroll = () => introTeam.current.scrollIntoView();
@@ -106,7 +106,7 @@ function InstructionPage() {
             }}>
                 <div style={{width: '2%'}}/>
                 <div 
-                    ref={introGatoStore} 
+                    ref={introGatorStore} 
                     style={{
                     display: 'flex', 
                     height: '100%', 
@@ -249,7 +249,7 @@ function InstructionPage() {
                     <div className='instruction-title' style={{color: 'rgba(0, 0, 0, 0.75)', fontSize: 32, marginTop: 15, marginBottom: 15}}>Start Browsing</div>
                     <GoogleButton />
                     <div style={{width: '80%', height: 2, backgroundColor: 'rgba(0, 0, 0, 0.4)', marginTop: 15}}></div>
-                    <div className='instruction-title' style={{color: 'rgba(0, 0, 0, 0.75)', fontSize: 32, marginTop: 15, marginBottom: 15}}>Befome a Seller</div>
+                    <div className='instruction-title' style={{color: 'rgba(0, 0, 0, 0.75)', fontSize: 32, marginTop: 15, marginBottom: 15}}>Become a Seller</div>
                     <RedirectToSellerButton />
                 </div>
             </div>
