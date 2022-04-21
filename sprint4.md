@@ -4,17 +4,15 @@
 - [Final Project Description](https://github.com/UF-CEN5035-2022SpringProject/GatorStore/blob/main/sprint4.md#final-project-description)       
 - Demo video functionality (3mins)
   - https://www.youtube.com/watch?v=umJ77oY6wDo 
-
 - [Cypress test video](https://github.com/UF-CEN5035-2022SpringProject/GatorStore/blob/main/sprint4.md#cypress-test-video-1)
   - Buyer Testing 
   - Seller Testing
-    
 - [Backend unit test video](https://github.com/UF-CEN5035-2022SpringProject/GatorStore/blob/main/sprint4.md#backend-unit-test)
 - [API Documentation](https://github.com/UF-CEN5035-2022SpringProject/GatorStore/blob/main/README.md)
 - [Project board](https://github.com/orgs/UF-CEN5035-2022SpringProject/projects/1)
 - Link to Sprint4 deliverables
 - [Frontend and backend team members](https://github.com/UF-CEN5035-2022SpringProject/GatorStore/blob/main/sprint4.md#about-the-team)
-- [Bonus points for public release](https://github.com/UF-CEN5035-2022SpringProject/GatorStore/blob/main/sprint4.md#about-the-team)
+- [Bonus points for public release](https://github.com/UF-CEN5035-2022SpringProject/GatorStore/blob/main/sprint4.md#public-release)
 
 ## Final Project Description
 ---
@@ -23,7 +21,7 @@ By being a seller, a user is allowed to create unlimited stores, each of which t
 By being a buyer, a user can browse through the stores and browse through their inventory. From a product's page, they can view its details, store, and purchase it. During livestreams, buyers can interact with sellers through the embedded YouTube chat and browse through the featured items of the stream. A record of the seller's orders is kept for them.
 
 ## Achievements 
-- 2 React web appication for over 10 pages component
+- 2 React web application for over 10 pages
 - Develop over 20 Golang APIs
 - Implement Google third party APIs
 - Up to 130 issues solved
@@ -107,7 +105,7 @@ https://github.com/UF-CEN5035-2022SpringProject/GatorStore/blob/main/README.md
 --- 
 ## Public release
 Seller: 
-
+https://seller.gatorstore.org/
 Buyer: 
-
+https://buyer.gatorstore.org/
 
