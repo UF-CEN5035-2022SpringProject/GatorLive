@@ -43,7 +43,6 @@ By being a buyer, a user can browse through the stores and browse through their 
  - Created [Get Live Orders](https://github.com/UF-CEN5035-2022SpringProject/GatorStore/issues/120#issuecomment-1097158961): Get the lives according to the store #120
 
 ### User tutorials
----
 **Seller livestream tutorial**
 Instructions for how to be a seller using GatorStore
 - https://github.com/UF-CEN5035-2022SpringProject/GatorStore/blob/main/seller-frontend/seller-instructions.md
@@ -53,7 +52,6 @@ Instructions for buyers in GatorStore
 - https://github.com/UF-CEN5035-2022SpringProject/GatorStore/blob/main/buyer-frontend/buyer-instructions.md
 
 ### Devloper tutorials
----
 **Backend devloper tutorial**
 - https://github.com/UF-CEN5035-2022SpringProject/GatorStore/blob/main/backend/backend-readme.md
 
@@ -61,31 +59,28 @@ Instructions for buyers in GatorStore
 - https://github.com/UF-CEN5035-2022SpringProject/GatorStore/blob/main/buyer-frontend/buyer-instructions.md
 - https://github.com/UF-CEN5035-2022SpringProject/GatorStore/blob/main/seller-frontend/seller-instructions.md
 
----
-## Demo video functionality
-
----
 ## Cypress test video 
+---
 Cypress testing for both web applications.
 
-Buyer:
+### Buyer:
 
 https://user-images.githubusercontent.com/40399062/164333895-316649c4-6227-4dd4-b2bb-1a63994b5f6b.mp4   
 
-Seller:
+### Seller:
 
 https://user-images.githubusercontent.com/40399062/164333928-e97956af-8aa6-4d8e-a317-88b6ef85b1f7.mp4
 
----
 ## Backend Unit Test
+---
 We are using `Go test`.
 Because part of the functionalities rely on Google services, we are not able to get 100% coverage(62%).
 
 ###  Backend unit test video 
 https://user-images.githubusercontent.com/11768359/163632604-da2fd917-84c9-4c87-bc0f-cf2d0486ac5b.mp4
 
----
 ## API Documentation
+---
 https://github.com/UF-CEN5035-2022SpringProject/GatorStore/blob/main/README.md
 ---
 
