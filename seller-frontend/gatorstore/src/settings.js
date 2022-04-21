@@ -14,8 +14,8 @@ export default {
         'major': 'Titillium Web',
         'secondary': 'Audiowide'
     },
-    apiHostURL: `http://${domain}:8080/api/`,
-    testApiHostURL: `http://${domain}:8080/test/api`,
+    apiHostURL: `https://${domain}:8080/api/`,
+    testApiHostURL: `https://${domain}:8080/test/api`,
     googleLoginRedirectURL: `https%3A%2F%2F${domain}%2Flogin`,
     applicationRootURL: `https://${domain}`,
     buyerAppURL: 'https://buyer.gatorstore.org/',
