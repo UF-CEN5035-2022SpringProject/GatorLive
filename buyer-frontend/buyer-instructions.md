@@ -28,30 +28,30 @@
 
 ### Visiting a Product Page:
  0. Click on the "VIEW MORE" button in one of a store's product cards or on one of a livestream's featured products.
-![image](https://user-images.githubusercontent.com/40399062/164349142-b38d56fa-2108-4303-8ff3-34222a5aaebf.png)
+![image](https://user-images.githubusercontent.com/40399062/164349142-b38d56fa-2108-4303-8ff3-34222a5aaebf.png)      
 ![image](https://user-images.githubusercontent.com/40399062/164349201-33a51d84-e52f-4083-ad8c-b68079ca734a.png)
 
- 1. This will lead you to the product's page, which is seen below. In here, you can view its title, image, description, price, and from what store it came from (on the right-side red card).   
+ 1. This will lead you to the product's page, which is seen below. In here, you can view its title, image, description, price, and from what store it came from (on the right-side red card).      
 ![image](https://user-images.githubusercontent.com/40399062/164349263-5c0cc877-7115-4a4a-a9b6-874c5d6d9d2e.png)
 
- 2. You can go back to the product's store using the "Back to Store" button on the red right-side card.    
-![image](https://user-images.githubusercontent.com/40399062/164349329-6ebfda40-3473-4f76-9eb0-3f323a58d887.png)
+ 2. You can go back to the product's store using the "Back to Store" button on the red right-side card.       
+![image](https://user-images.githubusercontent.com/40399062/164349329-6ebfda40-3473-4f76-9eb0-3f323a58d887.png) 
 
- 3. If in-stock, the product will have a blue "PURCHASE PRODUCT" button. Click it to confirm the order of 1 of this product.
+ 3. If in-stock, the product will have a blue "PURCHASE PRODUCT" button. Click it to confirm the order of 1 of this product.    
 ![image](https://user-images.githubusercontent.com/40399062/164349378-ab82b0fd-b051-428c-a170-1f0084011f7c.png)
 
- 4. If out-of-stock, the blue button will be replaced with the following one. 
+ 4. If out-of-stock, the blue button will be replaced with the following one.     
 ![image](https://user-images.githubusercontent.com/40399062/164349468-81b418e9-3dde-4dfc-b58d-21f954d60e81.png)
 
- 5. As a reminder, you need to be signed-in to be able to purchase a product. Or else the following warning will follow:
+ 5. As a reminder, you need to be signed-in to be able to purchase a product. Or else the following warning will follow:    
 ![image](https://user-images.githubusercontent.com/40399062/164349439-46cc4011-86f5-415f-bc28-8925f019d41b.png)
 
 ### Viewing Your Order History:
- 0. Click on the top-right-corner header menu with your name on it and click on "My Orders".
+ 0. Click on the top-right-corner header menu with your name on it and click on "My Orders".    
 ![image](https://user-images.githubusercontent.com/40399062/164349814-ca885f4d-c067-40c3-be2b-5ae38a7a99a7.png)
 
- 1. You will be led to the Order History Page, which contains an API-dependent list of all of your orders.  
+ 1. You will be led to the Order History Page, which contains an API-dependent list of all of your orders.      
 ![image](https://user-images.githubusercontent.com/40399062/164349837-0d1b0cc0-07d5-4cf4-b0cf-61c0e3900f41.png)
 
- 2. Each order card will have the product's image, title, quantity ordered, price, and ID. A "VIEW PRODUCT" button is also there for you to click and be redirected to the product's page.   
+ 2. Each order card will have the product's image, title, quantity ordered, price, and ID. A "VIEW PRODUCT" button is also there for you to click and be redirected to the product's page.       
 ![image](https://user-images.githubusercontent.com/40399062/164349852-df52faf4-2441-4f31-a3cc-ba901c3ec6e8.png)
