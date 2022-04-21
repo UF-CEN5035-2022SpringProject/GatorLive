@@ -4,17 +4,15 @@
 - [Final Project Description](https://github.com/UF-CEN5035-2022SpringProject/GatorStore/blob/main/sprint4.md#final-project-description)       
 - Demo video functionality (3mins)
   - https://www.youtube.com/watch?v=umJ77oY6wDo 
-
 - [Cypress test video](https://github.com/UF-CEN5035-2022SpringProject/GatorStore/blob/main/sprint4.md#cypress-test-video-1)
   - Buyer Testing 
   - Seller Testing
-    
 - [Backend unit test video](https://github.com/UF-CEN5035-2022SpringProject/GatorStore/blob/main/sprint4.md#backend-unit-test)
 - [API Documentation](https://github.com/UF-CEN5035-2022SpringProject/GatorStore/blob/main/README.md)
 - [Project board](https://github.com/orgs/UF-CEN5035-2022SpringProject/projects/1)
 - Link to Sprint4 deliverables
 - [Frontend and backend team members](https://github.com/UF-CEN5035-2022SpringProject/GatorStore/blob/main/sprint4.md#about-the-team)
-- [Bonus points for public release](https://github.com/UF-CEN5035-2022SpringProject/GatorStore/blob/main/sprint4.md#about-the-team)
+- [Bonus points for public release](https://github.com/UF-CEN5035-2022SpringProject/GatorStore/blob/main/sprint4.md#public-release)
 
 ## Final Project Description
 ---
@@ -23,7 +21,7 @@ By being a seller, a user is allowed to create unlimited stores, each of which t
 By being a buyer, a user can browse through the stores and browse through their inventory. From a product's page, they can view its details, store, and purchase it. During livestreams, buyers can interact with sellers through the embedded YouTube chat and browse through the featured items of the stream. A record of the seller's orders is kept for them.
 
 ## Achievements 
-- 2 React web appication for over 10 pages component
+- 2 React web application for over 10 pages
 - Develop over 20 Golang APIs
 - Implement Google third party APIs
 - Up to 130 issues solved
@@ -45,7 +43,6 @@ By being a buyer, a user can browse through the stores and browse through their 
  - Created [Get Live Orders](https://github.com/UF-CEN5035-2022SpringProject/GatorStore/issues/120#issuecomment-1097158961): Get the lives according to the store #120
 
 ### User tutorials
----
 **Seller livestream tutorial**
 Instructions for how to be a seller using GatorStore
 - https://github.com/UF-CEN5035-2022SpringProject/GatorStore/blob/main/seller-frontend/seller-instructions.md
@@ -55,7 +52,6 @@ Instructions for buyers in GatorStore
 - https://github.com/UF-CEN5035-2022SpringProject/GatorStore/blob/main/buyer-frontend/buyer-instructions.md
 
 ### Devloper tutorials
----
 **Backend devloper tutorial**
 - https://github.com/UF-CEN5035-2022SpringProject/GatorStore/blob/main/backend/backend-readme.md
 
@@ -63,31 +59,28 @@ Instructions for buyers in GatorStore
 - https://github.com/UF-CEN5035-2022SpringProject/GatorStore/blob/main/buyer-frontend/buyer-instructions.md
 - https://github.com/UF-CEN5035-2022SpringProject/GatorStore/blob/main/seller-frontend/seller-instructions.md
 
----
-## Demo video functionality
-
----
 ## Cypress test video 
+---
 Cypress testing for both web applications.
 
-Buyer:
+### Buyer:
 
 https://user-images.githubusercontent.com/40399062/164333895-316649c4-6227-4dd4-b2bb-1a63994b5f6b.mp4   
 
-Seller:
+### Seller:
 
 https://user-images.githubusercontent.com/40399062/164333928-e97956af-8aa6-4d8e-a317-88b6ef85b1f7.mp4
 
----
 ## Backend Unit Test
+---
 We are using `Go test`.
 Because part of the functionalities rely on Google services, we are not able to get 100% coverage(62%).
 
 ###  Backend unit test video 
 https://user-images.githubusercontent.com/11768359/163632604-da2fd917-84c9-4c87-bc0f-cf2d0486ac5b.mp4
 
----
 ## API Documentation
+---
 https://github.com/UF-CEN5035-2022SpringProject/GatorStore/blob/main/README.md
 ---
 
@@ -107,7 +100,7 @@ https://github.com/UF-CEN5035-2022SpringProject/GatorStore/blob/main/README.md
 --- 
 ## Public release
 Seller: 
-
+https://seller.gatorstore.org/
 Buyer: 
-
+https://buyer.gatorstore.org/
 
