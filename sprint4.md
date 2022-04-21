@@ -7,10 +7,14 @@ By being a seller, a user is allowed to create unlimited stores, each of which t
 By being a buyer, a user can browse through the stores and browse through their inventory. From a product's page, they can view its details, store, and purchase it. During livestreams, buyers can interact with sellers through the embedded YouTube chat and browse through the featured items of the stream. A record of the seller's orders is kept for them.     
 
 - Demo video functionality 
-  - 
-- Cypress test video
-  - 
-- Backend unit test video - 90sec max
+  - https://www.youtube.com/watch?v=umJ77oY6wDo
+
+- [Cypress test video](https://github.com/UF-CEN5035-2022SpringProject/GatorStore/blob/main/sprint4.md#cypress-test-video-1)
+  - Buyer Testing 
+  - Seller Testing
+    
+- Backend unit test video
+  
 - Link to API Documentation
   - https://github.com/UF-CEN5035-2022SpringProject/GatorStore/blob/main/README.md
 - Link to Project board
@@ -62,8 +66,11 @@ Instructions for buyers in GatorStore
 Cypress testing for both web applications.
 
 Buyer:
+
 https://user-images.githubusercontent.com/40399062/164333895-316649c4-6227-4dd4-b2bb-1a63994b5f6b.mp4   
-Seller:  
+
+Seller:
+
 https://user-images.githubusercontent.com/40399062/164333928-e97956af-8aa6-4d8e-a317-88b6ef85b1f7.mp4
 
 ---
@@ -97,3 +104,5 @@ https://github.com/UF-CEN5035-2022SpringProject/GatorStore/blob/main/README.md
 Seller: 
 
 Buyer: 
+
+
