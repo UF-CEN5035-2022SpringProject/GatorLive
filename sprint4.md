@@ -1,7 +1,7 @@
 # Sprint4
 ---
 ## What we have done in Final Sprint4
-- Project Description:    
+- Final Project Description:    
 GatorStore is a livestreaming and e-commerce site that connects potential buyers to sellers via stream-enabled live communication, as well as not-live store browsing. A user can sign-in using Google Authentication as either a seller or buyer.     
 By being a seller, a user is allowed to create unlimited stores, each of which they can populate with their products. Each store has the ability of going LIVE via the YouTube API, which allows sellers to name their livestreams and receive the necessary stream key from GatorStore. A record of a store's orders and livestream is kept for each store. These livestreams are designed to support sales, so sellers can display specific featured products in each. While the seller application is aimed at the seller creating and editing stores/products, they can also visit any of GatorStore's stores or products through their URLs.     
 By being a buyer, a user can browse through the stores and browse through their inventory. From a product's page, they can view its details, store, and purchase it. During livestreams, buyers can interact with sellers through the embedded YouTube chat and browse through the featured items of the stream. A record of the seller's orders is kept for them.     
