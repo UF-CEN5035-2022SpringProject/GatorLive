@@ -13,7 +13,7 @@ export default {
         'major': 'Ubuntu',
         'secondary': 'Audiowide'
     },
-    googleLoginRedirectURL: 'http%3A%2F%2Fbuyer.gatorstore.org%3A3001%2Flogin',
+    googleLoginRedirectURL: 'http%3A%2F%2Fbuyer.gatorstore.org%2Flogin',
     applicationRootURL: 'http://buyer.gatorstore.org',
     applicationPort: 3001,
     applicationHost: 'buyer.gatorstore.org',
