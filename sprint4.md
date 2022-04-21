@@ -13,9 +13,8 @@
 - [API Documentation](https://github.com/UF-CEN5035-2022SpringProject/GatorStore/blob/main/README.md)
 - [Project board](https://github.com/orgs/UF-CEN5035-2022SpringProject/projects/1)
 - Link to Sprint4 deliverables
-  - 
-- Frontend and backend team members
-- Bonus points for public release
+- [Frontend and backend team members](https://github.com/UF-CEN5035-2022SpringProject/GatorStore/blob/main/sprint4.md#about-the-team)
+- [Bonus points for public release](https://github.com/UF-CEN5035-2022SpringProject/GatorStore/blob/main/sprint4.md#about-the-team)
 
 ## Final Project Description
 ---
@@ -96,7 +95,7 @@ https://github.com/UF-CEN5035-2022SpringProject/GatorStore/blob/main/README.md
 ## Sprint4 deliverables
 
 ---
-## About the team
+## About the team 
 - Frontend team members
   - Sebastian Llerena
   - Yi-Ming Chang
