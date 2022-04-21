@@ -29,6 +29,9 @@ By being a buyer, a user can browse through the stores and browse through their 
 
 ---
 ## Sprint Feature Description
+Check out the issue on sprint 4 
+- https://github.com/orgs/UF-CEN5035-2022SpringProject/projects/1?card_filter_query=label%3Asprint4
+
 **Front-end New Features:**
  - Created a new instructions page (at "/") for both buyer and seller projects
  - Created a new page for sellers to get the livestream history for each of their stores
