@@ -17,8 +17,8 @@ export default {
     },
     apiHostURL: `http://${apiDomain}:8080/api/`,
     testApiHostURL: `http://${apiDomain}:8080/test/api`,
-    googleLoginRedirectURL: `http%3A%2F%2F${domain}%2Flogin`,
-    applicationRootURL: `http://${domain}:3000`,
+    googleLoginRedirectURL: `https%3A%2F%2F${domain}%2Flogin`,
+    applicationRootURL: `https://${domain}`,
     buyerAppURL: 'https://buyer.gatorstore.org/',
     domain: domain
 }
