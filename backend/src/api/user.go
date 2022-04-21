@@ -111,11 +111,11 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		Scopes:       []string{youtube.YoutubeScope, g.UserinfoEmailScope, g.UserinfoProfileScope},
 
 		Endpoint:    google.Endpoint,
-		RedirectURL: RedirectURL[1],
+		RedirectURL: RedirectURL[6],
 	}
 
 	if loginFrom == "buyer" {
-		conf.RedirectURL = RedirectURL[2]
+		conf.RedirectURL = RedirectURL[5]
 	}
 	// get code or assesstoken from http.request
 	b, err := io.ReadAll(r.Body)
