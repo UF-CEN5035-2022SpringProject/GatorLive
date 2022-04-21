@@ -7,6 +7,11 @@ import GoogleIcon from '@mui/icons-material/Google';
 import settings from '../settings.js';
 import { textAlign } from '@mui/system';
 
+import instruction1 from '../images/buyerInstruction1.png';
+import instruction2 from '../images/buyerInstruction2.png';
+import instruction3 from '../images/buyerInstruction3.png';
+import instruction4 from '../images/buyerInstruction4.png';
+
 const Item = styled(Paper)(({ theme }) => ({
     ...theme.typography.body2,
     textAlign: 'center',
@@ -51,7 +56,7 @@ function InstructionPage() {
     return( 
         <div>
             <div >
-                <Header/>
+                <Header />
             </div>
             <div style={{ 
                 display: 'flex',
@@ -81,13 +86,13 @@ function InstructionPage() {
                     <div style={{marginTop: 70}}/>
                     <div style={{width: '100%', height: 70, display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly'}}>
                         <div className='instruction-btn' onClick={toGatorStoreScroll} style={{height: '100%', width:300}}>
-                            Browse the Stores
+                            Join GatorStore
                         </div>
                         <div className='instruction-btn' onClick={toLiveShopScroll} style={{height: '100%', width:300}}>
                             Live Shopping
                         </div>
                         <div className='instruction-btn' onClick={toFollowOrdersScroll} style={{height: '100%', width:300}}>
-                            Follow Your Orders
+                            Purchase a Product
                         </div>
                         <div className='instruction-btn' onClick={toTeamScroll} style={{height: '100%', width:300}}>
                             Meet the Team
@@ -116,11 +121,11 @@ function InstructionPage() {
                     textAlign: 'right' 
                 }}> 
                     <div className='block-title'>
-                            Browse the Stores
-                    </div>
+                            Join GatorStore
+                    </div><br/>
                     <div className='block-content'>
-                        The Store Page is the hub for live user interactions and browsing through the products. <br/> 
-                        You can visit each of the products to buy them by clicking on "View More" beneath each. 
+                        First, become a user with your Google account by clicking on the "Sign-In" button on the top-right corner. <br/> <br/>
+                        You will be prompted to grant us permission to sign you in using your Google account.
                     </div>
                 </div>
                 <div style={{width: '2%'}}/>
@@ -128,7 +133,7 @@ function InstructionPage() {
                 <div style={{width: '2%'}}/>
                 <img 
                     alt='storeProducts' 
-                    src='/storeProductImage.png'
+                    src={instruction1}
                     className='block-img'
                     style={{
                         height: 500, 
@@ -153,7 +158,7 @@ function InstructionPage() {
                 <div style={{width: '2%'}}/>
                 <img 
                     alt='storeProducts' 
-                    src='/storeProductImage.png'
+                    src={instruction2}
                     className='block-img'
                     style={{
                         height: 500, 
@@ -175,10 +180,11 @@ function InstructionPage() {
                 }}> 
                     <div className='block-title'>
                         Live Shopping
-                    </div>
+                    </div><br/> 
                     <div className='block-content'>
-                        The Store Page is the hub for live user interactions and browsing through the products. <br/> 
-                        You can visit each of the products to buy them by clicking on "View More" beneath each. 
+                        Click on one of the recommended stores or on "My Favorite Store" in the top-right header menu!<br/> <br/> 
+                        Whether it is offline or live, you can browse the store's inventory at the page's bottom.<br/> <br/> 
+                        When live, the top will expand to include the livestream, chat, and featured products - which are the products the stream is showcasing.
                     </div>
                 </div> 
                 <div style={{width: '2%'}}/>
@@ -204,11 +210,11 @@ function InstructionPage() {
                     textAlign: 'right' 
                 }}> 
                     <div className='block-title'>
-                        Follow Your Orders
-                    </div>
+                        Purchase a Product
+                    </div><br/> 
                     <div className='block-content'>
-                        The Store Page is the hub for live user interactions and browsing through the products. <br/> 
-                        You can visit each of the products to buy them by clicking on "View More" beneath each. 
+                        By clicking "View More" on a product card, you can reach its page.<br/> <br/> 
+                        This page contains the product's image, price, description, and stock status. If the button shown here is blue, you can buy it!
                     </div>
                 </div>
                 <div style={{width: '2%'}}/>
@@ -216,7 +222,7 @@ function InstructionPage() {
                 <div style={{width: '2%'}}/>
                 <img 
                     alt='storeProducts' 
-                    src='/storeProductImage.png'
+                    src={instruction3}
                     className='block-img'
                     style={{
                         height: 500, 
@@ -227,11 +233,57 @@ function InstructionPage() {
                 />  
                 <div style={{width: '2%'}}/>
             </div>
+            <div
+                style={{ 
+                display: 'flex',
+                height: 600, 
+                width: '100%', 
+                marginTop: 10, 
+                flexDirection: 'row',
+                justifyContent: 'center',
+                alignItems: 'center'
+            }}>
+                <div style={{width: '2%'}}/>
+                <img 
+                    alt='storeProducts' 
+                    src={instruction4}
+                    className='block-img'
+                    style={{
+                        height: 500, 
+                        width: '46%', 
+                        marginTop: 106.5, 
+                        borderRadius: 15
+                    }}
+                /> 
+                <div style={{width: '2%'}}/>
+                <div style={{width: 2, height: 300, backgroundColor: '#FA4616'}}/>
+                <div style={{width: '2%'}}/>
+                <div style={{
+                    display: 'flex', 
+                    height: '100%', 
+                    width: '46%', 
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    textAlign: 'left' 
+                }}> 
+                    <div className='block-title'>
+                        Follow your Orders
+                    </div><br/> 
+                    <div className='block-content'>
+                        Using the top-right header menu, you can visit your order history page. <br/> <br/> 
+                        In it, order details and a link to each of the products can be found.
+                    </div>
+                </div> 
+                <div style={{width: '2%'}}/>
+            </div>
+
+            {/* Start Browsing/Become a Seller Block Below: */}
+
             <div style={{
                 display: "flex", 
                 height: '600px', 
                 width: '100%', 
-                marginTop: 30, 
+                marginTop: 100, 
                 justifyContent: 'center',
                 alignItems: 'center',
                 backgroundImage: "url(/tower-login.jpeg)",
@@ -253,6 +305,7 @@ function InstructionPage() {
                     <RedirectToSellerButton />
                 </div>
             </div>
+
             <div ref={introTeam} style={{marginTop: 30}}>
                 <Footer/>
             </div>

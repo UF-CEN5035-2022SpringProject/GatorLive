@@ -536,13 +536,13 @@ function SellerStorePage() {
 
   return (
     <div className="RootFlexContainer">
-      <div>
-        <Header/>
+      <div style={{marginBottom: "10px"}}>
+        <Header />
       </div> 
 
       <Overlay/>
 
-      <div style={{minHeight: "80vh"}}>
+      <div style={{minHeight: "80vh", marginTop: 30}}>
         <LiveInfoBar />
 
         <ProductsHeader/>

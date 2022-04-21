@@ -1,3 +1,4 @@
+const domain = 'localhost'
 export default {
     HeaderText: {
         'fontFamily': 'Titillium Web',
@@ -13,9 +14,10 @@ export default {
         'major': 'Titillium Web',
         'secondary': 'Audiowide'
     },
-    apiHostURL: 'http://localhost:8080/api/',
-    testApiHostURL: 'http://localhost:8080/test/api',
-    googleLoginRedirectURL: 'http%3A%2F%2Flocalhost%3A3000%2Flogin',
-    applicationRootURL: 'http://localhost:3000',
-    buyerAppURL: 'http://localhost:3001'
+    apiHostURL: `http://${domain}:8080/api/`,
+    testApiHostURL: `http://${domain}:8080/test/api`,
+    googleLoginRedirectURL: `http%3A%2F%2F${domain}%3A3000%2Flogin`,
+    applicationRootURL: `http://${domain}:3000`,
+    buyerAppURL: 'http://localhost:3001',
+    domain: domain
 }
