@@ -10,7 +10,7 @@
 - [Backend unit test video](https://github.com/UF-CEN5035-2022SpringProject/GatorStore/blob/main/sprint4.md#backend-unit-test)
 - [API Documentation](https://github.com/UF-CEN5035-2022SpringProject/GatorStore/blob/main/README.md)
 - [Project board](https://github.com/orgs/UF-CEN5035-2022SpringProject/projects/1)
-- Link to Sprint4 deliverables
+- [Link to Sprint4 deliverables](https://github.com/UF-CEN5035-2022SpringProject/GatorStore/releases/tag/sprint4)
 - [Frontend and backend team members](https://github.com/UF-CEN5035-2022SpringProject/GatorStore/blob/main/sprint4.md#about-the-team)
 - [Bonus points for public release](https://github.com/UF-CEN5035-2022SpringProject/GatorStore/blob/main/sprint4.md#public-release)
 
