@@ -15,7 +15,7 @@ import (
 var (
 	port    string = "8080"
 	appName string = "GatorStore"
-	IsDev   bool   = true
+	IsDev   bool   = false
 )
 
 func main() {
