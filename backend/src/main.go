@@ -15,7 +15,7 @@ import (
 var (
 	port    string = "8080"
 	appName string = "GatorStore"
-	IsDev   bool   = true
+	IsDev   bool   = false
 )
 
 func main() {
@@ -30,7 +30,7 @@ func main() {
 	r := mux.NewRouter()
 
 	// login API
-	r.HandleFunc(prodRoutePrefix+"/user/google-login", api.Login).Methods("GET", "POST", "OPTIONS")
+	r.HandleFunc(prodRoutePrefix+"/user/login", api.Login).Methods("GET", "POST", "OPTIONS")
 	authApis := r.PathPrefix(prodRoutePrefix).Subrouter()
 	// USER path
 	authApis.HandleFunc("/user/{userId}/info", api.UserInfo).Methods("GET", "PUT", "OPTIONS")
