@@ -56,7 +56,7 @@ func main() {
 	r.HandleFunc(prodRoutePrefix+"/product/{productId}/info", api.ProductRESTFUL).Methods("GET", "OPTIONS")
 	authApis.HandleFunc("/product/{productId}", api.ProductRESTFUL).Methods("POST", "PUT", "DELETE", "OPTIONS")
 	// TEST API path
-	r.HandleFunc(prodRoutePrefix+"test/echo", test.EchoString).Methods("GET", "OPTIONS")
+	r.HandleFunc(prodRoutePrefix+"/test/echo", test.EchoString).Methods("GET", "OPTIONS")
 	r.HandleFunc(testRoutePrefix+"/echo", test.EchoString).Methods("GET", "OPTIONS")
 	r.HandleFunc(testRoutePrefix+"/user/info", test.TestDBGetUserObj).Methods("GET", "OPTIONS")
 
