@@ -1,3 +1,4 @@
+const domain = 'buyer.gatorstore.org'
 export default {
     HeaderText: {
         'fontFamily': 'Ubuntu',
@@ -13,11 +14,11 @@ export default {
         'major': 'Ubuntu',
         'secondary': 'Audiowide'
     },
-    googleLoginRedirectURL: 'https%3A%2F%2Fbuyer.gatorstore.org%2Flogin',
-    applicationRootURL: 'https://buyer.gatorstore.org',
+    googleLoginRedirectURL: `https%3A%2F%2F${domain}%2Flogin`,
+    applicationRootURL: `https://${domain}`,
     applicationPort: 3001,
-    applicationHost: 'buyer.gatorstore.org',
-    apiHostURL: 'http://localhost:8080/api/',
-    testApiHostURL: 'http://localhost:8080/test/api',
+    applicationHost: domain,
+    apiHostURL: `https://${domain}/api/`,
+    testApiHostURL: `https://${domain}/test/api`,
     sellerAppURL: 'https://seller.gatorstore.org'
 }
