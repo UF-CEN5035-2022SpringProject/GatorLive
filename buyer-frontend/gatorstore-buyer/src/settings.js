@@ -13,11 +13,11 @@ export default {
         'major': 'Ubuntu',
         'secondary': 'Audiowide'
     },
-    googleLoginRedirectURL: 'http%3A%2F%2Flocalhost%3A3001%2Flogin',
-    applicationRootURL: 'http://localhost:3001',
+    googleLoginRedirectURL: 'https%3A%2F%2Fbuyer.gatorstore.org%2Flogin',
+    applicationRootURL: 'https://buyer.gatorstore.org',
     applicationPort: 3001,
-    applicationHost: 'localhost',
+    applicationHost: 'buyer.gatorstore.org',
     apiHostURL: 'http://localhost:8080/api/',
     testApiHostURL: 'http://localhost:8080/test/api',
-    sellerAppURL: 'http://localhost:3000'
+    sellerAppURL: 'https://seller.gatorstore.org'
 }

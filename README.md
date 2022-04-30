@@ -14,6 +14,18 @@ We hope to provide users not only a platform to sell their products but also wit
 
 Reference: https://www.nngroup.com/articles/livestream-ecommerce-china/
 ---
+## Tutorials
+
+Seller livestream tutorial
+
+https://github.com/UF-CEN5035-2022SpringProject/GatorStore/blob/main/seller-frontend/seller-instructions.md
+
+Backend setup tutorial
+
+https://github.com/UF-CEN5035-2022SpringProject/GatorStore/blob/main/backend/backend-readme.md
+
+---
+
 
 ## Learnings:
 Golang:
@@ -483,7 +495,7 @@ Get the orders according to the store, split the item with page
   | InvalidJwtTokenCode | 1001 | 401 | Expire or invalid jwtToken |
 
 ---
-# SA5. Store Recommend List API
+#### SA5. Store Recommend List API
 Get the products according to the store, split the item with page
  - Method: GET
  - {routePath}: /store/recommend-list?page={page}
@@ -531,6 +543,62 @@ Get the products according to the store, split the item with page
       | InvalidJwtTokenCode | 1001 | 401 | Expire or invalid jwtToken |
 
 --- 
+
+#### SA6 Get Store Live List
+---
+Get the lives according to the store, split the item with page
+ - Method: GET
+ - {routePath}: /store/{storeId}/live-list?page={page}
+   - page parameter decide which page requesting, if overflow, return the last page. If missing, return page 0.
+ 
+ - **Header**
+   | Name | Type | Description |
+   | --- | --- | --- |
+   | Authorization | string | Use for GatorStore Login |
+   
+- **Request Body Table**   
+    Empty request body
+    GET Example:
+    ```
+    {
+    }
+    ```
+- **Response**  
+    Success: 
+    ```
+    {
+      'storeId': "GatorStore_1",
+      'maxPage': 3, (start at 0)
+      'currentPage': 0,
+      'liveList': [
+        {liveObject},
+        {liveObject},
+        ...
+      ]
+    }
+    ```
+
+    Error:
+     ```
+     {
+         "status": 1000,
+         "result": {
+            "errorName": "MissingJwtTokenCode"
+         }
+     }
+     ```
+   
+     Error Code Table for error situation:
+
+     | ErrorName | ErrorCode | HttpStatus | Description |
+     | ---  | --- | --- | --- |
+     | UnknownInternalErrCode | 800 | 500 | |
+     | MissingParamsCode | 801 | 400 | |
+     | InvalidParamsCode | 802 | 403 | |
+     | MissingJwtTokenCode | 1000 | 401 | |
+     | InvalidJwtTokenCode | 1001 | 401 | Expire or invalid jwtToken |
+
+---
 ###  Store Livestream API URLs
 ---
 #### SLA0. Create Store Livestream API
@@ -701,7 +769,62 @@ Get the products according to the store, split the item with page
       | MISS_PARAMS | 800 | 400 | |
       | INVALID_PARAMS | 801 | 400 | |
       
+---
+
+#### LA2 Get Live Orders
+---
+Get the lives according to the store, split the item with page
+ - Method: GET
+ - {routePath}: /live/{liveId}/order-list?page={page}
+   - page parameter decide which page requesting, if overflow, return the last page. If missing, return page 0.
  
+ - **Header**
+   | Name | Type | Description |
+   | --- | --- | --- |
+   | Authorization | string | Use for GatorStore Login |
+   
+- **Request Body Table**   
+    Empty request body
+    GET Example:
+    ```
+    {
+    }
+    ```
+- **Response**  
+    Success: 
+    ```
+    {
+      'liveId': "sdasdasd",
+      'maxPage': 3, (start at 0)
+      'currentPage': 0,
+      'orderList': [
+        {orderObject},
+        {orderObject},
+        ...
+      ]
+    }
+    ```
+
+    Error:
+     ```
+     {
+         "status": 1000,
+         "result": {
+            "errorName": "MissingJwtTokenCode"
+         }
+     }
+     ```
+   
+     Error Code Table for error situation:
+
+     | ErrorName | ErrorCode | HttpStatus | Description |
+     | ---  | --- | --- | --- |
+     | UnknownInternalErrCode | 800 | 500 | |
+     | MissingParamsCode | 801 | 400 | |
+     | InvalidParamsCode | 802 | 403 | |
+     | MissingJwtTokenCode | 1000 | 401 | |
+     | InvalidJwtTokenCode | 1001 | 401 | Expire or invalid jwtToken |
+
 ---
 ### Product API URLs
 ---

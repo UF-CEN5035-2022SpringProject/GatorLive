@@ -122,9 +122,9 @@ function LandingPage() {
                 }}> 
                     <div className='block-title'>
                         Open up Stores
-                    </div>
+                    </div><br/> 
                     <div className='block-content'>
-                        Create your own store for custmer to online-shopping easily. <br/> 
+                        Create your own store for customer to online-shopping easily. <br/> <br/> 
                         Manage multiple store in the same platform efficiently. 
                     </div>
                 </div>
@@ -132,8 +132,8 @@ function LandingPage() {
                 <div style={{width: 2, height: 300, backgroundColor: '#FA4616'}}/>
                 <div style={{width: '2%'}}/>
                 <img 
-                    alt='storeProducts' 
-                    src='/storeProductImage.png'
+                    alt='storeList' 
+                    src='/storeListImage.png'
                     className='block-img'
                     style={{
                         height: 500, 
@@ -180,9 +180,9 @@ function LandingPage() {
                 }}> 
                     <div className='block-title'>
                         Product display 
-                    </div>
+                    </div><br/> 
                     <div className='block-content'>
-                        The Store Page is the hub for live user interactions and browsing through the products. <br/> 
+                        The Store Page is the hub for live user interactions and browsing through the products. <br/> <br/> 
                         You can visit each of the products to buy them by clicking on "View More" beneath each. 
                     </div>
                 </div> 
@@ -210,18 +210,104 @@ function LandingPage() {
                 }}> 
                     <div className='block-title'>
                         Promote products by Live 
-                    </div>
+                    </div><br/> 
                     <div className='block-content'>
-                        The Store Page is the hub for live user interactions and browsing through the products. <br/> 
-                        You can visit each of the products to buy them by clicking on "View More" beneath each. 
+                        Each store is equipped with the ability to go LIVE. Choose some "featured products" you wish to showcase for them! <br/> <br/> 
+                        You can click on the "START LIVESTREAM" button to start your own YouTube embedded livestream.
                     </div>
                 </div>
                 <div style={{width: '2%'}}/>
                 <div style={{width: 2, height: 300, backgroundColor: '#FA4616'}}/>
                 <div style={{width: '2%'}}/>
                 <img 
-                    alt='storeProducts' 
-                    src='/storeProductImage.png'
+                    alt='storeLiveStream' 
+                    src='/liveStreamImage.png'
+                    className='block-img'
+                    style={{
+                        height: 500, 
+                        width: '46%', 
+                        marginTop: 106.5, 
+                        borderRadius: 15
+                    }}
+                />  
+                <div style={{width: '2%'}}/>
+            </div>
+            <div
+                style={{ 
+                display: 'flex',
+                height: 600, 
+                width: '100%', 
+                marginTop: 10, 
+                flexDirection: 'row',
+                justifyContent: 'center',
+                alignItems: 'center'
+            }}>
+                <div style={{width: '2%'}}/>
+                <img 
+                    alt='liveObs' 
+                    src='/liveObs.gif'
+                    className='block-img'
+                    style={{
+                        height: 500, 
+                        width: '46%', 
+                        marginTop: 106.5, 
+                        borderRadius: 15
+                    }}
+                />
+                <div style={{width: '2%'}}/>
+                <div style={{width: 2, height: 300, backgroundColor: '#FA4616'}}/>
+                <div style={{width: '2%'}}/>
+                <div style={{
+                    display: 'flex', 
+                    height: '100%', 
+                    width: '46%', 
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    textAlign: 'left' 
+                }}> 
+                    <div className='block-title'>
+                        Stream by OBS 
+                    </div><br/> 
+                    <div className='block-content'>
+                        Once you have named your livestream and chosen its "featured products", you will receive the key and URL needed to start streaming. <br/> <br/> 
+                        By inputting those into OBS, you will be able to control your stream from your own system.
+                    </div>
+                </div>
+                <div style={{width: '2%'}}/>
+            </div>
+            <div
+                style={{ 
+                display: 'flex',
+                height: 600, 
+                width: '100%', 
+                marginTop: 10, 
+                flexDirection: 'row',
+                justifyContent: 'center',
+                alignItems: 'center'
+            }}>
+                <div style={{width: '2%'}}/>
+                <div style={{
+                    display: 'flex', 
+                    height: '100%', 
+                    width: '46%', 
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    textAlign: 'right' 
+                }}> 
+                    <div className='block-title'>
+                        Live History with Orders 
+                    </div><br/> 
+                    <div className='block-content'>
+                        Live History page shows how much orders come from your livestream <br/> <br/> 
+                        To visit it, place "/livestreams" after your store's name. It will list all of the orders made to featured products during it.
+                    </div>
+                </div>
+                <div style={{width: '2%'}}/>
+                <div style={{width: 2, height: 300, backgroundColor: '#FA4616'}}/>
+                <div style={{width: '2%'}}/>
+                <img 
+                    alt='liveHistoryListImage' 
+                    src='/liveHistoryListImage.png'
                     className='block-img'
                     style={{
                         height: 500, 
@@ -245,8 +331,8 @@ function LandingPage() {
             }}>
                 <div style={{width: '2%'}}/>
                 <img 
-                    alt='storeProducts' 
-                    src='/storeProductImage.png'
+                    alt='orderHistory' 
+                    src='/orderHistoryImage.png'
                     className='block-img'
                     style={{
                         height: 500, 
@@ -268,10 +354,10 @@ function LandingPage() {
                 }}> 
                     <div className='block-title'>
                         Order Management 
-                    </div>
+                    </div><br/> 
                     <div className='block-content'>
-                        The Store Page is the hub for live user interactions and browsing through the products. <br/> 
-                        You can visit each of the products to buy them by clicking on "View More" beneath each. 
+                        Additionally, the order management page shows orders from one of your stores. <br/> <br/> 
+                        To view it, place "/orders" after your store's name.
                     </div>
                 </div> 
                 <div style={{width: '2%'}}/>
@@ -280,7 +366,7 @@ function LandingPage() {
                 display: "flex", 
                 height: '600px', 
                 width: '100%', 
-                marginTop: 30, 
+                marginTop: 100, 
                 justifyContent: 'center',
                 alignItems: 'center',
                 backgroundImage: "url(/tower-login.jpeg)",

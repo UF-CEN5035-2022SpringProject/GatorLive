@@ -1,3 +1,4 @@
+const domain = 'seller.gatorstore.org'
 export default {
     HeaderText: {
         'fontFamily': 'Titillium Web',
@@ -13,9 +14,10 @@ export default {
         'major': 'Titillium Web',
         'secondary': 'Audiowide'
     },
-    apiHostURL: 'http://localhost:8080/api/',
-    testApiHostURL: 'http://localhost:8080/test/api',
-    googleLoginRedirectURL: 'http%3A%2F%2Flocalhost%3A3000%2Flogin',
-    applicationRootURL: 'http://localhost:3000',
-    buyerAppURL: 'http://localhost:3001'
+    apiHostURL: `http://${domain}/api/`,
+    testApiHostURL: `http://${domain}/test/api`,
+    googleLoginRedirectURL: `https%3A%2F%2F${domain}%2Flogin`,
+    applicationRootURL: `https://${domain}`,
+    buyerAppURL: 'https://buyer.gatorstore.org/',
+    domain: domain
 }
