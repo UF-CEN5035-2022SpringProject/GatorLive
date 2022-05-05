@@ -3,6 +3,7 @@
   padding: 0;
   box-sizing: border-box;
   font-family: Arial;
+  scroll-behavior: smooth;
 }
 
 /* To stick footer always to bottom, wrap all elements with: */
