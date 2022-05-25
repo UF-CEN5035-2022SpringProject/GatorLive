@@ -244,3 +244,19 @@ Go is very hesitant about implicit data conversion. So, we must be clear of the 
 			}
 		}
 	```
+
+# Control Flow
+---
+- Defer 
+	- Execute after the function are done
+	- Execute last first, first last
+	- Common use case, use it at closing a source in the beginning of using the source
+	  
+	  ```
+	  	resp, err := ...
+	  	defer resp.body.close()
+		\\ continue to use the resource
+	  ```
+	  
+- Panic
+- Recover
