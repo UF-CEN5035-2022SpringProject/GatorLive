@@ -207,7 +207,7 @@ Go is very hesitant about implicit data conversion. So, we must be clear of the 
 
 # Looping
 ---
-Also, with **break** and **continue**
+- Also, with **break** and **continue**
 
 	```
 	sum := 0
@@ -215,7 +215,7 @@ Also, with **break** and **continue**
 	    sum += i
 	}
 	```
-In another literal format	
+- Another literal format	
 
 	```
 	for idx, value := range LIST {
@@ -227,7 +227,7 @@ In another literal format
 	}
 	```
 	
-With Loop Label using break and continue.
+- With Loop Label using break and continue.
 
 	```
 	guestList := []string{"bill", "jill", "joan", "andy", "kelly"}
