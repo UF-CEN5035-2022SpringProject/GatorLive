@@ -67,12 +67,12 @@ Go is very hesitant about implicit data conversion. So, we must be clear of the 
   - ***immutable***
   - Adding string just use + operator   
   
-  Covert the string to byte collection (slice of byte)
-  ```
-    s := "We are the best"
-    b := []byte(s)
-    fmt.Printf("%v, %T\n", b, b)
-  ```
+  Covert the string to byte collection (slice of byte)  
+	  ```
+	    s := "We are the best"
+	    b := []byte(s)
+	    fmt.Printf("%v, %T\n", b, b)
+	  ```
   
   We get a byte slice with ascii value or utf value, the type result is []unit8  
   ***Many function in Golang is work as slice of byte (string, files)***
@@ -82,13 +82,14 @@ Go is very hesitant about implicit data conversion. So, we must be clear of the 
   - Alias for int32
   - Respresent utf32 charater - check this https://pkg.go.dev/strings#Reader.ReadRune
     - if we are working utf32 we can use the above function to get the information we need.   
+    <br/>
+	
+	```  
+		r := 'a'
+		fmt.Printf("%v, %T\n", r, r)
 
-  ```  
-  r := 'a'
-  fmt.Printf("%v, %T\n", r, r)
-  
-  // 97, int32
-  ```
+		// 97, int32
+	```
 
 
 # Constant 
@@ -109,13 +110,14 @@ Go is very hesitant about implicit data conversion. So, we must be clear of the 
 - Create via literals or make function.
 - Check for presence with "value, ok" form of result.
 
-```
+
+	```
 	demoMap := make(map[string]int)
 	if _, ok := demoMap["a"]; !ok {
 		fmt.Println("unfound key a")
 	}
-```
-
+	```
+	
 ## Structs 
 - Fields can points to any data type in go.
 - Normally created as types, but anonymous structs are allowed.
@@ -123,49 +125,82 @@ Go is very hesitant about implicit data conversion. So, we must be clear of the 
 - Field can be tagged.
 - No inheritance, but use **Composition** to embed.
 	- Difference between composition and inheritance in Go, is a struct which inherits from another struct can directly access the methods and fields of the parent struct.
-
-```
-type author struct {
-	firstName string
-	lastName  string
-	bio       string
-}
-
-func (a author) fullName() string {
-	return fmt.Sprintf("%s %s", a.firstName, a.lastName)
-}
-
-type blogPost struct {
-	title   string
-	content string
-	author
-}
-
-func (b blogPost) details() {
-	fmt.Println("Title: ", b.title)
-	fmt.Println("Content: ", b.content)
-	fmt.Println("Author: ", b.author.fullName())
-	fmt.Println("Bio: ", b.author.bio)
-}
-
-func main() {
-	author1 := author{
-		"Naveen",
-		"Ramanathan",
-		"Golang Enthusiast",
+	<br/>
+	
+	```
+	type author struct {
+		firstName string
+		lastName  string
+		bio       string
 	}
 
-	fmt.Println(author1)
-	fmt.Println(author1.fullName())
-
-	blogPost1 := blogPost{
-		"This is fantastic",
-		"Read through this more than once, promise me.",
-		author1,
+	func (a author) fullName() string {
+		return fmt.Sprintf("%s %s", a.firstName, a.lastName)
 	}
 
-	fmt.Println(blogPost1)
-	fmt.Println(blogPost1.author.fullName())
-	blogPost1.details()
-}
-```
+	type blogPost struct {
+		title   string
+		content string
+		author
+	}
+
+	func (b blogPost) details() {
+		fmt.Println("Title: ", b.title)
+		fmt.Println("Content: ", b.content)
+		fmt.Println("Author: ", b.author.fullName())
+		fmt.Println("Bio: ", b.author.bio)
+	}
+
+	func main() {
+		author1 := author{
+			"Naveen",
+			"Ramanathan",
+			"Golang Enthusiast",
+		}
+
+		fmt.Println(author1)
+		fmt.Println(author1.fullName())
+
+		blogPost1 := blogPost{
+			"This is fantastic",
+			"Read through this more than once, promise me.",
+			author1,
+		}
+
+		fmt.Println(blogPost1)
+		fmt.Println(blogPost1.author.fullName())
+		blogPost1.details()
+	}
+	```
+
+# Condition Statement
+---
+- If Statement
+
+	```
+	// num:=9 is an inialization.
+	if num := 9; num < 0 {
+        fmt.Println(num, "is negative")
+    } else if num < 10 {
+        fmt.Println(num, "has 1 digit")
+    } else {
+        fmt.Println(num, "has multiple digits")
+    }
+	```
+- Switch Statement
+	Input the tag of switch for checking the condition.
+	Tag can be empty input, and also same as If statment with an initializer.
+	"break" is already implied.
+	
+	```
+	switch i := 9; i {
+	case 1:
+		fmt.Println("one")
+	case 2:
+		fmt.Println("two")
+	default:
+		fmt.Println("unmatched")
+	}
+	```
+	
+	Use "fallthrough if we want the statement just continue execute the next statment, be aware it is logicless.
