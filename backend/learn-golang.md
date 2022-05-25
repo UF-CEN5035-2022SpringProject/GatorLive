@@ -204,3 +204,43 @@ Go is very hesitant about implicit data conversion. So, we must be clear of the 
 	```
 	
 	Use "fallthrough if we want the statement just continue execute the next statment, be aware it is logicless.
+
+# Looping
+---
+Also, with **break** and **continue**
+
+	```
+	sum := 0
+	for i := 1; i < 5; i++ {
+	    sum += i
+	}
+	```
+In another literal format	
+
+	```
+	for idx, value := range LIST {
+		...
+	}
+	
+	for key, value := range MAP {
+		...
+	}
+	```
+	
+With Loop Label using break and continue.
+
+	```
+	guestList := []string{"bill", "jill", "joan", "andy", "kelly"}
+	arrived := []string{"sally", "jill", "joan", "kelly"}
+	CheckList:
+		for _, guest := range guestList {
+			for _, person := range arrived {
+				fmt.Printf("Guest[%s] Person[%s]\n", guest, person)
+
+				if person == guest {
+					fmt.Printf("Let %s In\n", person)
+					continue CheckList
+				}
+			}
+		}
+	```
