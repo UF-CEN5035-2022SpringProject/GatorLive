@@ -120,5 +120,52 @@ Go is very hesitant about implicit data conversion. So, we must be clear of the 
 - Fields can points to any data type in go.
 - Normally created as types, but anonymous structs are allowed.
 - Structs are value type, will **copy to new struct**.
-- No inheritance, but use **Composition** to embed.
 - Field can be tagged.
+- No inheritance, but use **Composition** to embed.
+	- Difference between composition and inheritance in Go, is a struct which inherits from another struct can directly access the methods and fields of the parent struct.
+
+```
+type author struct {
+	firstName string
+	lastName  string
+	bio       string
+}
+
+func (a author) fullName() string {
+	return fmt.Sprintf("%s %s", a.firstName, a.lastName)
+}
+
+type blogPost struct {
+	title   string
+	content string
+	author
+}
+
+func (b blogPost) details() {
+	fmt.Println("Title: ", b.title)
+	fmt.Println("Content: ", b.content)
+	fmt.Println("Author: ", b.author.fullName())
+	fmt.Println("Bio: ", b.author.bio)
+}
+
+func main() {
+	author1 := author{
+		"Naveen",
+		"Ramanathan",
+		"Golang Enthusiast",
+	}
+
+	fmt.Println(author1)
+	fmt.Println(author1.fullName())
+
+	blogPost1 := blogPost{
+		"This is fantastic",
+		"Read through this more than once, promise me.",
+		author1,
+	}
+
+	fmt.Println(blogPost1)
+	fmt.Println(blogPost1.author.fullName())
+	blogPost1.details()
+}
+```
