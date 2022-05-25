@@ -102,5 +102,23 @@ Go is very hesitant about implicit data conversion. So, we must be clear of the 
 # Array & Slice
 ---
 
-# Map & Struct
+# Map & Structs
 ---
+## Map
+- **Referrence to same underlying data**, not copy.
+- Create via literals or make function.
+- Check for presence with "value, ok" form of result.
+
+```
+	demoMap := make(map[string]int)
+	if _, ok := demoMap["a"]; !ok {
+		fmt.Println("unfound key a")
+	}
+```
+
+## Structs 
+- Fields can points to any data type in go.
+- Normally created as types, but anonymous structs are allowed.
+- Structs are value type, will **copy to new struct**.
+- No inheritance, but use **Composition** to embed.
+- Field can be tagged.
