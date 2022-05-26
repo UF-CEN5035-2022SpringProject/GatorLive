@@ -1,3 +1,7 @@
+# Reference
+---
+Youtube video: https://www.youtube.com/watch?v=YS4e4q9oBaU&t
+
 # Variables
 ---
 Variables have been ask to be nice and clean, we are able to add shadow variables, but not redeclare in the same statement.
@@ -259,4 +263,20 @@ Go is very hesitant about implicit data conversion. So, we must be clear of the 
 	  ```
 	  
 - Panic
+	- Generate a panic object, which will stop the code when panic pops. (write then abort)
+	- Unlike assert in C++, panic does not combine with conditions.
+	- The print out, executes after defer 
+	
+		```
+			fmt.Println("start")
+			defer func() {
+				if err := recover(); err != nil {
+					// if there is a panic it will show as a error
+					log.Println("Error-", err)
+				}
+			}()
+			panic("smth bad happens")
+			fmt.Println("end")
+		```
+
 - Recover
