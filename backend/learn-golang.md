@@ -263,20 +263,32 @@ Go is very hesitant about implicit data conversion. So, we must be clear of the 
 	  ```
 	  
 - Panic
+	- Use it when the code cannot be recovered. (Webserver port has been occupied)
 	- Generate a panic object, which will stop the code when panic pops. (write then abort)
 	- Unlike assert in C++, panic does not combine with conditions.
 	- The print out, executes after defer 
 	
 		```
 			fmt.Println("start")
-			defer func() {
-				if err := recover(); err != nil {
-					// if there is a panic it will show as a error
-					log.Println("Error-", err)
-				}
-			}()
 			panic("smth bad happens")
 			fmt.Println("end")
 		```
-
 - Recover
+	- Function is built to recover from panic
+	
+		```
+		func main() {
+			fmt.Println("start")
+			panicked()
+			fmt.Println("end")
+		}
+
+		func panicked() {
+			defer func() {
+				if err := recover(); err != nil {
+					log.Println("Err:", err)
+				}
+			}()
+			panic("smth bad happens")
+		}
+		```
