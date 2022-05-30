@@ -292,3 +292,39 @@ Go is very hesitant about implicit data conversion. So, we must be clear of the 
 			panic("smth bad happens")
 		}
 		```
+# Pointer
+---
+```
+	var a int = 32
+	var b *int = &a
+	a = 42
+
+	c := &a
+	fmt.Printf("%d, %d, %p, %d, %p", a, *b, b, *c, c)
+```
+
+If we want to do pointer arithmetic us the unsafe package
+But go seems this as a complex code, so they save it in unsafe package to go through compiler
+
+```
+	a := [3]int{1, 100, 300}
+	b := &a[0]
+	c := &a[1]
+	fmt.Printf("%v, %p, %p", a, b, c)
+```
+
+Also it works with a struct
+```
+	type demoStruct struct {
+		test int
+	} 
+	
+	var aPtr *demoStruct 
+	structPtr = &demoStruct{test: 10}
+	fmt.Println(aPtr)
+	
+	var bPtr *demoStruct
+	fmt.Println(bPtr)
+	bPtr = new(demoStruct)
+	fmt.Println(bPtr) // initial an empty struct
+```
