@@ -373,15 +373,65 @@ Reminder: Map, Slice is using pointer to point to the same address.
 		}
 	```
 
-- We can also define the return variable in function definition, also use it in function
+- type Method Function
 
 	```
-		func sum(elements ...int) (result int) {
-			fmt.Println(elements)
-			for _, v := range elements {
-				result += v
-			}
-			return
+		func main() {
+			a := price(5)
+			a.checkPrice()
+			a.double()
+			a.checkPrice()
+		}
+
+		type price int
+
+		func (p price) checkPrice() {
+			fmt.Println(p)
+		}
+
+		func (p *price) double() {
+			*p = (*p) * 2
 		}
 	```
+	
+	Most likely using with Struct
+	
+	```
+		func main() {
+		alpha := company{
+			name:           "Alphabet",
+			headQuarter:    "MTV",
+			employeeNumber: 20030,
+		}
 
+		alpha.printCompanyName()
+
+		gtech := techCompany{
+			parent:        alpha,
+			name:          "Google",
+			concentration: "Search Engine",
+		}
+
+			gtech.printTechCompany()
+		}
+
+		type company struct {
+			name           string
+			headQuarter    string
+			employeeNumber int
+		}
+
+		type techCompany struct {
+			parent        company
+			name          string
+			concentration string
+		}
+
+		func (c company) printCompanyName() {
+			fmt.Println(c.name)
+		}
+
+		func (c techCompany) printTechCompany() {
+			fmt.Println(c)
+		}
+	```
