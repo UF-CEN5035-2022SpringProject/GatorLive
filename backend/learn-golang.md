@@ -330,3 +330,8 @@ Also it works with a struct
 	bPtr.test = 15
 	fmt.Println(bPtr)
 ```
+
+Reminder: Map, Slice is using pointer to point to the same address.
+
+# Function
+---
