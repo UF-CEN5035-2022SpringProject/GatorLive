@@ -327,4 +327,6 @@ Also it works with a struct
 	fmt.Println(bPtr)
 	bPtr = new(demoStruct)
 	fmt.Println(bPtr) // initial an empty struct
+	bPtr.test = 15
+	fmt.Println(bPtr)
 ```
