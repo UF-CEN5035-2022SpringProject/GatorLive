@@ -335,3 +335,53 @@ Reminder: Map, Slice is using pointer to point to the same address.
 
 # Function
 ---
+- Go technically has only pass-by-value, which is a copy of the input. Typically, we pass a variable or a pointer.
+- Wrap input variable into slice
+
+	```
+		func main() {
+			ans := sum(1, 2, 3)
+			fmt.Println(ans)
+		}
+
+		func sum(elements ...int) int {
+			fmt.Println(elements)
+			result := 0
+			for _, v := range elements {
+				result += v
+			}
+			return result
+		}
+	```	
+
+- Return a local variable as a pointer, this will be store in the heap memory (share) in run time for avoiding been clear.<br/>
+  (In most of language, function result will be store in stack, and pop as the function returns)
+	
+	```
+		func main() {
+			ans := sum(1, 2, 3)
+			fmt.Println(*ans)
+		}
+
+		func sum(elements ...int) *int {
+			fmt.Println(elements)
+			result := 0
+			for _, v := range elements {
+				result += v
+			}
+			return &result
+		}
+	```
+
+- We can also define the return variable in function definition, also use it in function
+
+	```
+		func sum(elements ...int) (result int) {
+			fmt.Println(elements)
+			for _, v := range elements {
+				result += v
+			}
+			return
+		}
+	```
+
