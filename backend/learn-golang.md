@@ -438,69 +438,98 @@ Reminder: Map, Slice is using pointer to point to the same address.
 
 # Interface
 ---
-Interface typically can easily build object with Polymorphism charateristic.
-(Referrence: https://stackoverflow.com/questions/39092925/why-are-interfaces-needed-in-golang)
+- Why using Interface?
 
-Interfaces are too big of a topic to give an all-depth answer here, but some things to make their use clear.
-Interfaces are a tool. Whether you use them or not is up to you, but they can make code clearer, shorter, more readable, and they can provide a nice API between packages, or clients (users) and servers (providers).
+	Interface typically can easily build object with Polymorphism charateristic.
+	(Referrence: https://stackoverflow.com/questions/39092925/why-are-interfaces-needed-in-golang)
 
-For example: 
+	Interfaces are too big of a topic to give an all-depth answer here, but some things to make their use clear.
+	Interfaces are a tool. Whether you use them or not is up to you, but they can make code clearer, shorter, more readable, and they can provide a nice API between packages, or clients (users) and servers (providers).
 
-```
-	type Cat struct{}
+	For example: 
 
-	func (c Cat) Say() string { return "meow" }
+	```
+		type Cat struct{}
 
-	type Dog struct{}
+		func (c Cat) Say() string { return "meow" }
 
-	func (d Dog) Say() string { return "woof" }
+		type Dog struct{}
 
-	func main() {
-		c := Cat{}
-		fmt.Println("Cat says:", c.Say())
-		d := Dog{}
-		fmt.Println("Dog says:", d.Say())
-	}
-```
+		func (d Dog) Say() string { return "woof" }
 
-In this example, we had two different animal that contains the same action function.
-Assume now we have a input that contains multiple animal object, and our goal is to print let all the animal object say something. 
-What is the possible way?
+		func main() {
+			c := Cat{}
+			fmt.Println("Cat says:", c.Say())
+			d := Dog{}
+			fmt.Println("Dog says:", d.Say())
+		}
+	```
 
-```
-	// our input must be divided into different type of slice
-	c1 := Cat{}
-	c2 := Cat{}
-	c3 := Cat{}
-	var catBox := []Cat{c1, c2, c3}
+	In this example, we had two different animal that contains the same action function.
+	Assume now we have a input that contains multiple animal object, and our goal is to print let all the animal object say something. 
+	What is the possible way?
 
-	for _, a := range catBox {
-		fmt.Println(reflect.TypeOf(a).Name(), "says:", a.Say())
-	}
+	```
+		// our input must be divided into different type of slice
+		c1 := Cat{}
+		c2 := Cat{}
+		c3 := Cat{}
+		var catBox := []Cat{c1, c2, c3}
 
-
-	... Do the same thing to Dogs
-```
-
-Can we make a upper level type and and wrap the same method into one caller interface.
-(Be aware this is different if we make a new struct and Animal struct and let Cat and Dog use Composition, we need the implementations contain different behaviors)
-Using interface and set both object Cat and Dog into an container
-
-```
-	type Sayer interface {
-		Say() string
-	}
-
-	animals := []Sayer{c, d}
-	for _, a := range animals {
-	    fmt.Println(reflect.TypeOf(a).Name(), "says:", a.Say())
-	}
-```
-
-Typically, single method usually, use the caller function + er. 
-But acually we can also called it Animal and with multiple interface functions.
-This shows the polymorphism in Golang.
+		for _, a := range catBox {
+			fmt.Println(reflect.TypeOf(a).Name(), "says:", a.Say())
+		}
 
 
+		... Do the same thing to Dogs
+	```
 
+	Can we make a upper level type and and wrap the same method into one caller interface.
+	(Be aware this is different if we make a new struct and Animal struct and let Cat and Dog use Composition, we need the implementations contain different behaviors)
+	Using interface and set both object Cat and Dog into an container
 
+	```
+		type Sayer interface {
+			Say() string
+		}
+
+		animals := []Sayer{c, d}
+		for _, a := range animals {
+		    fmt.Println(reflect.TypeOf(a).Name(), "says:", a.Say())
+		}
+	```
+
+	Typically, single method usually, use the caller function + er. 
+	But acually we can also called it Animal and with multiple interface functions.
+	This shows the polymorphism in Golang.
+
+- Compose Interface 
+	
+	We can also create a interface composing difference interface
+	
+	```
+		type FileController interface {
+			Writer
+			Closer
+		}
+		
+		type Writer interface {
+			Write(byte[]) (int, error)
+		}
+		
+		type Closer interface {
+			Close() error
+		}
+	```
+
+- Using interface for type switch, a interface can respresent diverse variable type.
+	
+	```
+		var i interface{} = "test"
+		switch i.(type) {
+		case int:
+			fmt.Println("i is an integer")
+		default:
+			fmt.Printf("i is not an integer, it is a %T", i)
+		}
+	```
