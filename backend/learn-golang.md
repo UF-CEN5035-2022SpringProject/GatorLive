@@ -446,56 +446,56 @@ Interfaces are a tool. Whether you use them or not is up to you, but they can ma
 
 For example: 
 
-	```
-		type Cat struct{}
+```
+	type Cat struct{}
 
-		func (c Cat) Say() string { return "meow" }
+	func (c Cat) Say() string { return "meow" }
 
-		type Dog struct{}
+	type Dog struct{}
 
-		func (d Dog) Say() string { return "woof" }
+	func (d Dog) Say() string { return "woof" }
 
-		func main() {
-			c := Cat{}
-			fmt.Println("Cat says:", c.Say())
-			d := Dog{}
-			fmt.Println("Dog says:", d.Say())
-		}
-	```
+	func main() {
+		c := Cat{}
+		fmt.Println("Cat says:", c.Say())
+		d := Dog{}
+		fmt.Println("Dog says:", d.Say())
+	}
+```
 
 In this example, we had two different animal that contains the same action function.
 Assume now we have a input that contains multiple animal object, and our goal is to print let all the animal object say something. 
 What is the possible way?
 
-	```
-		// our input must be divided into different type of slice
-		c1 := Cat{}
-		c2 := Cat{}
-		c3 := Cat{}
-		var catBox := []Cat{c1, c2, c3}
+```
+	// our input must be divided into different type of slice
+	c1 := Cat{}
+	c2 := Cat{}
+	c3 := Cat{}
+	var catBox := []Cat{c1, c2, c3}
 
-		for _, a := range catBox {
-			fmt.Println(reflect.TypeOf(a).Name(), "says:", a.Say())
-		}
+	for _, a := range catBox {
+		fmt.Println(reflect.TypeOf(a).Name(), "says:", a.Say())
+	}
 
 
-		... Do the same thing to Dogs
-	```
+	... Do the same thing to Dogs
+```
 
 Can we make a upper level type and and wrap the same method into one caller interface.
 (Be aware this is different if we make a new struct and Animal struct and let Cat and Dog use Composition, we need the implementations contain different behaviors)
 Using interface and set both object Cat and Dog into an container
 
-	```
-		type Sayer interface {
-			Say() string
-		}
+```
+	type Sayer interface {
+		Say() string
+	}
 
-		animals := []Sayer{c, d}
-		for _, a := range animals {
-		    fmt.Println(reflect.TypeOf(a).Name(), "says:", a.Say())
-		}
-	```
+	animals := []Sayer{c, d}
+	for _, a := range animals {
+	    fmt.Println(reflect.TypeOf(a).Name(), "says:", a.Say())
+	}
+```
 
 Typically, single method usually, use the caller function + er. 
 But acually we can also called it Animal and with multiple interface functions.
