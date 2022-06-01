@@ -435,3 +435,73 @@ Reminder: Map, Slice is using pointer to point to the same address.
 			fmt.Println(c)
 		}
 	```
+
+# Interface
+---
+Interface typically can easily build object with Polymorphism charateristic.
+(Referrence: https://stackoverflow.com/questions/39092925/why-are-interfaces-needed-in-golang)
+
+Interfaces are too big of a topic to give an all-depth answer here, but some things to make their use clear.
+
+Interfaces are a tool. Whether you use them or not is up to you, but they can make code clearer, shorter, more readable, and they can provide a nice API between packages, or clients (users) and servers (providers).
+
+For example: 
+
+```
+type Cat struct{}
+
+func (c Cat) Say() string { return "meow" }
+
+type Dog struct{}
+
+func (d Dog) Say() string { return "woof" }
+
+func main() {
+	c := Cat{}
+	fmt.Println("Cat says:", c.Say())
+	d := Dog{}
+	fmt.Println("Dog says:", d.Say())
+}
+```
+
+In this example, we had two different animal that contains the same action function.
+Assume now we have a input that contains multiple animal object, and our goal is to print let all the animal object say something. 
+What is the possible way?
+
+````
+// our input must be divided into different type of slice
+c1 := Cat{}
+c2 := Cat{}
+c3 := Cat{}
+var catBox := []Cat{c1, c2, c3}
+
+for _, a := range catBox {
+	fmt.Println(reflect.TypeOf(a).Name(), "says:", a.Say())
+}
+
+
+... Do the same thing to Dogs
+```
+
+Can we make a upper level type and and wrap the same method into one caller interface.
+(Be aware this is different if we make a new struct and Animal struct and let Cat and Dog use Composition, we need the implementations contain different behaviors)
+Using interface and set both object Cat and Dog into an container
+
+```
+type Sayer interface {
+	Say() string
+}
+
+animals := []Sayer{c, d}
+for _, a := range animals {
+    fmt.Println(reflect.TypeOf(a).Name(), "says:", a.Say())
+}
+```
+
+Typically, single method usually, use the caller function + er. 
+But acually we can also called it Animal and with multiple interface functions.
+This shows the polymorphism in Golang.
+
+
+
+
