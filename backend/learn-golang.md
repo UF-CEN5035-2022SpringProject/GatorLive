@@ -449,20 +449,20 @@ Reminder: Map, Slice is using pointer to point to the same address.
 	For example: 
 
 	```
-		type Cat struct{}
+	type Cat struct{}
 
-		func (c Cat) Say() string { return "meow" }
+	func (c Cat) Say() string { return "meow" }
 
-		type Dog struct{}
+	type Dog struct{}
 
-		func (d Dog) Say() string { return "woof" }
+	func (d Dog) Say() string { return "woof" }
 
-		func main() {
-			c := Cat{}
-			fmt.Println("Cat says:", c.Say())
-			d := Dog{}
-			fmt.Println("Dog says:", d.Say())
-		}
+	func main() {
+		c := Cat{}
+		fmt.Println("Cat says:", c.Say())
+		d := Dog{}
+		fmt.Println("Dog says:", d.Say())
+	}
 	```
 
 	In this example, we had two different animal that contains the same action function.
@@ -470,18 +470,18 @@ Reminder: Map, Slice is using pointer to point to the same address.
 	What is the possible way?
 
 	```
-		// our input must be divided into different type of slice
-		c1 := Cat{}
-		c2 := Cat{}
-		c3 := Cat{}
-		var catBox := []Cat{c1, c2, c3}
+	// our input must be divided into different type of slice
+	c1 := Cat{}
+	c2 := Cat{}
+	c3 := Cat{}
+	var catBox := []Cat{c1, c2, c3}
 
-		for _, a := range catBox {
-			fmt.Println(reflect.TypeOf(a).Name(), "says:", a.Say())
-		}
+	for _, a := range catBox {
+		fmt.Println(reflect.TypeOf(a).Name(), "says:", a.Say())
+	}
 
 
-		... Do the same thing to Dogs
+	... Do the same thing to Dogs
 	```
 
 	Can we make a upper level type and and wrap the same method into one caller interface.
@@ -489,14 +489,14 @@ Reminder: Map, Slice is using pointer to point to the same address.
 	Using interface and set both object Cat and Dog into an container
 
 	```
-		type Sayer interface {
-			Say() string
-		}
+	type Sayer interface {
+		Say() string
+	}
 
-		animals := []Sayer{c, d}
-		for _, a := range animals {
-		    fmt.Println(reflect.TypeOf(a).Name(), "says:", a.Say())
-		}
+	animals := []Sayer{c, d}
+	for _, a := range animals {
+		fmt.Println(reflect.TypeOf(a).Name(), "says:", a.Say())
+	}
 	```
 
 	Typically, single method usually, use the caller function + er. 
@@ -508,30 +508,30 @@ Reminder: Map, Slice is using pointer to point to the same address.
 	We can also create a interface composing difference interface
 	
 	```
-		type FileController interface {
-			Writer
-			Closer
-		}
-		
-		type Writer interface {
-			Write(byte[]) (int, error)
-		}
-		
-		type Closer interface {
-			Close() error
-		}
+	type FileController interface {
+		Writer
+		Closer
+	}
+
+	type Writer interface {
+		Write(byte[]) (int, error)
+	}
+
+	type Closer interface {
+		Close() error
+	}
 	```
 
 - Using interface for type switch, a interface can respresent diverse variable type.
 	
 	```
-		var i interface{} = "test"
-		switch i.(type) {
-		case int:
-			fmt.Println("i is an integer")
-		default:
-			fmt.Printf("i is not an integer, it is a %T", i)
-		}
+	var i interface{} = "test"
+	switch i.(type) {
+	case int:
+		fmt.Println("i is an integer")
+	default:
+		fmt.Printf("i is not an integer, it is a %T", i)
+	}
 	```
 
 # Goroutine
@@ -544,41 +544,118 @@ Reminder: Map, Slice is using pointer to point to the same address.
 	However, if we did not put the sleep function the main will exit before the go routine print out.
 
 		```
-			func demomain() {
-				msg := "Hello!"
+		func demomain() {
+			msg := "Hello!"
 
-				go func() {
-					fmt.Println(msg)
-				}()
+			go func() {
+				fmt.Println(msg)
+			}()
 
-				// race condition occurs, this is bad, use argument
-				// this example go routine will go function stack looking for msg
-				msg = "Goodbye"
+			// race condition occurs, this is bad, use argument
+			// this example go routine will go function stack looking for msg
+			msg = "Goodbye"
 
-				// this is not a good pratice, do not use sleep call, use waitGroup
-				time.Sleep(100 * time.Millisecond)
-			}
+			// this is not a good pratice, do not use sleep call, use waitGroup
+			time.Sleep(100 * time.Millisecond)
+		}
 		```
 
 		Now, according to above exmaple, we should use wait group to wait for the go routine.
 		(Kind of thread join in Python)
 
 		```
-			var wg = sync.WaitGroup{}
+		var wg = sync.WaitGroup{}
 
-			func main() {
-				routineNum := 1
-				wg.Add(routineNum)
-				msg := "Hello!"
-				go shoutOut(msg)
+		func main() {
+			routineNum := 1
+			wg.Add(routineNum)
+			msg := "Hello!"
+			go shoutOut(msg)
 
-				wg.Wait()
-			}
+			wg.Wait()
+		}
 
-			func shoutOut(msg string) {
-				fmt.Println(msg)
-				wg.Done()
-			}
+		func shoutOut(msg string) {
+			fmt.Println(msg)
+			wg.Done()
+		}
 		```
 	
-- How to avoid race condition? Using ** Mutex ***
+- How to avoid race condition? Using **Mutex**, which are able to lock resources.
+	
+	Down below, the example will definitely encounters race condition.
+	
+	```
+	var wg = sync.WaitGroup{}
+	var counter int = 0
+
+	func main() {
+		for i := 0; i < 10; i++ {
+			wg.Add(2)
+			go printCounter()
+			go increaseCounter()
+		}
+		wg.Wait()
+	}
+
+	func printCounter() {
+		fmt.Printf("The counter: %d\n", counter)
+		wg.Done()
+	}
+
+	func increaseCounter() {
+		counter++
+		wg.Done()
+	}
+	```
+	
+	Hence, let's use mutex to lock the variable.
+	
+	```
+	var wg = sync.WaitGroup{}
+
+	// RW mutex allow mutiple read but only one write
+	var m = sync.RWMutex{}
+	var counter int = 0
+
+	func main() {
+		for i := 0; i < 10; i++ {
+			wg.Add(2)
+			m.RLock()
+			go printCounter()
+			m.Lock()
+			go increaseCounter()
+		}
+		wg.Wait()
+	}
+
+	func printCounter() {
+		fmt.Printf("The counter: %d\n", counter)
+		m.RUnlock()
+		wg.Done()
+	}
+
+	func increaseCounter() {
+		counter++
+		m.Unlock()
+		wg.Done()
+	}
+	```
+
+- Limiting the thread numbers, the default thread numbers will equal to the core numbers.
+	This number is a little tricky, you wont want it too high
+	```
+	fmt.Printf("Thread numbers %v\n", runtime.GOMAXPROCS(-1))
+	```
+
+- Important things to remind ourselves
+	1. Do not use go routine in library, let the consumer control the concurrency.
+	2. Know exactly when the routine is going to end.
+	3. Check race condition at compile time - adding race while compiling
+
+		```
+		go run -race main.go
+		```
+
+# Channels
+---
