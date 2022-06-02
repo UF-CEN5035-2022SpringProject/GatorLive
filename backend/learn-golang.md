@@ -659,3 +659,137 @@ Reminder: Map, Slice is using pointer to point to the same address.
 
 # Channels
 ---
+Accordingly, now we know how go routine works, then next coming up question is - how does go routines communicate to each other?
+	- Access same variable?
+	- Passing messages? (Socket? Queue?)
+	
+As a result, golang provides a message passing mechanism using **Channel**
+- It is a unbuffered FIFO queue, only one message will be send through the Channel at one time
+- Mostly, we want go routine dedicate to be a sender or receiver 
+
+	```
+	func main() {
+		// using make function to create channel
+		ch := make(chan int) // create a channel passing message type int
+		wg.Add(2)
+		// this is a receiver, receive int from ch
+		go func(ch <-chan int) {
+			i := <-ch
+			fmt.Printf("receive %d from channel %v", i, ch)
+			wg.Done()
+		}(ch)
+
+		// this is a sender, the input limit this routine only can be a sender
+		go func(ch chan<- int) {
+			ch <- 28
+			// this will be invalid in this go routine
+			// i := <-ch
+			// fmt.Printf("receive %d from channel %v", i, ch)
+			wg.Done()
+		}(ch)
+		wg.Wait()
+	}
+	```
+
+- Since there is no buffer in the channel we create above if there is no receiver matching the sender things will go wrong, the routine will be locked.
+
+	```
+	func main() {
+		// using make function to create channel
+		ch := make(chan int) // create a channel passing message type int
+		wg.Add(2)
+		// this is a receiver, receive int from ch
+		go func(ch <-chan int) {
+			i := <-ch
+			fmt.Printf("receive %d from channel %v", i, ch)
+			wg.Done()
+		}(ch)
+
+		// this is a sender, the input limit this routine only can be a sender
+		go func(ch chan<- int) {
+			ch <- 28
+			ch <- 33
+			wg.Done()
+		}(ch)
+		wg.Wait()
+	}
+	```
+	
+	Let's create buffer to deal with the problem.
+	
+	```
+	ch := make(chan int. 50) // create 50 integer buffer
+	```
+	
+	This may solve the data operate in different frequency in different sides.
+	But this still not a ideal way to solve the problem. Since it will still be blocked when the buffer is full.
+	For example, a application with data peak. It might be running out of spaces.
+	
+	```
+	go func(ch <-chan int) {
+		// we need a close() to inform this loop need to close end exit the go routine
+		for i := range ch {
+			fmt.Printf("receive %d from channel %v\n", i, ch)
+		}
+		wg.Done()
+	}(ch)
+
+	// this is a sender, the input limit this routine only can be a sender
+	go func(ch chan<- int) {
+		ch <- 28
+		ch <- 33
+		close(ch)
+		wg.Done()
+	}(ch)
+	```
+	
+	Another way to write the receiver in this format
+	```
+	go func(ch <-chan int) {
+		for {
+			if i, ok <-ch; ok {
+				fmt.Printf("receive %d from channel %v\n", i, ch)
+			} else {
+				break
+			}
+		}
+		wg.Done()
+	}(ch)
+	```
+- What if no obvious timing to close the go routine? (https://youtu.be/YS4e4q9oBaU?t=23245)
+	- Using defer to close the channel
+	- Using signal to ping the receiver and close the channel with **select statement** 
+		- https://go.dev/tour/concurrency/5
+		- https://stackoverflow.com/questions/38821491/what-is-the-difference-between-switch-and-select-in-go
+	<br/>
+	
+	
+	```	  
+	// @Example 3
+	// building a signal channel -> it's use to ping our function
+	logCh := make(chan char, 50)
+	signalDoneCh := make(chan struct{})
+
+	// how to deal with implicit close timespot using "select statement"
+	func main() {
+		// using make function to create channel
+		ch := make(chan int, 50) // create a channel passing message type int
+
+		logCh <- "send something"
+		logCh <- "send something"
+
+		signalDoneCh <- struct{}{}
+	}
+
+	func logger() {
+		for {
+			// blocking select statement
+			select {
+			case entry := <-logCh:
+				fmt.Printf("receive, do something")
+			case <- signalDoneCh:
+				break;
+			}
+		}
+	}
+	```
