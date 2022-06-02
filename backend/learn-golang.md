@@ -533,3 +533,52 @@ Reminder: Map, Slice is using pointer to point to the same address.
 			fmt.Printf("i is not an integer, it is a %T", i)
 		}
 	```
+
+# Goroutine
+---
+- Use for concurrent and parallel programs.
+- It creates **green thread (virtual thread)**, more lightly than os thread
+
+- How to join and wait for a thread?
+	Let's start a simple example. This example can simply execute the print function by go routine.
+	However, if we did not put the sleep function the main will exit before the go routine print out.
+
+		```
+			func demomain() {
+				msg := "Hello!"
+
+				go func() {
+					fmt.Println(msg)
+				}()
+
+				// race condition occurs, this is bad, use argument
+				// this example go routine will go function stack looking for msg
+				msg = "Goodbye"
+
+				// this is not a good pratice, do not use sleep call, use waitGroup
+				time.Sleep(100 * time.Millisecond)
+			}
+		```
+
+		Now, according to above exmaple, we should use wait group to wait for the go routine.
+		(Kind of thread join in Python)
+
+		```
+			var wg = sync.WaitGroup{}
+
+			func main() {
+				routineNum := 1
+				wg.Add(routineNum)
+				msg := "Hello!"
+				go shoutOut(msg)
+
+				wg.Wait()
+			}
+
+			func shoutOut(msg string) {
+				fmt.Println(msg)
+				wg.Done()
+			}
+		```
+	
+- How to avoid race condition? Using ** Mutex ***
