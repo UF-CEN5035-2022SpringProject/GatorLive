@@ -184,12 +184,12 @@ Go is very hesitant about implicit data conversion. So, we must be clear of the 
 	```
 	// num:=9 is an inialization.
 	if num := 9; num < 0 {
-        fmt.Println(num, "is negative")
-    } else if num < 10 {
-        fmt.Println(num, "has 1 digit")
-    } else {
-        fmt.Println(num, "has multiple digits")
-    }
+		fmt.Println(num, "is negative")
+	} else if num < 10 {
+		fmt.Println(num, "has 1 digit")
+	} else {
+		fmt.Println(num, "has multiple digits")
+	}
 	```
 - Switch Statement
 	Input the tag of switch for checking the condition.
@@ -256,11 +256,11 @@ Go is very hesitant about implicit data conversion. So, we must be clear of the 
 	- Execute last first, first last
 	- Common use case, use it at closing a source in the beginning of using the source
 	  
-	  ```
-	  	resp, err := ...
-	  	defer resp.body.close()
+		```
+		resp, err := ...
+		defer resp.body.close()
 		\\ continue to use the resource
-	  ```
+	  	```
 	  
 - Panic
 	- Use it when the code cannot be recovered. (Webserver port has been occupied)
@@ -269,9 +269,9 @@ Go is very hesitant about implicit data conversion. So, we must be clear of the 
 	- The print out, executes after defer 
 	
 		```
-			fmt.Println("start")
-			panic("smth bad happens")
-			fmt.Println("end")
+		fmt.Println("start")
+		panic("smth bad happens")
+		fmt.Println("end")
 		```
 - Recover
 	- Function is built to recover from panic
@@ -295,40 +295,40 @@ Go is very hesitant about implicit data conversion. So, we must be clear of the 
 # Pointer
 ---
 ```
-	var a int = 32
-	var b *int = &a
-	a = 42
+var a int = 32
+var b *int = &a
+a = 42
 
-	c := &a
-	fmt.Printf("%d, %d, %p, %d, %p", a, *b, b, *c, c)
+c := &a
+fmt.Printf("%d, %d, %p, %d, %p", a, *b, b, *c, c)
 ```
 
 If we want to do pointer arithmetic us the unsafe package
 But go seems this as a complex code, so they save it in unsafe package to go through compiler
 
 ```
-	a := [3]int{1, 100, 300}
-	b := &a[0]
-	c := &a[1]
-	fmt.Printf("%v, %p, %p", a, b, c)
+a := [3]int{1, 100, 300}
+b := &a[0]
+c := &a[1]
+fmt.Printf("%v, %p, %p", a, b, c)
 ```
 
 Also it works with a struct
 ```
-	type demoStruct struct {
-		test int
-	} 
-	
-	var aPtr *demoStruct 
-	structPtr = &demoStruct{test: 10}
-	fmt.Println(aPtr)
-	
-	var bPtr *demoStruct
-	fmt.Println(bPtr)
-	bPtr = new(demoStruct)
-	fmt.Println(bPtr) // initial an empty struct
-	bPtr.test = 15
-	fmt.Println(bPtr)
+type demoStruct struct {
+	test int
+} 
+
+var aPtr *demoStruct 
+structPtr = &demoStruct{test: 10}
+fmt.Println(aPtr)
+
+var bPtr *demoStruct
+fmt.Println(bPtr)
+bPtr = new(demoStruct)
+fmt.Println(bPtr) // initial an empty struct
+bPtr.test = 15
+fmt.Println(bPtr)
 ```
 
 Reminder: Map, Slice is using pointer to point to the same address.
@@ -339,101 +339,101 @@ Reminder: Map, Slice is using pointer to point to the same address.
 - Wrap input variable into slice
 
 	```
-		func main() {
-			ans := sum(1, 2, 3)
-			fmt.Println(ans)
-		}
+	func main() {
+		ans := sum(1, 2, 3)
+		fmt.Println(ans)
+	}
 
-		func sum(elements ...int) int {
-			fmt.Println(elements)
-			result := 0
-			for _, v := range elements {
-				result += v
-			}
-			return result
+	func sum(elements ...int) int {
+		fmt.Println(elements)
+		result := 0
+		for _, v := range elements {
+			result += v
 		}
+		return result
+	}
 	```	
 
 - Return a local variable as a pointer, this will be store in the heap memory (share) in run time for avoiding been clear.<br/>
   (In most of language, function result will be store in stack, and pop as the function returns)
 	
 	```
-		func main() {
-			ans := sum(1, 2, 3)
-			fmt.Println(*ans)
-		}
+	func main() {
+		ans := sum(1, 2, 3)
+		fmt.Println(*ans)
+	}
 
-		func sum(elements ...int) *int {
-			fmt.Println(elements)
-			result := 0
-			for _, v := range elements {
-				result += v
-			}
-			return &result
+	func sum(elements ...int) *int {
+		fmt.Println(elements)
+		result := 0
+		for _, v := range elements {
+			result += v
 		}
+		return &result
+	}
 	```
 
 - type Method Function
 
 	```
-		func main() {
-			a := price(5)
-			a.checkPrice()
-			a.double()
-			a.checkPrice()
-		}
+	func main() {
+		a := price(5)
+		a.checkPrice()
+		a.double()
+		a.checkPrice()
+	}
 
-		type price int
+	type price int
 
-		func (p price) checkPrice() {
-			fmt.Println(p)
-		}
+	func (p price) checkPrice() {
+		fmt.Println(p)
+	}
 
-		func (p *price) double() {
-			*p = (*p) * 2
-		}
+	func (p *price) double() {
+		*p = (*p) * 2
+	}
 	```
 	
 	Most likely using with Struct
 	
 	```
-		func main() {
-		alpha := company{
-			name:           "Alphabet",
-			headQuarter:    "MTV",
-			employeeNumber: 20030,
-		}
+	func main() {
+	alpha := company{
+		name:           "Alphabet",
+		headQuarter:    "MTV",
+		employeeNumber: 20030,
+	}
 
-		alpha.printCompanyName()
+	alpha.printCompanyName()
 
-		gtech := techCompany{
-			parent:        alpha,
-			name:          "Google",
-			concentration: "Search Engine",
-		}
+	gtech := techCompany{
+		parent:        alpha,
+		name:          "Google",
+		concentration: "Search Engine",
+	}
 
-			gtech.printTechCompany()
-		}
+		gtech.printTechCompany()
+	}
 
-		type company struct {
-			name           string
-			headQuarter    string
-			employeeNumber int
-		}
+	type company struct {
+		name           string
+		headQuarter    string
+		employeeNumber int
+	}
 
-		type techCompany struct {
-			parent        company
-			name          string
-			concentration string
-		}
+	type techCompany struct {
+		parent        company
+		name          string
+		concentration string
+	}
 
-		func (c company) printCompanyName() {
-			fmt.Println(c.name)
-		}
+	func (c company) printCompanyName() {
+		fmt.Println(c.name)
+	}
 
-		func (c techCompany) printTechCompany() {
-			fmt.Println(c)
-		}
+	func (c techCompany) printTechCompany() {
+		fmt.Println(c)
+	}
 	```
 
 # Interface
@@ -534,7 +534,7 @@ Reminder: Map, Slice is using pointer to point to the same address.
 	}
 	```
 
-# Goroutine
+# GoRoutine
 ---
 - Use for concurrent and parallel programs.
 - It creates **green thread (virtual thread)**, more lightly than os thread
@@ -543,43 +543,43 @@ Reminder: Map, Slice is using pointer to point to the same address.
 	Let's start a simple example. This example can simply execute the print function by go routine.
 	However, if we did not put the sleep function the main will exit before the go routine print out.
 
-		```
-		func demomain() {
-			msg := "Hello!"
+	```
+	func demomain() {
+		msg := "Hello!"
 
-			go func() {
-				fmt.Println(msg)
-			}()
-
-			// race condition occurs, this is bad, use argument
-			// this example go routine will go function stack looking for msg
-			msg = "Goodbye"
-
-			// this is not a good pratice, do not use sleep call, use waitGroup
-			time.Sleep(100 * time.Millisecond)
-		}
-		```
-
-		Now, according to above exmaple, we should use wait group to wait for the go routine.
-		(Kind of thread join in Python)
-
-		```
-		var wg = sync.WaitGroup{}
-
-		func main() {
-			routineNum := 1
-			wg.Add(routineNum)
-			msg := "Hello!"
-			go shoutOut(msg)
-
-			wg.Wait()
-		}
-
-		func shoutOut(msg string) {
+		go func() {
 			fmt.Println(msg)
-			wg.Done()
-		}
-		```
+		}()
+
+		// race condition occurs, this is bad, use argument
+		// this example go routine will go function stack looking for msg
+		msg = "Goodbye"
+
+		// this is not a good pratice, do not use sleep call, use waitGroup
+		time.Sleep(100 * time.Millisecond)
+	}
+	```
+
+	Now, according to above exmaple, we should use wait group to wait for the go routine.
+	(Kind of thread join in Python)
+
+	```
+	var wg = sync.WaitGroup{}
+
+	func main() {
+		routineNum := 1
+		wg.Add(routineNum)
+		msg := "Hello!"
+		go shoutOut(msg)
+
+		wg.Wait()
+	}
+
+	func shoutOut(msg string) {
+		fmt.Println(msg)
+		wg.Done()
+	}
+	```
 	
 - How to avoid race condition? Using **Mutex**, which are able to lock resources.
 	
